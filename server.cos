@@ -1,7 +1,36 @@
-use "tcp", "websocket.cos", "console";
+use "websocket.cos", "console", "error";
+
+Console->title("Jugolo chat for PHP-FUSION");
 
 Console->write("Host: ");
 host = Console->readLine();
 
 Console->write("Port: ");
 port = int->convert(Console->readLine());
+
+
+server = new WebSocket(host, port);
+if(server->isError()){
+  error("Could not start TcpServer: "+server->getError()->message());
+}
+
+server->trigger("new", function(WebSocketClient client){
+
+});
+
+server->trigger("message", function(WebSocketClient client){
+
+});
+
+server->trigger("close", function(WebSocketClient client){
+
+});
+
+server->listen();
+
+if(server->isError()){
+  error("[Error]"+server->getError()->message());
+}
+
+Console->writeLine("server is closing push enter to close this console");
+Console->readLine();
