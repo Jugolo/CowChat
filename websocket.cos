@@ -1,0 +1,30 @@
+use "tcp";
+
+class WebSocket{
+   private server;
+   private triggers = [];
+
+   WebSocket(string host, int port){
+       this->server = new TcpServer();
+       if(!this->server->open(host, port)){
+           return false;
+       }
+       return true;
+   }
+
+   public function isError(){
+     return this->server != null && this->server->isError();
+   }
+
+   public function getError(){
+     return this->server->getError();
+   }
+
+   public function setTrigger(string name, function callback){
+     this->triggers[name] = callback;
+   }
+
+   public function listen(){
+
+   }
+}
