@@ -1,0 +1,7 @@
+use "tcp", "websocket.cos", "console";
+
+Console->write("Host: ");
+host = Console->readLine();
+
+Console->write("Port: ");
+port = int->convert(Console->readLine());
