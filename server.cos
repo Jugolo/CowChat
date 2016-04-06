@@ -14,15 +14,15 @@ if(server->isError()){
   error("Could not start TcpServer: "+server->getError()->message());
 }
 
-server->trigger("new", function(WebSocketClient client){
+server->setTriggerrigger("new", function(WebSocketClient client){
 
 });
 
-server->trigger("message", function(WebSocketClient client){
+server->setTrigger("message", function(WebSocketClient client){
 
 });
 
-server->trigger("close", function(WebSocketClient client){
+server->setTrigger("close", function(WebSocketClient client){
 
 });
 
