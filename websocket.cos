@@ -3,6 +3,7 @@ use "tcp";
 class WebSocket{
    private server;
    private triggers = [];
+   private clients = []
 
    WebSocket(string host, int port){
        this->server = new TcpServer();
@@ -25,6 +26,20 @@ class WebSocket{
    }
 
    public function listen(){
+      while(this->run && !this->isError()){
+          client = this->server->accept();//accept this client.
+          //control if this client is init 
+          if(!this->clients->hasValue(client)){
+             this->handshake(client);
+             this->trigger("new", client);
+             continue;
+          }
+      }
+   }
 
+   private function trigger(string name, TcpServerClient client){
+      if(this->triggers->hasKey(name)){
+        this->triggers(new WebSocketClient(client));
+      }
    }
 }
