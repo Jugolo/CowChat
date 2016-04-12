@@ -26,6 +26,13 @@ server->setTrigger("close", function(WebSocketClient client){
 
 });
 
+function parseMessage(string message){
+    first = message->substr(0, message->indexOf(": "))->split(" ");
+    data  = message->substr(message->indexOf(": ")+2);
+
+   
+}
+
 server->listen();
 
 if(server->isError()){
