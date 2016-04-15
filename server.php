@@ -51,6 +51,7 @@ ini_set('display_errors', '1');
         $this->channel = $this->protokol->get_channel_list(false);
 
         if(!Server::is_cli()){
+            if(get("ajax")){
             $this->userInit();
             //if there is post available handle the post
             if(post("message")){
@@ -58,6 +59,9 @@ ini_set('display_errors', '1');
             }
 
             $this->showMessage();
+            }else{
+               $this->showHTML();
+            }
         }else{
             $this->init_websocket();
         }
