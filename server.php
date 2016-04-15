@@ -53,7 +53,7 @@ ini_set('display_errors', '1');
         if(!Server::is_cli()){
             $this->userInit();
             //if there is post available handle the post
-            if($this->getVariabel("isPost")){
+            if(post("message")){
                $this->handlePost(explode("\r\n", post("message")));//the new style is not json but plain text
             }
 
