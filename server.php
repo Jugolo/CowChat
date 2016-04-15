@@ -4,6 +4,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
  class Server{
      
+     public static function is_cli(){
+        return php_sapi_name() == "cli";
+     }
+
+
      protected $config;
      private $variabel         = array();
      private $user             = array();
@@ -11,7 +16,6 @@ ini_set('display_errors', '1');
      private $cid              = null;
 	 private $lang             = array();
      private $langCache        = array();
-	 private $websocket        = false;
 	 private $client           = array();
 	 private $clientObj        = array();
 	 private $postData         = array();
@@ -26,57 +30,42 @@ ini_set('display_errors', '1');
      const text_max = 1;
      const text_min = 2;
      
-    function Server($websocket = false){
-    	
-    	header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
-        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-        header("Cache-Control: no-store, no-cache, must-revalidate");
-        header("Cache-Control: post-check=0, pre-check=0", false);
-        header("Pragma: no-cache");
-    	
-		$this->websocket = $websocket;
+    function inilize(){
+    	//send header if this is a ajax server
+        if(!Server::is_cli()){
+    	  header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
+          header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+          header("Cache-Control: no-store, no-cache, must-revalidate");
+          header("Cache-Control: post-check=0, pre-check=0", false);
+          header("Pragma: no-cache");
+        }
 
         $this->loadPages();
         $this->init_db();
         $this->init_system_setting();
         $this->init_lang();
-		$this->loadVariabel();
+	$this->loadVariabel();
         $this->loadDatabaseConfig();
         $this->init_protokol();
-        if($this->protokol->use_session){
-            $this->sessionInit();
-        }
 
         $this->channel = $this->protokol->get_channel_list(false);
 
-        if(!$this->websocket){
+        if(!Server::is_cli()){
             $this->userInit();
-        }
-        
-		if($this->websocket){
-			$this->init_websocket();
-		}else{
-			if("socket" == $this->getConfig("protokol")){
-				exit("This is not ajax webserver but WebSocket server!");
-			}
-		}
-		
-		//ajax only ;) if it is not ajax it will not work!
-		if($this->getVariabel("isPost")){
-        	$this->handlePost();
+            //if there is post available handle the post
+            if($this->getVariabel("isPost")){
+               $this->handlePost(explode("\r\n", post("message")));//the new style is not json but plain text
+            }
+
+            $this->showMessage();
         }else{
-        	$this->showMessage();
+            $this->init_websocket();
         }
 
+        //@todo send a error message if this is in a globel group admin
         if($this->database->isError){
             exit($this->database->getError());
         }
-
-        if(empty($this->json['message'])){
-            $this->json['message'] = array();
-        }
-
-        exit(json_encode($this->json));
     }
 
 	 private function init_websocket(){
@@ -1929,4 +1918,4 @@ ini_set('display_errors', '1');
      }
  }
  
-$server = new Server((empty($socket) ? false : true));
+new Server((empty($socket) ? false : true))->inilize();
