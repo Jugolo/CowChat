@@ -6,7 +6,7 @@ ini_set('display_errors', '1');
      
      public static function is_cli(){
         return php_sapi_name() == "cli";
-     }
+     } 
 
 
      protected $config;
