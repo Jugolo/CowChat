@@ -1,2 +1,2 @@
 # CowScriptChat
-This is websocket handler for my chat writing for PHP-FUSION
+This chat is a old chat there is in process to work alone
