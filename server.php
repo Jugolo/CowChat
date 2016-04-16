@@ -9,11 +9,7 @@ ini_set('display_errors', '1');
      } 
 
      private $variabel         = array();
-     private $database         = null;
      private $channel          = array();
-
-     const text_max = 1;
-     const text_min = 2;
      
     function inilize(){
     	//send header if this is a ajax server
@@ -1602,12 +1598,34 @@ ini_set('display_errors', '1');
     private function login(){
        if (cookie("chat_token")){
           $part = explode(",", cookie("chat_token"));
-       }elseif(!Server::is_cli() && post("username") && post("password")){
-          if(post("email")){//create a new account
-
-          }else{//login
-           
+          if(count($part) != 2){
+             cookieDestroy("chat_token");
+             return false;
           }
+
+          //get the id from the chat token
+          $id = $part[0] - 123456789; 
+          //look after the user in the database
+          $query = Database::query("SELECT * FROM ".table("user")." WHERE `id`='".$id."'");
+          if($query->rows() != 1){
+            cookieDestroy("chat_token");
+            return false;
+          }
+
+          //control if the hash value is the same and the ip is the same
+          $data = $query->fetch();
+          if($data["hash"] != $part[1] || ip() != $data["ip"]){
+             cookieDestroy("chat_token");
+             return false;
+          }
+
+          //okay now wee know this is the correct user!!
+          }elseif(!Server::is_cli() && post("username") && post("password")){
+             if(post("email")){//create a new account
+
+             }else{//login
+                //wee look after username first
+             }
        }elseif(!Server::is_cli() && post("nick")){//geaust login
 
        }
