@@ -25,7 +25,6 @@ ini_set('display_errors', '1');
      private $sConfig          = array();
      private $protokol         = null;
      private $channel          = array();
-     private $json             = array();
 
      const text_max = 1;
      const text_min = 2;
@@ -52,13 +51,13 @@ ini_set('display_errors', '1');
 
         if(!Server::is_cli()){
             if(get("ajax")){
-            $this->userInit();
-            //if there is post available handle the post
-            if(post("message")){
-               $this->handlePost(explode("\r\n", post("message")));//the new style is not json but plain text
-            }
+               $this->userInit();
+               //if there is post available handle the post
+               if(post("message")){
+                  $this->handlePost(explode("\r\n", post("message")));//the new style is not json but plain text
+               }
 
-            $this->showMessage();
+               $this->showMessage();
             }else{
                $this->showHTML();
             }
