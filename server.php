@@ -32,8 +32,8 @@ ini_set('display_errors', '1');
         $this->loadDatabaseConfig();
 
         if(!Server::is_cli()){
+            $this->userInit();
             if(get("ajax")){
-               $this->userInit();
                //if there is post available handle the post
                if(post("message")){
                   $this->handlePost(explode("\r\n", post("message")));//the new style is not json but plain text
@@ -1600,71 +1600,18 @@ ini_set('display_errors', '1');
     }
 
     private function login(){
+       if (cookie("chat_token")){
 
-        if(empty($_COOKIE[COOKIE_PREFIX."user"])){
-           return false;
-        }
+       }elseif(!Server::is_cli() && post("username") && post("password")){
+          if(post("email")){//create a new account
 
-        $ucd = explode(".",$_COOKIE[COOKIE_PREFIX."user"]);
+          }else{//login
+           
+          }
+       }elseif(!Server::is_cli() && post("nick")){//geaust login
 
-        $row = $this->database->query("SELECT * FROM `".DB_PREFIX."users` WHERE
-        `user_id`='".(empty($ucd[0]) ? '0' : (int)$ucd[0])."'
-        AND `user_status`='0'
-        AND `user_actiontime`='0'")->get();
-        if($this->database->isError){
-            exit("Database error");
-        }
-
-        if(empty($row)){
-            return false;
-        }
-
-        if($row['user_ip'] != $this->ip()){
-            return false;
-        }
-
-        $this->protokol->set_user_data($row,null);
-        $this->user = $row;
-        return true;
+       }
     }
-    
-    private function startSession(){
-        session_start();
-    }
-    
-    private function isSessionStarted(){
-        return (session_id() != '');
-    }
-    
-    private function getSessionId(){
-        return session_id();
-    }
-    
-    //header sektion (post get session)
-    
-    private function get($key){
-        if(empty($_GET[$key]) || !trim($_GET[$key])){
-            return null;
-        }
-        
-        return $_GET[$key];
-    }
-    
-    private  function post($key){
-    	if(empty($_POST[$key]) || !trim($_POST[$key])){
-    		return null;
-    	}
-    	
-    	return $_POST[$key];
-    }
-
-     public function session($name){
-         if(empty($_SESSION[$name]) || !is_array($_SESSION[$name]) && !trim($_SESSION[$name])){
-             return null;
-         }
-
-         return $_SESSION[$name];
-     }
     
     //send message
 
@@ -1869,25 +1816,6 @@ ini_set('display_errors', '1');
              $this->sendBotMessage($cid, "/kick".($message !== null ? " ".$message : null),"red",$uid);
          }
 	 }
-
-
-     private function display($channel,$nick,$msg){
-         echo "[".$channel."] ".date("H:i")." ".$nick." ".$msg;
-
-         echo "\r\n";
-     }
-
-     private function is_length_okay($text, $min=0,$max=1000){
-         if(strlen($text) < $min){
-             return self::text_min;
-         }
-
-         if(strlen($text) > $max){
-             return self::text_max;
-         }
-
-         return true;
-     }
  }
  
 new Server()->inilize();
