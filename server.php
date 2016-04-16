@@ -1601,7 +1601,7 @@ ini_set('display_errors', '1');
 
     private function login(){
        if (cookie("chat_token")){
-
+          $part = explode(",", cookie("chat_token"));
        }elseif(!Server::is_cli() && post("username") && post("password")){
           if(post("email")){//create a new account
 
