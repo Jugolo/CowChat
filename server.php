@@ -1625,10 +1625,34 @@ ini_set('display_errors', '1');
 
              }else{//login
                 //wee look after username first
+                $query = Database::query("SELECT * FROM ".table("user")." WHERE `username`=".Database::qlean(post("username")));
+                if($query->rows() != 1){
+                   Html::error("Wrong username or/and password");
+                   return false;
+                }
+
+                //now wee control the password to see if the passwords is equally.
+                $data = $query->fetch();
+                if(!password_equels(post("password"), $data["password"], $data["hash"])){
+                   Html::error("Wrong username or/and password");
+                   return false;
+                }
+
+                //update the user ip in database...
+                Database::query("UPDATE ".table("user")." SET `ip`=".Database::qlean(ip())." WHERE `id`='".$data["id"]."'");
+                $data["ip"] = ip();
+                //create a cookie so the user can use webseocket or ajax chat
+                make_cookie("token_chat", ($data["id"]+123456789).$data["hash"]);
              }
        }elseif(!Server::is_cli() && post("nick")){//geaust login
 
        }
+
+       //in some case (mostly websocket) the user object for this user can already be created. This is mostly when the user has refreshing the webpage.
+       if(getUser($data["id"]) == null){
+          User::push($data, true);//push user to our object database and make it as the current user.
+       }
+       return true;
     }
     
     //send message
