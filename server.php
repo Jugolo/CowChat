@@ -8,22 +8,8 @@ ini_set('display_errors', '1');
         return php_sapi_name() == "cli";
      } 
 
-
-     protected $config;
      private $variabel         = array();
-     private $user             = array();
-     private $userConfig       = array();
-     private $cid              = null;
-	 private $lang             = array();
-     private $langCache        = array();
-	 private $client           = array();
-	 private $clientObj        = array();
-	 private $postData         = array();
-	 public static $message_id = 0;
-     private $basepart         = null;
      private $database         = null;
-     private $sConfig          = array();
-     private $protokol         = null;
      private $channel          = array();
 
      const text_max = 1;
@@ -42,12 +28,8 @@ ini_set('display_errors', '1');
         $this->loadPages();
         $this->init_db();
         $this->init_system_setting();
-        $this->init_lang();
 	$this->loadVariabel();
         $this->loadDatabaseConfig();
-        $this->init_protokol();
-
-        $this->channel = $this->protokol->get_channel_list(false);
 
         if(!Server::is_cli()){
             if(get("ajax")){
@@ -1887,20 +1869,7 @@ ini_set('display_errors', '1');
              $this->sendBotMessage($cid, "/kick".($message !== null ? " ".$message : null),"red",$uid);
          }
 	 }
-	 
-	 private function iADMIN(){
-         if($this->protokol->user['user_level'] >= 102)
-             return true;
-         else
-             return false;
-	 }
-	 
-	 private function iSUPERADMIN(){
-         if($this->protokol->user['user_level'] == 103)
-             return true;
-         else
-             return false;
-	 }
+
 
      private function display($channel,$nick,$msg){
          echo "[".$channel."] ".date("H:i")." ".$nick." ".$msg;
@@ -1921,4 +1890,4 @@ ini_set('display_errors', '1');
      }
  }
  
-new Server((empty($socket) ? false : true))->inilize();
+new Server()->inilize();
