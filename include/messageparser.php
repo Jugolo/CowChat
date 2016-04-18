@@ -4,6 +4,11 @@ class MessageParser{
 
   function __construct($message){
      $first = explode(" ", substr($message, 0, strpos($message, ": ")));
+     if(strpos($first[0], "!")){
+        list($prefix, $command) = explode("!", $first[0]);
+        $this->data["prefix"] = $prefix;
+        $first[0] = $command;
+     }
      $this->data["command"] = $first[0];
      $this->data["isCommand"] = count($first) == 0;
      $this->data["channel"] = $this->isCommand() ? get_channel($first[1]) : null;
@@ -24,5 +29,13 @@ class MessageParser{
 
   function message(){
      return $this->data["message"];
+  }
+
+  function hasPrefix(){
+     return !empty($this->data["prefix"]);
+  }
+
+  function prefix(){
+     return $this->data["prefix"];
   }
 }
