@@ -15,9 +15,8 @@ function createPrefix(){
   }
 
   var l = letter.charAt(letterNumber);
-
-  var n = number.toString();
   number++;
+  var n = number.toString();
   if(n.length == 1){
     return l+"0000"+n;
   }else if(n.length == 2){
