@@ -17,6 +17,7 @@ class Channel{
    public static function remove(ChannelData $channel){
       $channel->remove();
       unset(self::$channels[$channel->id()]);
+      Database::query("DELETE FROM ".table("channel")." WHERE `id`='".$channel->id()."'");
    }
 }
 
@@ -67,6 +68,14 @@ class ChannelData{
 
    function send($message){
       return send_channel($this, $message);
+   }
+
+   function remove(){
+      if(count($this->members) != 0){
+         foreach($this->members as $member){
+            $member->leave($this);
+         }
+      }
    }
 
    private function create($name){
