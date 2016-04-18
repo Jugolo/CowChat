@@ -480,7 +480,7 @@ ini_set('display_errors', '1');
             break;
             case 'title':
                if(($channel = channel($message->message()) != null){
-                 if(current_user()->isMember($channel)){
+                 if(User::current()->isMember($channel)){
                    send($message, "TITLE: ".$channel->title());
                  }else{
                    send($message, "ERROR: notMember");
@@ -490,7 +490,7 @@ ini_set('display_errors', '1');
                }
             break;
             case 'exit':
-            	current_user()->remove();
+            	User::current()->remove();
             break;
 	    case 'leave':
 	        $this->answer_leave();
