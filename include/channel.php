@@ -19,6 +19,16 @@ class Channel{
       unset(self::$channels[$channel->id()]);
       Database::query("DELETE FROM ".table("channel")." WHERE `id`='".$channel->id()."'");
    }
+
+   public static function getUserChannel(UserData $user){
+     $return = [];
+     foreach(self::$channels as $channel){
+        if($channel->isMember($user)){
+          $return[$channel->id()] = $channel;
+        }
+     }
+     return $return;
+   }
 }
 
 class ChannelData{
