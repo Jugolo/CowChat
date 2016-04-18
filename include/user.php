@@ -14,8 +14,20 @@ class User{
        self::$current = self::$users[$data["id"]];
   }
 
+  public static function current(){
+    return self::$current;
+  }
+
 }
 
 class UserData{
+   private $channels = [];
 
+   function isMember(ChannelData $data){
+     return !empty($this->channels[$data->cid()]);
+   }
+
+   function remove(){
+
+   }
 }
