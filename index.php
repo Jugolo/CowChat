@@ -217,58 +217,6 @@ ini_set('display_errors', '1');
 
          return false;
      }
-	 
-	 private function init_lang(){
-         $this->setLang($this->get_system_config("locale"));
-     }
-
-     function setLang($name){
-         if(!empty($this->langCache[$name]) && is_array($this->langCache[$name])){
-             $this->lang = $this->langCache[$name];
-             return;//super :)
-         }
-         $locale = array();
-
-         if($this->websocket)
-             $langUse = $this->get_base_part()."locale\\".$name."\\server.php";
-         else
-             $langUse = "./locale/".$name."/server.php";
-
-
-         if(file_exists($langUse)){
-			 include $langUse;
-			 $this->lang = $this->langCache[$name] = $locale;
-		 }else{
-             if(!empty($this->langCache['English']) && is_array($this->langCache['English'])){
-                 $this->lang = $this->langCache['English'];
-                 return;
-             }
-             if($this->websocket)
-                 $url =  $this->get_base_part()."locale\\English\\server.php";
-             else
-                 $url = "./locale/English/server.php";
-             include $url;
-             $this->lang = $this->langCache['English'] = $locale;
-		 }
-	 }
-
-
-     private function getLangList(){
-         $return = array();
-         if($this->websocket)
-             $dir = $this->get_base_part()."locale\\";
-         else
-             $dir = "locale/";
-
-         $dirObj = opendir($dir);
-         while($file = readdir($dirObj)){
-             if($file != "." && $file != ".." && is_dir($dir.$file)){
-                 $return[] = $file;
-             }
-         }
-
-         return $return;
-     }
     
     //inaktiv sektion
     private function handle_inaktiv($row){
@@ -410,105 +358,31 @@ ini_set('display_errors', '1');
 
         return $word;
     }
-    
-    private function getUserIdFromNick($nick){
-    	$sql = $this->database->prepare("SELECT `user_id` FROM `".DB_PREFIX."users` WHERE BINARY `nick`={nick}");
-        $sql->add("nick",$nick);
-        $data = $sql->done();
-        if($this->database->isError)
-            exit("Database error");
-    	$row = $data->get();
-    	return (empty($row['user_id']) ? 0 : $row['user_id']);
-    }
-    
-    //channel sektion
-
-     protected function re_cache_channel_id($name){
-         $myChannels = $this->protokol->get_my_channel_list();
-         $channel    = $this->protokol->get_channel_list();
-
-         //og vi får resultatet hurtigt da MySQL ikke er indblandet :D
-
-         foreach($channel as $cid => $data){
-             if($data['name'] == $name){
-                 //vi har fundet den. nu er spøgsmålet bare om brugeren er medlem i den :)
-                 $this->variabel['cid'] = $this->cid = empty($myChannels[$cid]) ? 1 : $cid;
-                 return $this->cid;
-             }
-         }
-
-         $this->variabel['cid'] = $this->cid = 1;
-
-         return $this->cid;
-     }
-
-    protected function getCidFromChannel($name){
-
-        foreach($this->protokol->get_my_channel_list(false) as $data){
-            if(!empty($data['name']) && $data['name'] == $name){
-                $this->variabel['cid'] = $this->cid = $data['cid'];
-                return $data['cid'];
-            }
+	 
+    private function handlePost($message){
+	//is message a array
+        if(is_array($message)){
+          foreach($message as $msg)
+            $this->handlePost($msg);
+          return;
+        }elseif(is_string($message)){
+          $message = new MessageParser($message);
+        }elseif(!($message instanceof MessageParser)){
+           trigger_error("$message is not a instanceof MessageParser");
         }
 
-        $this->variabel['cid'] = $this->cid = 1;
-        return 1;
-    }
-    
-    //post sektion
-	 
-	 private function init_get_data(){
-		 if($this->websocket){
-             if(!is_array($this->postData)){
-                 return $this->remove_client($this->getVariabel("client")->socket);
-             }
-			 return array_merge($this->postData,array(
-               'li' => 0,
-             ));
-		 }else{
-			 return array(
-				 'message' => $this->post("message"),
-				 'channel' => $this->post("channel"),
-				 'li'      => $this->get("li"),
-			 );
-		 }
-	 }
-	 
-    private function handlePost(){
-		
-		$input = $this->init_get_data();
-
-        //WebSocket has a problem. bannet user can write in the channel soo wee control it now :)
-        if($this->getVariabel("cid") != 1 && in_array($this->protokol->user['user_id'],$this->protokol->getBannetInChannel($this->getVariabel("cid")))){
-            return;
-        }
-
-    	if(preg_match("/^\//", $input['message'])){
-    		$this->handleCommand();
-            if($this->getVariabel("last_id")){
-                $this->showMessage();
-            }
+    	if($message->isCommand()){
+    		$this->handleCommand($message);
     	}else{
-            if($this->is_flood($this->getVariabel("cid"))){
-                if($input['message']){
-                    $this->handleMessage($input);
-                }
-
-                if($input['channel']){
-                    $this->updateActivInChannel($input['channel']);
-                }
+            if($this->is_flood($message->channel()->cid())){
+                $this->handleMessage($message);
+                $this->updateActivInChannel($message->channel()->cid());
             }else{
                 $this->sendBotPrivMessage(
-                   $this->getVariabel("cid"),
+                   $message->channel()->cid(),
                    "/maxFlood",
                     'red'
                 );
-            }
-
-            if($this->getVariabel("last_id")){
-                $this->showMessage();
-            }else{
-                $this->json['message'] = array();
             }
         }
     }
@@ -542,20 +416,16 @@ ini_set('display_errors', '1');
         }
     }
     
-    private function updateActivInChannel(){
-        $data = $this->database->query("SELECT *
+    private function updateActivInChannel($cid){
+        $data = Database->query("SELECT *
         FROM `".DB_PREFIX."chat_member`
-        WHERE `uid`='".(int)$this->protokol->user['user_id']."'
-        AND `cid`='".(int)$this->getVariabel("cid")."'");
+        WHERE `uid`='".current_user()->id()."'
+        AND `cid`='".(int)$cid."'");
 
-        if($this->database->isError){
-            exit($this->database->getError());
-        }
-
-    	$row = $data->get();
+    	$row = $data->fetch();
     	
     	if($row['isInAktiv'] == Yes){
-			$this->sendBotMessage($row['cid'], "/notInaktiv ".$this->protokol->user['nick'], 'green');
+			$this->sendBotMessage($row['cid'], "/notInaktiv ".current_user()->nick(), 'green');
     	}
     	
     	$this->database->query("UPDATE `".DB_PREFIX."chat_member` SET `lastActiv`= NOW(), `isInAktiv`='".No."' WHERE `cid`='".(int)$row['cid']."' AND `uid`='".$this->protokol->user['user_id']."'");
