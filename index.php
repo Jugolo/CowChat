@@ -6,10 +6,7 @@ ini_set('display_errors', '1');
      
      public static function is_cli(){
         return php_sapi_name() == "cli";
-     } 
-
-     private $variabel         = array();
-     private $channel          = array();
+     }
      
     function inilize(){
     	//send header if this is a ajax server
@@ -39,11 +36,6 @@ ini_set('display_errors', '1');
             }
         }else{
             $this->init_websocket();
-        }
-
-        //@todo send a error message if this is in a globel group admin
-        if($this->database->isError){
-            exit($this->database->getError());
         }
     }
 
@@ -372,11 +364,11 @@ ini_set('display_errors', '1');
     	if($message->isCommand()){
     		$this->handleCommand($message);
     	}else{
-            if($this->is_flood($message->channel()->cid())){
+            if($this->is_flood($message->channel()->id())){
                 $this->handleMessage($message);
-                $this->updateActivInChannel($message->channel()->cid());
+                $this->updateActivInChannel($message->channel()->id());
             }else{
-                send($message, "FLOOD: Reach");
+                send($message, "FLOOD ". $message->channel()->name().": Reach");
             }
         }
     }
@@ -462,25 +454,25 @@ ini_set('display_errors', '1');
     
     private function handleCommand($message){
     	switch($message->command()){
-    	    case "getStatus":
+    	    case "GETSTATUS":
     	        $this->answer_getStatus();
     	    break;
-            case "join":
+            case "JOIN":
                 $this->answer_join();
     	    break;
-            case "nick":
+            case "NICK":
             	$this->answer_nick();
             break;
-            case 'msg':
+            case 'MSG':
             	$this->answer_msg();
             break;
-            case "config":
+            case "CONFIG":
             	$this->answer_config();
             break;
-            case 'getOnline':
+            case 'GETONLINE':
             	$this->do_getOnline();
             break;
-            case 'title':
+            case 'TITLE':
                if(($channel = channel($message->message()) != null){
                  if(User::current()->isMember($channel)){
                    send($message, "TITLE: ".$channel->title());
@@ -491,47 +483,47 @@ ini_set('display_errors', '1');
                  send($message, "ERROR: unknownChannel");
                }
             break;
-            case 'exit':
+             case 'EXIT':
             	User::current()->remove();
-            break;
-	    case 'leave':
+             break;
+	     case 'LEAVE':
 	        $this->answer_leave();
-	    break;
-	    case 'kick':
+	     break;
+	     case 'KICK':
 		$this->answer_kick();
 	    break;
-	    case 'bot':
+	    case 'BOT':
 	        $this->answer_bot();
 	    break;
-	    case 'ban':
+	    case 'BAN':
 	        $this->answer_ban();
 	    break;
-	    case 'unban':
+	    case 'UNBAN':
 		 $this->answer_unban();
 	    break;
-            case 'ignore':
+            case 'IGNORE':
                 $this->answer_ignore();
             break;
-            case 'unIgnore':
+            case 'UNIGNORE':
                 $this->answer_uningore();
             break;
-            case 'ping':
-                $this->sendBotPrivMessage(1,"/pong","green");
+            case 'PING':
+                send($message, "PONG: respons");
             break;
-            case 'update':
+            case 'UPDATE':
                 $this->answer_update();
             break;
-            case 'getConfig':
-                $this->sendBotPrivMessage(1,"/config ".$this->getUserConfig());
+            case 'GETCONFIG':
+                send($message, "CONFIG: ".implode (",", User::current()->getData());
             break;
-            case 'clear':
+            case 'CLEAR':
                 $this->answer_clear();
             break;
-            case 'file':
+            case 'FILE':
                 $this->answer_file();
             break;
             default:
-            	$this->sendBotPrivMessage($this->getCidFromChannel($this->post("channel")), "/commandDenaid");
+            	send($message, "ERROR: UnknownCommand");
             break;
     	}
     }
@@ -793,10 +785,6 @@ ini_set('display_errors', '1');
 		}
     }
     
-	private function answer_getLang(){
-		$this->sendBotPrivMessage(1,"/langList ".implode(",",$this->getLangList()));
-	}
-    
     private function doExit(){
 
         foreach($this->protokol->get_my_channel_list() AS $cid => $data){
@@ -812,55 +800,6 @@ ini_set('display_errors', '1');
             $this->database->query("DELETE FROM `".DB_PREFIX."chat_member`
             WHERE `uid`='".$this->protokol->user['user_id']."' AND `cid`!='1'");
         }
-    }
-    
-    private function do_getOnline(){
-		$input = $this->init_get_data();
-    	if(preg_match("/^\/getOnline\s(.*?)$/", $input["message"],$reg)){
-            $this->sendBotPrivMessage(
-                $this->getVariabel("cid"),
-                "/online ".implode(" ", $this->getOnline($this->getCidFromChannel($reg[1],true),true))
-            );
-    	}else{
-            exit($input['message']);
-        }
-    }
-    
-    //config
-    private function answer_config(){
-		$input = $this->init_get_data();
-    	if(preg_match("/^\/config\s\[(.*?)\]\[(.*?)\]$/", $input['message'],$reg)){
-    		switch(trim($reg[1])){
-                case 'time':
-    			case 'sound':
-                case 'textColor':
-                case 'lang':
-
-                    $this->protokol->updateConfig($reg[1],$reg[2]);
-                    if(trim($reg[1]) == "lang"){
-                        //this is lang and it is importen wee update it so fast :D
-                        $this->setLang($reg[2]);
-                    }
-
-    				$this->sendBotPrivMessage(
-                        $this->getVariabel("cid"),
-                        $this->lang['configUpdatet'],
-                        "green"
-                    );
-
-                    $this->sendBotPrivMessage(
-                        1,
-                        "/updateConfig ".$reg[1]." ".$reg[2],
-                        'black'
-                    );
-                break;
-    			default:
-    				$this->sendBotPrivMessage($this->getVariabel("cid"), "/error Wrong key: ".$reg[1],"red");
-    			break;
-    		}
-    	}else{
-    		$this->sendBotPrivMessage($this->getVariabel("cid"), "/error ".$this->lang['brokenConfigCommand'], "red");
-    	}
     }
     
     //msg
