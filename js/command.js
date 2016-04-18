@@ -29,9 +29,9 @@ function createPrefix(){
     return l+n;
   }
 
-  number = 1;
+  number = 0;
   letterNumber++;
-  return l+"0001";
+  return createPrefix();
 }
 
 
