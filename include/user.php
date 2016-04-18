@@ -31,7 +31,8 @@ class UserData{
    private $data = [];
 
    function __construct(array $data){
-      $this->data = $data;
+      $this->data     = $data;
+      $this->channels = Channel::getUserChannel($this);
    }
 
    function id(){
