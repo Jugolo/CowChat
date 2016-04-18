@@ -46,10 +46,17 @@ class UserData{
      return !empty($this->channels[$data->cid()]);
    }
 
+   function leave(ChannelData $channel,$message = false){
+      if($this->isMember($channel)){
+         unset($this->channels[$channel->id()]);
+         $channel->leave($this, $message);
+      }
+   }
+
    function remove($message = "leave the chat"){
       foreach($this->channels as $channel){
          $channel->send("QUIT: ".$message);
-         $channel->leave(false);
+         $channel->leave($this, false);
       }
 
       //to be sure
