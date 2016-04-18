@@ -21,11 +21,7 @@ ini_set('display_errors', '1');
           header("Pragma: no-cache");
         }
 
-        $this->loadPages();
-        $this->init_db();
-        $this->init_system_setting();
-	$this->loadVariabel();
-        $this->loadDatabaseConfig();
+        include "include/messageparser.php";
 
         if(!Server::is_cli()){
             $this->userInit();
@@ -475,53 +471,15 @@ ini_set('display_errors', '1');
             exit($this->database->getError());
         }
     }
-
-    private function get_user_id_from_nick($nick){
-        $data = $this->database->prepare("SELECT `user_id` FROM `".DB_PREFIX."users` WHERE `nick`={nick}");
-        $data->add("nick",$nick);
-        $result = $data->done();
-        if($this->database->isError){
-            exit("Database error");
-        }
-
-        $row = $result->get();
-
-        if(!empty($row['user_id']))
-            return $row['user_id'];
-        else
-            return false;
-    }
     
-    private function returnCommandName(){
-		$data = $this->init_get_data();
-        $ex = explode(" ",$data['message']);
-        return preg_replace("/^\//",null,$ex[0]);
-    }
-    
-    private function handleCommand(){
-    	switch($this->returnCommandName()){
-            case 'cookie':
-                if(!$this->websocket){
-                    exit("ERROR");
-                }
-                $input = $this->init_get_data();
-
-                if(!$this->getVariabel("client")->login(str_replace("/cookie ",null,$input['message']))){
-                    $this->remove_client($this->getVariabel("client")->socket);
-                }else{
-                    $this->getVariabel("client")->user['user_avatar'] = $this->convert_image(
-                        $this->getVariabel("client")->user['user_avatar']
-                    );
-                    $this->sendBotPrivMessage(1,"/cookieOkay","green");
-                    $this->protokol->set_user_data($this->getVariabel("client")->user,$this->getVariabel("client"));
-                }
-            break;
-    		case "getStatus":
-    			$this->answer_getStatus();
-    		break;
+    private function handleCommand($message){
+    	switch($message->command()){
+    	    case "getStatus":
+    	        $this->answer_getStatus();
+    	    break;
             case "join":
                 $this->answer_join();
-    		break;
+    	    break;
             case "nick":
             	$this->answer_nick();
             break;
@@ -540,24 +498,21 @@ ini_set('display_errors', '1');
             case 'exit':
             	$this->doExit();
             break;
-			case 'getLang':
-			    $this->answer_getLang();
-			break;
-			case 'leave':
-			    $this->answer_leave();
-			break;
-			case 'kick':
-				$this->answer_kick();
-			break;
-			case 'bot':
-			    $this->answer_bot();
-			break;
-			case 'ban':
-			    $this->answer_ban();
-			break;
-			case 'unban':
-			    $this->answer_unban();
-			break;
+	    case 'leave':
+	        $this->answer_leave();
+	    break;
+	    case 'kick':
+		$this->answer_kick();
+	    break;
+	    case 'bot':
+	        $this->answer_bot();
+	    break;
+	    case 'ban':
+	        $this->answer_ban();
+	    break;
+	    case 'unban':
+		 $this->answer_unban();
+	    break;
             case 'ignore':
                 $this->answer_ignore();
             break;
@@ -1263,206 +1218,14 @@ ini_set('display_errors', '1');
     	
     	return implode(";",$return);
     }
-    
-    //load sektion
-
-     private function get_base_part($numBack = 0){
-         if($this->basepart !== null){
-             return $this->basepart;
-         }
-
-         $file = __FILE__;
-         //remove server.php ;)
-         $file = preg_replace("/server\.php$/",null,$file);
-
-         if($numBack !== 0){
-            $block = explode("\\",$file);
-
-             for($i=0;$i<$numBack;$i++){
-                 unset($block[count($block)-1]);
-             }
-
-             $file = implode("\\",$block)."\\";
-         }
-
-         return $file;
-     }
-
-     private function init_protokol(){
-         if($this->getConfig("protokol") == "socket"){
-             include $this->get_base_part()."lib\\protokol\\websocket.php";
-         }else{
-             include ("lib/protokol/ajax.php");
-         }
-         $this->protokol = new Protokol($this->database,$this);
-     }
-
-     private function init_system_setting(){
-         $data = $this->database->query("SELECT * FROM `".DB_PREFIX."settings"."`");
-         while($row = $data->get()){
-             $this->sConfig[$row['settings_name']] = $row['settings_value'];
-         }
-     }
-
-     private function get_system_config($name){
-         if(empty($this->sConfig[$name])){
-             return null;
-         }
-
-         return $this->sConfig[$name];
-     }
-
-     private function init_db(){
-         $this->database = new DatabaseHandler(
-             $this->getVariabel("db_host"),
-             $this->getVariabel("db_user"),
-             $this->getVariabel("db_pass"),
-             $this->getVariabel("db_data")
-         );
-
-         if($this->database->isError){
-             exit($this->database->getError());
-         }
-
-         unset($this->variabel['db_host']);
-         unset($this->variabel['db_user']);
-         unset($this->variabel['db_pass']);
-         unset($this->variabel['db_data']);
-     }
-    
-    private function loadPages(){
-        if($this->websocket){
-            $load = array(
-                $this->get_base_part()."lib\\define.php",
-                $this->get_base_part()."lib\\db.php",
-                $this->get_base_part()."lib\\protokol\\Protokol.php",
-                $this->get_base_part()."lib\\db\\mysqli.php"
-            );
-        }else{
-            $load = array(
-                'lib/define.php',
-                'lib/db.php',
-                'lib/protokol/Protokol.php',
-                'lib/db/mysqli.php'
-            );
-        }
-
-        for($i=0;$i<count($load);$i++){
-            include $load[$i];
-        }
-
-        //vi skal nu have fat i php-fusions config ;)
-        $db_host = $db_user = $db_pass = $db_name = null;//set all to null ;)
-        if($this->websocket)
-            include($this->get_base_part(3)."config.php");
-        else
-            include("../../config.php");
-        $this->variabel['db_host'] = $db_host;
-        $this->variabel['db_user'] = $db_user;
-        $this->variabel['db_pass'] = $db_pass;
-        $this->variabel['db_data'] = $db_name;
-    }
-    
-    //user sektion
-    private function userInit(){
-		$this->initUser();
-		$this->loadUserConfig();
-        $this->setLang($this->userConfig['lang']);
-		$this->variabel["cid"] = $this->post("channel") ? $this->getCidFromChannel($this->post("channel")) : 1;
-    }
-    
-	 private function convert_image($img){
-		if(empty($img) || !trim($img)){
-			$img = "../../images/avatars/noavatar100.png";
-		}else{
-			$img = "../../images/avatars/".$img;
-		}
-		 
-		 return $img;
-	 }
 	 
-    private function initUser(){
-		if($this->login()){
+    private function userInit(){
+	if($this->login()){
            //do nothing :)
-		}else{
+	}else{
             $this->json['location'] = "../../index.php?error=sessiong";
             exit(json_encode($this->json));
         }
-	}
-
-     private function get_nick_from_user_id($uid){
-         if($this->websocket){
-             foreach($this->clientObj AS $clientOBJ){
-                 if($clientOBJ->isLogin && $clientOBJ->user['user_id'] == $uid){
-                     return $clientOBJ->user['nick'];
-                 }
-             }
-
-             return null;
-         }
-         return null;
-     }
-    
-    private function loadUserConfig(){
-        $sql = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_userConfig` WHERE `uid`='".($this->websocket ? $this->getVariabel("client")->user['id'] : $this->user['user_id'])."'");
-        while($row = $sql->get()){
-            $this->userConfig[$row['key']] = $row['value'];
-        }
-    }
-    
-    //variabel sektion
-    
-    private function getVariabel($key){
-        if(empty($this->variabel[$key])){
-            return null;
-        }else{
-            if(is_object($this->variabel[$key])){
-                return $this->variabel[$key];
-            }
-            if(!is_array($this->variabel[$key]) && !trim($this->variabel[$key])){
-                return null;
-            }
-
-        }
-        
-        return $this->variabel[$key];
-    }
-    
-    private function loadVariabel(){
-        $this->variabel['isPost']    = $this->get("isPost")    ? true : false;
-        $this->variabel['last_id']   = $this->get('li')        ? (int)$this->get('li') : 0;
-    }
-    
-    private function loadDatabaseConfig(){
-        $data = $this->database->query("SELECT * FROM `".DB_PREFIX."settings_inf` WHERE `settings_inf`='chat'");
-        while($row = $data->get()){
-            $this->config[$row['settings_name']] = $row['settings_value'];
-        }
-    }
-    
-    private function getConfig($key){
-        if(empty($this->config[$key])){
-            return null;
-        }
-        
-        return $this->config[$key];
-    }
-    
-    //session sektion
-    private function sessionInit(){
-
-        //wee kontrol if header is sendt :)
-        if(headers_sent()){
-            exit("Header is allray sendt!");
-        }
-
-        if(!$this->isSessionStarted()){
-            $this->startSession();
-        }
-    }
-
-    private function ip(){
-        return $_SERVER['REMOTE_ADDR'];
     }
 
     private function login(){
