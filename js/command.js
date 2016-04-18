@@ -42,5 +42,5 @@ function join(channel, callback){
 
   var prefix = createPrefix();
   prefixCache[prefix] = callback;
-  send(prefix+"JOIN: "+channel;
+  send(prefix+"JOIN: "+channel);
 }
