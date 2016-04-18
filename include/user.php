@@ -18,6 +18,12 @@ class User{
     return self::$current;
   }
 
+  public static function remove(UserData $user){
+    if(!empty(self::$users[$user->id()])){
+       unset(self::$users[$user->id()]);
+    }
+  }
+
 }
 
 class UserData{
@@ -27,7 +33,13 @@ class UserData{
      return !empty($this->channels[$data->cid()]);
    }
 
-   function remove(){
+   function remove($message = "leave the chat"){
+      foreach($this->channels as $channel){
+         $channel->send("QUIT: ".$message);
+         $channel->leave(false);
+      }
 
+      //to be sure
+      $this->channels = [];
    }
 }
