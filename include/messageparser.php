@@ -15,7 +15,7 @@ class MessageParser{
   }
 
   function command(){
-      return $this->data["command];
+      return $this->data["command"];
   }
 
   function channel(){
