@@ -374,11 +374,7 @@ ini_set('display_errors', '1');
                 $this->handleMessage($message);
                 $this->updateActivInChannel($message->channel()->cid());
             }else{
-                $this->sendBotPrivMessage(
-                   $message->channel()->cid(),
-                   "/maxFlood",
-                    'red'
-                );
+                send($message, "FLOOD: Reach");
             }
         }
     }
@@ -432,17 +428,7 @@ ini_set('display_errors', '1');
     }
     
     private function handleMessage($data){
-		if($this->getVariabel("cid") == 1){
-            //exit("Can not send to server 1!"); Fail from my side :( user can not send join command if user is not allow to write to bot channel :)
-			return;
-		}
-
-        if($this->websocket){
-            $this->send_message_to_users($data['message']);
-            return;//websocket sender direkte til brugerenerne så vi har ikke brug for denne del :)
-        }
-
-    	$datas = $this->database->prepare("INSERT INTO `".DB_PREFIX."chat_message`
+            $datas = $this->database->prepare("INSERT INTO `".DB_PREFIX."chat_message`
             (
             `uid`,
             `cid`,
@@ -493,10 +479,18 @@ ini_set('display_errors', '1');
             	$this->do_getOnline();
             break;
             case 'title':
-            	$this->doTitle();
+               if(($channel = channel($message->message()) != null){
+                 if(current_user()->isMember($channel)){
+                   send($message, "TITLE: ".$channel->title());
+                 }else{
+                   send($message, "ERROR: notMember");
+                 }
+               }else{
+                 send($message, "ERROR: unknownChannel");
+               }
             break;
             case 'exit':
-            	$this->doExit();
+            	current_user()->remove();
             break;
 	    case 'leave':
 	        $this->answer_leave();
@@ -816,31 +810,6 @@ ini_set('display_errors', '1');
             $this->database->query("DELETE FROM `".DB_PREFIX."chat_member`
             WHERE `uid`='".$this->protokol->user['user_id']."' AND `cid`!='1'");
         }
-    }
-    
-    private function doTitle(){
-    	
-		if(!$this->iADMIN() && !$this->iSUPERADMIN()){
-			//has nothing to do here idiot :()
-			$this->sendBotPrivMessage($this->getVariabel("cid"), "/error ".sprintf($this->lang['accessDenaidKommando'],"/title"));
-			return;
-		}
-		
-		$input = $this->init_get_data();
-		
-    	if(preg_match("/^\/title\s(.*?)$/",$input['message'],$reg)){
-			$sql = $this->database->prepare("UPDATE `".DB_PREFIX."chat_name`
-			SET `title`={title},
-			`setTitle`='".($this->websocket ? (int)$this->getVariabel("client")->user['user_id'] : (int)$this->user['user_id'])."'
-			WHERE `id`='".(int)$this->getVariabel("cid")."'");
-
-            $sql->add("title",$reg[1]);
-            $sql->done();
-
-    		$this->sendBotMessage($this->getVariabel("cid"), $reg[0],"green");
-    	}else{
-    		$this->sendBotPrivMessage($this->getVariabel("cid"), "/error ".$this->lang['titleBroken']);
-    	}
     }
     
     private function do_getOnline(){
