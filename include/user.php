@@ -28,6 +28,19 @@ class User{
 
 class UserData{
    private $channels = [];
+   private $data = [];
+
+   function __construct(array $data){
+      $this->data = $data;
+   }
+
+   function id(){
+      return $this->data["id"];
+   }
+
+   function nick(){
+      return $this->data["nick"];
+   }
 
    function isMember(ChannelData $data){
      return !empty($this->channels[$data->cid()]);
