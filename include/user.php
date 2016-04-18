@@ -1,3 +1,4 @@
+<?php
 class User{
   private static $users = [];
   private static $current = null;
