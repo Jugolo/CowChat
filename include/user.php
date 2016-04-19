@@ -24,6 +24,9 @@ class User{
     }
   }
 
+  public static function controleNick($nick, UserData $user = null){
+     return Database::query("SELECT `id` FROM ".table("user")." WHERE `nick`=".Database::qlean($nick).($user != null ? " AND `id`<>'".$user->id()."'"))->rows() != 0;
+  }
 }
 
 class UserData{
@@ -39,7 +42,18 @@ class UserData{
       return $this->data["id"];
    }
 
-   function nick(){
+   function nick($new = null){
+      if($new == null){
+         if(User::controleNick($nick, $this)){
+            $query = Database::query("UPDATE ".table("user")." SET `nick`=".Database::qlean($nick)." WHERE `id`='".$this->id()."'");
+            if($query->rows() != 1){
+               return false;
+            }
+            $this->data["nick"] = $nick;
+         }else{
+           return false;
+         }
+      }
       return $this->data["nick"];
    }
 
