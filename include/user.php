@@ -58,7 +58,7 @@ class UserData{
    function send($msg){
       //this method will send message to all channels the users is in
       foreach($this->channels as $channel){
-         $channel->send($this, $msg);
+         $channel->send($msg, $this);
       }
    }
 
