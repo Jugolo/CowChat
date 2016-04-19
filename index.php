@@ -357,7 +357,16 @@ ini_set('display_errors', '1');
 		 $this->answer_unban();
 	    break;
             case 'IGNORE':
-                $this->answer_ignore();
+                if(($user = User::get($message->message()) != null){
+                  //control if the user a
+                  if(User::addIgnore($user)){
+                    send($message, "IGNORE: ".$message->message());
+                  }else{
+                    send($messge, "ERROR: failIgnore");
+                  }
+                }else{
+                 send($message, "ERROR: unknownUser");
+                 }
             break;
             case 'UNIGNORE':
                 $this->answer_uningore();
