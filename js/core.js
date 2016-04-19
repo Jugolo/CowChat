@@ -7,6 +7,15 @@ var MessageParser = (function(){
    return MessageParser;
 })();
 
+function onload(){
+  if(is_websocket()){
+
+  }else{
+    setTimer();
+    get("");
+  }
+}
+
 function get(action){
   ajax("?ajax=true&action="+action);
 }
