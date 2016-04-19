@@ -34,6 +34,17 @@ function createPrefix(){
   return createPrefix();
 }
 
+function nick(nick){
+  var prefix = createPrefix();
+  prefixCache[prefix] = function(msg){
+    if(msg.command() == "NICK"){//nick command works nothings wrong
+       user.my().nick(msg.message());
+    }else{
+       error(msg);
+    }
+  };
+  send(prefix+"!NICK: "+nick);
+}
 
 function join(channel, callback){
   if(typeof channel === "array"){
@@ -42,5 +53,5 @@ function join(channel, callback){
 
   var prefix = createPrefix();
   prefixCache[prefix] = callback;
-  send(prefix+"JOIN: "+channel);
+  send(prefix+"!JOIN: "+channel);
 }
