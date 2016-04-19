@@ -256,7 +256,7 @@ ini_set('display_errors', '1');
                                   AND m.id>'".User::current()->message_id()."'");
         $my = User::current();
         while($row = $query->fetch()){
-           if(!$my->isIgnore($row["uid])){
+           if(!$my->isIgnore($row["uid"])){
               echo $row["msg"]."\r\n";
            }
         }
