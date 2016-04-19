@@ -27,6 +27,19 @@ class User{
   public static function controleNick($nick, UserData $user = null){
      return Database::query("SELECT `id` FROM ".table("user")." WHERE `nick`=".Database::qlean($nick).($user != null ? " AND `id`<>'".$user->id()."'"))->rows() != 0;
   }
+
+  public static function get($uid){
+     if(!empty(self::$users[$uid])){
+        return self::$user[$uid];
+     }
+
+     $query = Database::query("SELECT * FROM ".table("user")." WHERE `uid`='".(int)$uid."'");
+     if($query->rows() != 0){
+        return new UserData($query->fetch());
+     }
+
+     return null;
+  }
 }
 
 class UserData{
