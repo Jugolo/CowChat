@@ -69,6 +69,7 @@ class UserData{
             if($query->rows() != 1){
                return false;
             }
+            $this->send("NICK: ".$nick);
             $this->data["nick"] = $nick;
          }else{
            return false;
