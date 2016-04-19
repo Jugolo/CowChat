@@ -55,6 +55,13 @@ class UserData{
       return $this->data["id"];
    }
 
+   function send($msg){
+      //this method will send message to all channels the users is in
+      foreach($this->channels as $channel){
+         $channel->send($this, $msg);
+      }
+   }
+
    function nick($new = null){
       if($new == null){
          if(User::controleNick($nick, $this)){
