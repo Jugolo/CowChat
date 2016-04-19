@@ -357,7 +357,7 @@ ini_set('display_errors', '1');
 		 $this->answer_unban();
 	    break;
             case 'IGNORE':
-                if(($user = User::get($message->message()) != null){
+                if(($user = User::get($message->message())) != null){
                   //control if the user a
                   if(User::addIgnore($user)){
                     send($message, "IGNORE: ".$message->message());
@@ -369,7 +369,19 @@ ini_set('display_errors', '1');
                  }
             break;
             case 'UNIGNORE':
-                $this->answer_uningore();
+                if(($user = User::get($message->message())) != null){
+                   if(User::current()->isIgnore($user->id())){
+                      if(User::current()->unIgnore($user->id())){
+                        send($message, "UNIGNORE: ".$message->message());
+                      }else{
+                        send($message, "ERROR: failUnIgnore");
+                      }
+                   }else{
+                     send($message, "ERROR: notIgnore");
+                   }
+                }else{
+                  send($message, "ERROR: unknownUser");
+                }
             break;
             case 'PING':
                 send($message, "PONG: respons");
