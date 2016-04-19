@@ -38,7 +38,7 @@ class User{
        $field = "nick";
      }
 
-     $query = Database::query("SELECT * FROM ".table("user")." WHERE `".$field."`='".$uid."'");
+     $query = Database::query("SELECT * FROM ".table("user")." WHERE `".$field."`=".Database::qlean($uid));
      if($query->rows() != 0){
         if(is_nummric($uid)){
            return new UserData($query->fetch());
