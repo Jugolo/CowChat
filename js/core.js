@@ -57,7 +57,7 @@ function ajax(url, data){
          setTimer();
       }
    }
-   ajax.open(method, url, data);
+   ajax.open(method, url, true);
    if(method == "AJAX"){
       ajax.send();
    }else{
