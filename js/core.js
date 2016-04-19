@@ -1,8 +1,20 @@
 var timer;
 var MessageParser = (function(){
    function MessageParser(line){
-
+     this.data = {};
+     first = line.substr(0, line.indexOf(": ")).split(" ");
+     if(first[0].indexOf("!") != -1){
+        parts = first[0].split("!");
+        this.data["prefix"] = parts[0];
+        first[0] = parts[1];
+     }
+     this.data["command"] = first[0];
+     this.data["isCommand"] = first.length == 1;
+     this.data["channel"] = this.isCommand() ? null : channel(first[1);
+     this.data["message"] = line.substr(line.indexOf(": ")+2);
    }
+
+   
 
    return MessageParser;
 })();
