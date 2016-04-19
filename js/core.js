@@ -14,7 +14,29 @@ var MessageParser = (function(){
      this.data["message"] = line.substr(line.indexOf(": ")+2);
    }
 
-   
+   MessageParser.prototype.isCommand = function(){
+      return this.data["isCommand"];
+   };
+
+   MessageParser.prototype.command = function(){
+      return this.data["command"];
+   };
+
+   MessageParser.prototype.channel = function(){
+      return this.data["channel"];
+   };
+
+   MessageParser.prototype.message = function(){
+      return this.data["message"];
+   };
+
+   MessageParser.prototype.hasPrefix = function(){
+      return typeof this.data["prefix"] !== "undefined";
+   };
+
+   MessageParser.prototype.prefix = function(){
+      return this.data["prefix"];
+   };
 
    return MessageParser;
 })();
@@ -79,4 +101,8 @@ function ajax(url, data){
 
 function handleMessage(msg){
   msg = new MessageParser(msg);
+
+  if(msg.hasPrefix() && typeof prefixCache[msg.prefix()] !== "undefined"){
+     cache = prefixCache[msg.prefix()];
+     prefixCache[msg.prefix()] = undefined;
 }
