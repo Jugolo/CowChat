@@ -130,6 +130,16 @@ class UserData{
       $this->ignore[] = $user->id();
    }
 
+   function unIgnore($id){
+     if(!$this->isIgnore($id)){
+        return false;
+     }
+
+     unset($this->ignore[array_search($id, $this->ignore)]);
+     Database::query("DELETE FROM ".table("ignore")." WHERE `uid`='".$this->id()."' AND `iid`='".(int)$id."'");
+     return true;
+   }
+
    function message_id(){
       return $this->data["message_id"];
    }
