@@ -42,6 +42,7 @@ function ajax(url, data){
          for(var i=0;i<respons.length;i++){
            handleMessage(respons[i]);
          }
+         setTimer();
       }
    }
    ajax.open(method, url, data);
@@ -54,8 +55,4 @@ function ajax(url, data){
 
 function handleMessage(msg){
   msg = new MessageParser(msg);
-
- if(!is_websocket()){
-  setTimer();
- }
 }
