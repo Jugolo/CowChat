@@ -118,6 +118,18 @@ class UserData{
      return in_array($uid, $this->ignore);
    }
 
+   function addIgnore(UserData $user){
+      if($this->isIgnore($user->id())){
+         return false;//no reason to continue becuse the user is allerady on the list
+      }
+
+      Database::insert("ignore",[
+        'uid' => $this->id(),
+        'iid' => $user->id()
+      ]);
+      $this->ignore[] = $user->id();
+   }
+
    function message_id(){
       return $this->data["message_id"];
    }
