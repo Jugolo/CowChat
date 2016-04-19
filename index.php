@@ -251,7 +251,15 @@ ini_set('display_errors', '1');
     //message sektion
     private function showMessage(){
         $query = Database::query("SELECT m.msg, m.uid FROM ".table("message")." AS m
-                                  LEFT JOIN ".table("channel_member")." AS m
+                                  LEFT JOIN ".table("channel_member")." AS c ON m.cid=c.cid
+                                  WHERE c.uid='".User::current()->id()."'
+                                  AND m.id>'".User::current()->message_id()."'");
+        $my = User::current();
+        while($row = $query->fetch()){
+           if(!$my->isIgnore($row["uid])){
+              echo $row["msg"]."\r\n";
+           }
+        }
 
         //big sql :D
 		$data = $this->database->query("SELECT tm.id AS id, tm.message AS message, tm.isMsg AS isMsg, tm.msgTo AS msgTo, tm.messageColor AS messageColor, tm.isBot AS isBot, user.nick AS nick, tm.time AS time, tn.id AS cid, tn.name AS channel, cm.id AS cmid, user.user_id AS uid, user.user_avatar AS img, tn.isPriv AS isPriv, tn.uid AS privUid
