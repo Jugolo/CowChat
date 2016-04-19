@@ -29,13 +29,23 @@ class User{
   }
 
   public static function get($uid){
-     if(!empty(self::$users[$uid])){
-        return self::$user[$uid];
+     if(is_nummric($uid)){
+       if(!empty(self::$users[$uid])){
+          return self::$user[$uid];
+       }
+       $field = "uid";
+     }else{
+       $field = "nick";
      }
 
-     $query = Database::query("SELECT * FROM ".table("user")." WHERE `uid`='".(int)$uid."'");
+     $query = Database::query("SELECT * FROM ".table("user")." WHERE `".$field."`='".$uid."'");
      if($query->rows() != 0){
-        return new UserData($query->fetch());
+        if(is_nummric($uid)){
+           return new UserData($query->fetch());
+        }else{
+           $r = $fetch();
+           return self::get($r["id"]);
+        }
      }
 
      return null;
