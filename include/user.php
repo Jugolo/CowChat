@@ -107,4 +107,8 @@ class UserData{
    function isIgnore($uid){
      return in_array($uid, $this->ignore);
    }
+
+   function message_id(){
+      return $this->data["message_id"];
+   }
 }
