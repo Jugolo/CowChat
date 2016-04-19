@@ -877,61 +877,6 @@ ini_set('display_errors', '1');
     	}
     }
     
-    //nick
-    private function answer_nick(){
-		$input = $this->init_get_data();
-    	if(preg_match("/\/nick\s([a-zA-Z0-9]*?)$/", $input['message'],$reg)){
-    		if(!$this->nickKontrol($reg[1])){
-    			$this->sendBotPrivMessage($this->getVariabel("cid"), "/error ".$this->lang['nickTaken'], "red");
-    			return;
-    		}
-
-            if(($code = $this->is_length_okay($reg[1],1,$this->getConfig("maxNickLengt"))) !== true){
-                if($code == self::text_min){
-
-                }elseif($code == self::text_max){
-                    $this->sendBotPrivMessage(
-                        $this->getVariabel("cid"),
-                        '/error '.$this->lang['maxNick'],
-                        'red'
-                    );
-                }
-            }else{
-                //wee control if user try to change nick to his nick o.O
-                if($this->protokol->user['nick'] == $reg[1]){
-                    $this->sendBotPrivMessage(
-                        $this->getVariabel("cid"),
-                        '/error '.sprintf($this->lang['nickIsYour'],$this->protokol->user['nick']),
-                        'red'
-                    );
-                    return;
-                }
-                $oldNick = $this->protokol->user['nick'];
-                $data = $this->database->prepare("UPDATE `".DB_PREFIX."users` SET `nick`={nick} WHERE `user_id`='".$this->protokol->user['user_id']."'");
-                $data->add("nick",$reg[1]);
-                $data->done();
-                $this->protokol->update_nick($reg[1]);
-                if($this->websocket){
-                    foreach($this->getVariabel("client")->channel as $id => $name){
-                        $this->sendBotMessage(
-                            $id,
-                            '/nick '.$oldNick,
-                            'green'
-                        );
-                    }
-                }else{
-                    $data = $this->database->query("SELECT `cid` FROM `".DB_PREFIX."chat_member` WHERE `uid`='".$this->protokol->user['user_id']."' AND `cid`<>'1'");
-                    while($row = $data->get()){
-                        $this->sendBotMessage($row['cid'], "/nick ".$oldNick,"green");
-                    }
-                }
-            }
-        }else{
-            $this->json['isOkay'] = "false";
-    		$this->sendBotPrivMessage($this->getVariabel("cid"), "/error ".$this->lang['nickBroken'], "red");
-    	}
-    }
-    
     //join
 
      private function isMemberOfChannel($name){
@@ -1107,15 +1052,6 @@ ini_set('display_errors', '1');
 		$this->sendBotPrivMessage($this->getVariabel("cid"),"/profilImage ".$this->convert_image(
                 $this->protokol->user['user_avatar']
             ));
-    }
-    
-    //nick control
-    
-    private function nickKontrol($nick){
-		$data = $this->database->prepare("SELECT `user_id` FROM `".DB_PREFIX."users` WHERE `user_name`={nick} AND `user_id`!='".$this->protokol->user['user_id']."' OR `nick`={nick} AND `user_id`!='".$this->protokol->user['user_id']."'");
-        $data->add("nick",$nick);
-        $row = $data->done()->get();
-    	return (empty($row['user_id']) ? true : false);
     }
     
     //user config
