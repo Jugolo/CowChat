@@ -105,4 +105,8 @@ function handleMessage(msg){
   if(msg.hasPrefix() && typeof prefixCache[msg.prefix()] !== "undefined"){
      cache = prefixCache[msg.prefix()];
      prefixCache[msg.prefix()] = undefined;
+     cache[msg.prefix()](msg);
+  }else{
+     
+  }
 }
