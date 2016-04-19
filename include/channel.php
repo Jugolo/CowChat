@@ -66,7 +66,7 @@ class ChannelData{
            Channel::remove($this);
         }else{
            if($sendMessage){
-              send_channel($this, "LEAVE ".$this->name().": ".$sendMessage);
+              $this->send("LEAVE ".$this->name().": ".$sendMessage, $user);
            }
         }
       }
