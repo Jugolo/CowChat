@@ -21,6 +21,9 @@ function send(msg){
     return;
   }
    stopTimer();
+   post({
+      "message" : msg
+   });
 }
 
 function setTimer(){
