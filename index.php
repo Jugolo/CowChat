@@ -462,7 +462,7 @@ ini_set('display_errors', '1');
     	    break;
             case "NICK":
             	if(User::current()->nick($message->message())){
-                   send($message, "NICK: ".$message);
+                   send($message, "NICK: ".$message->message());
                 }else{
                    send($message, "ERROR: nickTaken");
                 }
