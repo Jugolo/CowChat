@@ -44,11 +44,16 @@ class User{
 
 class UserData{
    private $channels = [];
-   private $data = [];
+   private $data     = [];
+   private $ignore   = [];
 
    function __construct(array $data){
       $this->data     = $data;
       $this->channels = Channel::getUserChannel($this);
+      $query = Database::query("SELECT `iid` FROM ".table("ignore")." WHERE `uid`='".$this->id()."'");
+      while($row = $query->fetch()){
+        $this->ignore[] = $row["iid"];
+      }
    }
 
    function id(){
@@ -97,5 +102,9 @@ class UserData{
 
       //to be sure
       $this->channels = [];
+   }
+
+   function isIgnore($uid){
+     return in_array($uid, $this->ignore);
    }
 }
