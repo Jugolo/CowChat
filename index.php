@@ -461,7 +461,11 @@ ini_set('display_errors', '1');
                 $this->answer_join();
     	    break;
             case "NICK":
-            	$this->answer_nick();
+            	if(User::current()->nick($message->message())){
+                   send($message, "NICK: ".$message);
+                }else{
+                   send($message, "ERROR: nickTaken");
+                }
             break;
             case 'MSG':
             	$this->answer_msg();
