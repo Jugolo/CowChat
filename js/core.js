@@ -3,6 +3,11 @@ var MessageParser = (function(){
    function MessageParser(line){
      this.data = {};
      first = line.substr(0, line.indexOf(": ")).split(" ");
+     if(first[0].indexOf("@") != -1){
+        parts = first[0].split("@");
+        this.data["user"] = parts[0];
+        first[0] = parts[1];
+     }
      if(first[0].indexOf("!") != -1){
         parts = first[0].split("!");
         this.data["prefix"] = parts[0];
@@ -36,6 +41,10 @@ var MessageParser = (function(){
 
    MessageParser.prototype.prefix = function(){
       return this.data["prefix"];
+   };
+
+   MessageParser.prototype.user = function(){
+      return this.data["user"];
    };
 
    return MessageParser;
