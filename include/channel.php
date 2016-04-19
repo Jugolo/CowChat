@@ -76,8 +76,11 @@ class ChannelData{
       return !empty($this->members[$user->id()]);
    }
 
-   function send($message){
-      return send_channel($this, $message);
+   function send($message, UserData $user = null){
+      if($user == null){
+         $user = User::current();
+      }
+      return send_channel($this, $user->nick()."@".$message);
    }
 
    function remove(){
