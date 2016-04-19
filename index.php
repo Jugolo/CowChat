@@ -250,11 +250,8 @@ ini_set('display_errors', '1');
     
     //message sektion
     private function showMessage(){
-        //vi sletter nu pong beskeder som er mere end 1 min gammel :)
-        $this->database->query("DELETE FROM `".DB_PREFIX."chat_message` WHERE `cid`='1' AND `message`='/pong' AND DATE_SUB(time, INTERVAL 1 MINUTE) > NOW()");
-        if($this->database->isError){
-            exit($this->database->getError());
-        }
+        $query = Database::query("SELECT m.msg, m.uid FROM ".table("message")." AS m
+                                  LEFT JOIN ".table("channel_member")." AS m
 
         //big sql :D
 		$data = $this->database->query("SELECT tm.id AS id, tm.message AS message, tm.isMsg AS isMsg, tm.msgTo AS msgTo, tm.messageColor AS messageColor, tm.isBot AS isBot, user.nick AS nick, tm.time AS time, tn.id AS cid, tn.name AS channel, cm.id AS cmid, user.user_id AS uid, user.user_avatar AS img, tn.isPriv AS isPriv, tn.uid AS privUid
