@@ -357,12 +357,18 @@ ini_set('display_errors', '1');
 	     break;
 	     case 'KICK':
                 if(($user = User::get($message->message())) != null){
-                   if(User::current()->group()->level() > $user->group()->level()){
-    
-                   }elseif(User::current()->group()->level() == $user->group()->level())}
-
+                   if(!$message->channel()->group()->canBan()){
+                      send($message, "ERROR: cantBan");
+                   }elseif(!$message->channel()->group($user)->canBaned()){//this user has from the admin set to not can be banned
+                      send($mesaage, "ERROR: cantBanned");
                    }else{
-
+                      if(User::current()->group()->level() > $user->group()->level()){
+                         $user->kick($message->channel(), User::current());
+                      }elseif(User::current()->group()->level() == $user->group()->level())}
+                         send($message, "ERROR: accessEquels");
+                      }else{
+                         send($message, "ERROR: notAccess");
+                      }
                    }
                 }else{
                    send($message, "ERROR ".$message->channel().": unknownUser");
