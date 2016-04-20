@@ -1,4 +1,13 @@
 var timer;
+
+Array.prototype.clone = function(){
+   return this.slice(0);
+};
+
+Array.prototype.commandMessage = function(){
+   return this.clone().splice(0, 1);
+};
+
 var MessageParser = (function(){
    function MessageParser(line){
      this.data = {};
@@ -101,11 +110,22 @@ function ajax(url, data){
       }
    }
    ajax.open(method, url, true);
-   if(method == "AJAX"){
+   if(method == "GET"){
       ajax.send();
    }else{
       ajax.send(data);
    }
+}
+
+function handleInput(txt){
+  if(txt.indexOf("/") == 0){
+     var parts = txt.split(" ");
+     switch(parts[0].substr(1)){
+       case "show":
+         send("SHOW: "+parts.commandMessage());
+       break;
+     }
+  }
 }
 
 function handleMessage(msg){
