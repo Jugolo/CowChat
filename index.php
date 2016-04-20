@@ -37,43 +37,62 @@ ini_set('display_errors', '1');
                $this->showHTML();
             }
         }else{
+            include "include/console.php";
             $this->init_websocket();
         }
     }
 
 	 private function init_websocket(){
-
+         Console::writeLine("Welcommen to CowChat version: ".CHAT_VERSION);
+         Console::writeLine("Wee need to set up host and port");
+         Console::write("Host: ");
+         $host = Console::readLine();
+         Console::write("Port: ");
+         $port = Console::readLine();
+         Console::writeLine("Starting the server");
          if(!function_exists("socket_create")){
              exit("Missing socket create!");
          }
 
+         Console::write("Create socket: ");
          if(($master = socket_create(AF_INET,SOCK_STREAM,SOL_TCP)) === false){
-             exit("Denaid to create socket!");
+             Console::writeLine("failed");
+             exit();
          }
-
+         Console::writeLine("success");
+         Console::write("Configuere the socket: ");
          if(socket_set_option($master,SOL_SOCKET,SO_REUSEADDR,1) === false){
-             exit("Deinad to create socket");
+             Console::writeLine("failed");
+             exit();
+         }
+         Console::writeLine("success");
+         
+         if (!filter_var($host, FILTER_VALIDATE_IP)) {
+             Console::write("Convert '".$host."' to '");
+             $host = gethostbyname($host);
+             Console::writeLine($host."'");
          }
 
-         if (!filter_var($this->getConfig("socketServer"), FILTER_VALIDATE_IP)) {
-             $this->config['socketServer'] = gethostbyname($this->getConfig("socketServer"));
-         }
-
+         Console::write("Bind host and port to socket: ");
          if(@socket_bind(
              $master,
              $this->getConfig("socketServer"),
              $this->getConfig("socketPort")
          ) === false){
-             exit("Failt to bind socket");
+             Console::writeLine("failed");
+             exit();
          }
-
-		 if(socket_listen($master,20) === false){
+         Console::writeLine("success");
+         Console::writeLine("Begin to listen after connections: ");
+	 if(socket_listen($master,20) === false){
+             Console::writeLine("failed");
              exit("Fail to listen socket");
          }
+         Console::writeLine("success");
 
          $this->add_socket_client($master);
-
-         while($this->websocket){
+         Console::writeLine("Server is startet. Wee listen now after active connections");
+         while(true){
              $read = $this->client;
              $write = $ex = null;
 
@@ -105,24 +124,11 @@ ini_set('display_errors', '1');
                  }
 
                  $message = $konto->unmask($buf);
-                 if(!$message || $message == "undefined"){
+                 if(!$message){
                      continue;
                  }
 
-                 $this->postData = @json_decode($message,true);
-                 if(@json_last_error() != JSON_ERROR_NONE){
-                     $this->remove_client($socket);
-                     continue;
-                 }
-
-
-                 $this->variabel['client'] = $konto;
-                 if($konto->isLogin){
-                     $this->protokol->turn($konto->user['user_id']);
-                     $this->setLang($this->protokol->getConfig("lang"));
-                 }
-                 $this->re_cache_channel_id($this->postData['channel']);
-                 $this->handlePost();
+                 $this->handlePost($message);
 
              }
          }
