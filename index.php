@@ -845,8 +845,16 @@ ini_set('display_errors', '1');
                 //create a cookie so the user can use webseocket or ajax chat
                 make_cookie("token_chat", ($data["id"]+123456789).$data["hash"]);
              }
-       }elseif(!Server::is_cli() && post("nick")){//geaust login
+       }elseif(!Server::is_cli() && post("username")){//geaust login
+          if(User::controleNick(post("username")){
+             Html::error("Nick is taken. Please pick a anthoter one and try again");
+             return false;
+          }
 
+          //create a account for this geaust. The system will take care of put it in the database 
+          $data = User::createGaust(post("nick"));
+          make_cookie("token_chat", ($user->id()+123456789).$user->hash());
+          
        }
 
        //in some case (mostly websocket) the user object for this user can already be created. This is mostly when the user has refreshing the webpage.
