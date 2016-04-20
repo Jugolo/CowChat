@@ -72,6 +72,10 @@ class UserData{
       return $this->data["id"];
    }
 
+   function groupId(){
+      return $this->data["groupId"];
+   }
+
    function send($msg){
       //this method will send message to all channels the users is in
       foreach($this->channels as $channel){
