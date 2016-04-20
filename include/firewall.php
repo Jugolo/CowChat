@@ -2,7 +2,7 @@
 //the chat is written as data container. But not the firewall
 class FireWall{
    public static function getBlacklist(){
-      if(file_exsists("include/firewall/blacklist.txt")){
+      if(file_exists("include/firewall/blacklist.txt")){
          return explode("\r\n", file_get_contents("include/firewall/blacklist.txt"));
       }
       return [];
