@@ -357,7 +357,8 @@ ini_set('display_errors', '1');
 		$this->answer_kick();
 	    break;
 	    case 'BOT':
-	        $this->answer_bot();
+	        //this will send message to the channel like a bot. Bot has uid 0 and the object is not createt from User class but wee get the data from function bot
+               
 	    break;
 	    case 'BAN':
 	        $this->answer_ban();
@@ -395,17 +396,8 @@ ini_set('display_errors', '1');
             case 'PING':
                 send($message, "PONG: respons");
             break;
-            case 'UPDATE':
-                $this->answer_update();
-            break;
             case 'GETCONFIG':
                 send($message, "CONFIG: ".implode (",", User::current()->getData());
-            break;
-            case 'CLEAR':
-                $this->answer_clear();
-            break;
-            case 'FILE':
-                $this->answer_file();
             break;
             default:
             	send($message, "ERROR: UnknownCommand");
