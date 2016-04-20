@@ -56,6 +56,7 @@ class UserData{
    private $channels = [];
    private $data     = [];
    private $ignore   = [];
+   private $group.   = null;
 
    function __construct(array $data){
       $this->data     = $data;
