@@ -250,7 +250,8 @@ ini_set('display_errors', '1');
     
     //message sektion
     private function showMessage(){
-        $query = Database::query("SELECT m.msg, m.uid FROM ".table("message")." AS m
+        $mid = null;
+        $query = Database::query("SELECT m.msg, m.uid, m.id FROM ".table("message")." AS m
                                   LEFT JOIN ".table("channel_member")." AS c ON m.cid=c.cid
                                   WHERE c.uid='".User::current()->id()."'
                                   AND m.id>'".User::current()->message_id()."'");
@@ -259,7 +260,10 @@ ini_set('display_errors', '1');
            if(!$my->isIgnore($row["uid"])){
               echo $row["msg"]."\r\n";
            }
+           $mid = $row["id"];
         }
+
+        User::current()->message_id($mid == null ? $this->getLastId() : $mid);
 
         $data = $this->database->query("SELECT cm.isInAktiv, cm.id, cm.uid , us.nick, cm.cid, cn.name
         FROM `".DB_PREFIX."chat_member` AS cm
@@ -277,6 +281,11 @@ ini_set('display_errors', '1');
 
         while($row = $data->get())
             $this->handle_inaktiv($row);
+    }
+
+    private function getLastId(){
+       $row = Database::query("SELECT `id` FROM ".table("message")." ORDER BY `id` DESC");
+       return $row["id"];
     }
 	 
     private function handlePost($message){
