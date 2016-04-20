@@ -21,6 +21,8 @@ ini_set('display_errors', '1');
         include "include/messageparser.php";
         include "include/message.php";
         include "include/user.php";
+        include "include/channel.php";
+        include "include/systemgroup.php";
 
         if(!Server::is_cli()){
             $this->userInit();
