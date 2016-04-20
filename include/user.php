@@ -71,6 +71,7 @@ class UserData{
    private $data     = [];
    private $ignore   = [];
    private $group    = null;
+   private $_websocket = null;
 
    function __construct(array $data){
       $this->data     = $data;
@@ -80,6 +81,14 @@ class UserData{
         $this->ignore[] = $row["iid"];
       }
       $this->group = SystemGroup::get($this);
+   }
+
+   function websocket($sock = null){
+      if($sock != null){
+         $this->_websocket = $sock;
+      }
+
+      return $this->_websocket;
    }
 
    function id(){
