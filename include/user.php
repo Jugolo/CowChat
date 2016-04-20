@@ -16,6 +16,18 @@ class User{
      return self::$users[$data["id"]];
   }
 
+  public static function createGaust($nick){
+     $data = [
+        "nick"    : $nick,
+        "hash"    : generate_hash(),
+        "groupId" : Config::startGroupGeaust(),
+        "type"    : "g"
+     ];
+
+     $data["id"] = Database::query("user", $data);
+     return $data;
+  }
+
   public static function current(){
     return self::$current;
   }
