@@ -9,6 +9,13 @@ ini_set('display_errors', '1');
      }
      
     function inilize(){
+        include "include/firewall.php";
+
+        if(!Server::is_cli() && FireWall::isBlacklist(ip())){
+           exit("You ip is denid access to this website. Contact our admin for explaining of whay you not has access to this site");
+        }
+          
+
     	//send header if this is a ajax server
         if(!Server::is_cli()){
     	  header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
