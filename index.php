@@ -284,7 +284,7 @@ ini_set('display_errors', '1');
     }
 
     private function getLastId(){
-       $row = Database::query("SELECT `id` FROM ".table("message")." ORDER BY `id` DESC");
+       $row = Database::query("SELECT `id` FROM ".table("message")." ORDER BY `id` DESC")->fetch();
        return $row["id"];
     }
 	 
