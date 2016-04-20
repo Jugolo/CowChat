@@ -2,6 +2,18 @@
 define("CHAT_VERSION", "V0.0.3");
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
+
+function ip(){
+  if(Server::is_cli()){
+     if(socket_getpeername(User::current()->socket(), $ip)){
+       return $ip;
+     }
+     return null;
+  }
+
+  return $_SERVER['REMOTE_ADDR'];
+}
+
  class Server{
      
      public static function is_cli(){
