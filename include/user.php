@@ -12,6 +12,8 @@ class User{
 
      if($setCurrent)
        self::$current = self::$users[$data["id"]];
+
+     return self::$users[$data["id"]];
   }
 
   public static function current(){
