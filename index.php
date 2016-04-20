@@ -364,6 +364,7 @@ ini_set('display_errors', '1');
                    }else{
                       if(User::current()->group()->level() > $user->group()->level()){
                          $user->kick($message->channel(), User::current());
+                         send($message, "KICK: Okay");
                       }elseif(User::current()->group()->level() == $user->group()->level())}
                          send($message, "ERROR: accessEquels");
                       }else{
@@ -373,7 +374,6 @@ ini_set('display_errors', '1');
                 }else{
                    send($message, "ERROR ".$message->channel().": unknownUser");
                 }
-		$this->answer_kick();
 	    break;
 	    case 'BOT':
 	        //this will send message to the channel like a bot. Bot has uid 0 and the object is not createt from User class but wee get the data from function bot
