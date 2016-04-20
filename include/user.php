@@ -56,7 +56,7 @@ class UserData{
    private $channels = [];
    private $data     = [];
    private $ignore   = [];
-   private $group.   = null;
+   private $group    = null;
 
    function __construct(array $data){
       $this->data     = $data;
@@ -65,6 +65,7 @@ class UserData{
       while($row = $query->fetch()){
         $this->ignore[] = $row["iid"];
       }
+      $this->group = SystemGroup::get($this);
    }
 
    function id(){
