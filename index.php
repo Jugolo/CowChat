@@ -356,6 +356,17 @@ ini_set('display_errors', '1');
 	        $this->answer_leave();
 	     break;
 	     case 'KICK':
+                if(($user = User::get($message->message())) != null){
+                   if(User::current()->group()->level() > $user->group()->level()){
+    
+                   }elseif(User::current()->group()->level() == $user->group()->level())}
+
+                   }else{
+
+                   }
+                }else{
+                   send($message, "ERROR ".$message->channel().": unknownUser");
+                }
 		$this->answer_kick();
 	    break;
 	    case 'BOT':
