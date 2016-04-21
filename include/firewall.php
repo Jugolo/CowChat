@@ -42,8 +42,8 @@ class FireWall{
      return Database::query("DELETE FROM ".table("ip_ban")." WHERE `timeout`>'".time()."'")->rows();
    }
 
-   private function load(){
-     self:$ip = [];
+   private static function load(){
+     self::$ip = [];
      $query = Database::query("SELECT `id`, `ip` FROM ".table("ip_ban"));
      while($row = $query->fetch()){
         self::$ip[$row["id"]] = $row["ip"];
