@@ -5,10 +5,15 @@ class FireWall{
 
    public static function init(){
      self::garbage();
-     $query = Database::query("SELECT `id`, `ip` FROM ".table("ip_ban"));
-     while($row = $query->fetch()){
-        self::$ip[$row["id"]] = $row["ip"];
-     }
+     self::load();
+   }
+
+   public static function isBan(){
+      if(self::garbage() != 0){
+         self::load();
+      }
+
+      return in_array(ip(), self::$ip);
    }
 
    public static function getBlacklist(){
@@ -35,5 +40,13 @@ class FireWall{
 
    private static function garbage(){
      return Database::query("DELETE FROM ".table("ip_ban")." WHERE `timeout`>'".time()."'")->rows();
+   }
+
+   private function load(){
+     self:$ip = [];
+     $query = Database::query("SELECT `id`, `ip` FROM ".table("ip_ban"));
+     while($row = $query->fetch()){
+        self::$ip[$row["id"]] = $row["ip"];
+     }
    }
 }
