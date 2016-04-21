@@ -169,8 +169,15 @@ function ip(){
          if(empty($head['Sec-WebSocket-Key'])){
              $this->remove_client($new);
              echo "Missing Sec-WebSocket-Key\r\n";
-             print_r($head);
              return false;
+         }
+
+         //to accsess websocket connection wee need to be login, 
+         if(!$this->login()){
+           //the user has not login yet close the connection now 
+           socket_close($new);
+           Console->writeLine("User open a connection without has login yet.");
+           return false;
          }
 
 		 $key  = $head['Sec-WebSocket-Key'];
