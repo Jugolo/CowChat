@@ -8,6 +8,14 @@ class FireWall{
      self::load();
    }
 
+   public static function getBans(){
+      if(self::garbage() != 0){
+        self::load();
+      }
+
+      return self::$ip;
+   }
+
    public static function isBan(){
       if(self::garbage() != 0){
          self::load();
