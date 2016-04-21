@@ -43,8 +43,14 @@ function ip(){
         include "include/channel.php";
         include "include/systemgroup.php";
         include "include/head.php";
+  
+        FireWall::init();
 
         if(!Server::is_cli()){
+            //wee has controled that the user is not in black list. Now wee see if the user has a temporary ban
+            if(FireWall::isBan()){
+               exit("You are banned. Please contact our admin to get information about the ban");
+            }
             $this->userInit();
             if(get("ajax")){
                //if there is post available handle the post
@@ -112,28 +118,22 @@ function ip(){
 
          $this->add_socket_client($master);
          Console::writeLine("Server is startet. Wee listen now after active connections");
+         $connections = [];
          while(true){
-             $read = $this->client;
              $write = $ex = null;
 
-             @socket_select($read,$write,$ex,null);
+             @socket_select($connections,$write,$ex,null);
 
              foreach($read AS $socket){
                  if($socket == $master){
                      $client = socket_accept($socket);
                      if($client < 0){
-                         echo "Error to accept socket!";
-                         continue;
+                         Console::writeLine("failed to accept a connection");
                      }else{
-                         $this->handle_new_connect($client);
+                         if($this->handle_new_connect($client)){
+                            $connections[] = $socket;
+                         }
                      }
-                     continue;
-                 }
-
-                 $konto = $this->get_client($socket);
-
-                 if(!$konto->my_turn()){
-                     $this->remove_client($socket);
                      continue;
                  }
 
@@ -183,6 +183,12 @@ function ip(){
            return false;
          }
 
+         if(Firewall::isBlacklist(ip()) || Firewall::isBan()){
+           //this socket connection is bannet. Wee close it and return false
+           socket_close($new);
+           return false;
+         }
+
          User::current()->websocket($new);//save the websocket so wee can use it in this program
 
 		 $key  = $head['Sec-WebSocket-Key'];
@@ -202,7 +208,7 @@ function ip(){
              exit("Handshake fail");
          }
          echo "New client connected to server\r\n";
-         return null;
+         return true;
 	 }
 	 
 	 private function remove_client($socket){
