@@ -16,6 +16,19 @@ class FireWall{
       return self::$ip;
    }
 
+   public static function getInfoBan($ip){
+      $query = Database::query("SELECT * FROM ".table("ip_ban")." WHERE `ip`='".Database::qlean($ip));
+      if($query->rows() != 1)
+        return null;
+
+      $return = [];
+      foreach($this->fetch() as $key = $value)
+         $return[$key] = $value;
+
+      return $return;
+          
+   }
+
    public static function isBan(){
       if(self::garbage() != 0){
          self::load();
