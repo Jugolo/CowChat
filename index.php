@@ -42,6 +42,7 @@ function ip(){
         include "include/user.php";
         include "include/channel.php";
         include "include/systemgroup.php";
+        include "include/head.php";
 
         if(!Server::is_cli()){
             $this->userInit();
@@ -172,6 +173,8 @@ function ip(){
              return false;
          }
 
+         setSocketCookie($head["Cookie"]);
+
          //to accsess websocket connection wee need to be login, 
          if(!$this->login()){
            //the user has not login yet close the connection now 
@@ -179,6 +182,8 @@ function ip(){
            Console->writeLine("User open a connection without has login yet.");
            return false;
          }
+
+         User::current()->websocket($new);//save the websocket so wee can use it in this program
 
 		 $key  = $head['Sec-WebSocket-Key'];
 		 $hkey = base64_encode(sha1($key.'258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true));
@@ -904,6 +909,8 @@ function ip(){
           $data = User::createGaust(post("nick"));
           make_cookie("token_chat", ($user->id()+123456789).$user->hash());
           
+       }else{
+         return false;//failed to login 
        }
 
        //in some case (mostly websocket) the user object for this user can already be created. This is mostly when the user has refreshing the webpage.
