@@ -390,7 +390,7 @@ function ip(){
             	$this->do_getOnline();
             break;
             case 'TITLE':
-               if(($channel = channel($message->message()) != null){
+               if(($channel = channel($message->message()))) != null){
                  if(User::current()->isMember($channel)){
                    send($message, "TITLE: ".$channel->title());
                  }else{
