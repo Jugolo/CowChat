@@ -44,6 +44,7 @@ function ip(){
         include "include/systemgroup.php";
         include "include/head.php";
         include "include/module.php";
+        include "include/database.php";
   
         FireWall::init();
 
