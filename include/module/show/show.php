@@ -45,10 +45,10 @@ function show(MessageParser $message){
 }
 
 function showIpInfo(array $info)
-  $return = "";
+  $return = [];
 
   foreach($info as $key => $value)
-     $return .= $key."=".$value.";";
+     $return[] = $key."=".$value;
 
-  return $return;
+  return implode(";", $return);
 }
