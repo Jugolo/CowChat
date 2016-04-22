@@ -180,7 +180,7 @@ function ip(){
          if(!$this->login()){
            //the user has not login yet close the connection now 
            socket_close($new);
-           Console->writeLine("User open a connection without has login yet.");
+           Console::writeLine("User open a connection without has login yet.");
            return false;
          }
 
