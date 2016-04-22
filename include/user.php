@@ -18,10 +18,10 @@ class User{
 
   public static function createGaust($nick){
      $data = [
-        "nick"    : $nick,
-        "hash"    : generate_hash(),
-        "groupId" : Config::startGroupGeaust(),
-        "type"    : "g"
+        "nick"    => $nick,
+        "hash"    => generate_hash(),
+        "groupId" => Config::startGroupGeaust(),
+        "type"    => "g"
      ];
 
      $data["id"] = Database::query("user", $data);
@@ -39,7 +39,7 @@ class User{
   }
 
   public static function controleNick($nick, UserData $user = null){
-     return Database::query("SELECT `id` FROM ".table("user")." WHERE `nick`=".Database::qlean($nick).($user != null ? " AND `id`<>'".$user->id()."'"))->rows() != 0;
+     return Database::query("SELECT `id` FROM ".table("user")." WHERE `nick`=".Database::qlean($nick).($user != null ? " AND `id`<>'".$user->id()."'" : ""))->rows() != 0;
   }
 
   public static function get($uid){
