@@ -390,7 +390,7 @@ function ip(){
             	$this->do_getOnline();
             break;
             case 'TITLE':
-               if(($channel = channel($message->message()))) != null){
+               if(($channel = channel($message->message())) != null){
                  if(User::current()->isMember($channel)){
                    send($message, "TITLE: ".$channel->title());
                  }else{
@@ -416,7 +416,7 @@ function ip(){
                       if(User::current()->group()->level() > $user->group()->level()){
                          $user->kick($message->channel(), User::current());
                          send($message, "KICK: Okay");
-                      }elseif(User::current()->group()->level() == $user->group()->level())}
+                      }elseif(User::current()->group()->level() == $user->group()->level()){
                          send($message, "ERROR: accessEquels");
                       }else{
                          send($message, "ERROR: notAccess");
@@ -467,7 +467,7 @@ function ip(){
                 send($message, "PONG: respons");
             break;
             case 'GETCONFIG':
-                send($message, "CONFIG: ".implode (",", User::current()->getData());
+                send($message, "CONFIG: ".implode (",", User::current()->getData()));
             break;
             default:
             	send($message, "ERROR: UnknownCommand");
@@ -914,7 +914,7 @@ function ip(){
                 make_cookie("token_chat", ($data["id"]+123456789).$data["hash"]);
              }
        }elseif(!Server::is_cli() && post("username")){//geaust login
-          if(User::controleNick(post("username")){
+          if(User::controleNick(post("username"))){
              Html::error("Nick is taken. Please pick a anthoter one and try again");
              return false;
           }
@@ -935,4 +935,5 @@ function ip(){
     }
  }
  
-new Server()->inilize();
+$server = new Server();
+$server->inilize();
