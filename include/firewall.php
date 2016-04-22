@@ -22,7 +22,7 @@ class FireWall{
         return null;
 
       $return = [];
-      foreach($this->fetch() as $key = $value)
+      foreach($this->fetch() as $key => $value)
          $return[$key] = $value;
 
       return $return;
