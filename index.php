@@ -43,6 +43,7 @@ function ip(){
         include "include/channel.php";
         include "include/systemgroup.php";
         include "include/head.php";
+        include "include/module.php";
   
         FireWall::init();
 
@@ -358,6 +359,13 @@ function ip(){
     }
     
     private function handleCommand($message){
+        switch($message->command()){
+           case "show":
+             Module::load("show");
+             show($message);
+           break;
+        }
+   
     	switch($message->command()){
     	    case "GETSTATUS":
     	        $this->answer_getStatus();
