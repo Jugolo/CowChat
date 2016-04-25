@@ -280,46 +280,6 @@ function ip(){
          return false;
      }
     
-    //inaktiv sektion
-    private function handle_inaktiv($row){
-        if($row['isInAktiv'] == Yes){
-            $this->do_leave($row);
-        }else{
-         $this->do_inaktiv($row);
-        }
-    }
-    
-    private function do_leave($row){
-        $this->sendBotMessage(
-            $row['cid'],
-            '/leave',
-            false,
-            $row['uid']
-        );
-        $this->database->query("DELETE FROM `".DB_PREFIX."chat_member` WHERE `id`='".(int)$row['id']."'");
-        if($this->database->isError){
-            exit($this->database->getError());
-        }
-        $this->sendBotPrivMessage(
-            1,
-            "/leave ".$row['name'],
-            "red",
-            $row['uid']
-        );
-    }
-    
-    private function do_inaktiv($row){
-		$this->database->query("UPDATE `".DB_PREFIX."chat_member` SET `isInAktiv`='".Yes."' WHERE `id`='".$row['id']."'");
-        if($this->database->isError){
-            exit($this->database->getError());
-        }
-
-    	$this->sendBotMessage(
-            $row['cid'],
-            "/inaktiv ".$row['nick'],false,$row['uid']
-        );
-    }
-    
     //message sektion
     private function showMessage(){
         $mid = null;
@@ -388,12 +348,12 @@ function ip(){
              show($message);
            break;
 		   case "JOIN":
-		     Module::load("joins");
-			 joins($message);
+		     Module::load("join");
+			 join_command($message);
 		   break;
 		   case "LEAVE":
 		     Module::load("leave");
-			 leave($message);
+			 leave_command($message);
 		   break;
         }
         return;
