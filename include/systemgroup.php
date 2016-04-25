@@ -12,3 +12,11 @@ class SystemGroup{
        return $return;
    }
 }
+
+class SystemGroupData{
+	private $user;
+	
+	function __construct(UserData $user){
+		$this->user = $user;
+	}
+}

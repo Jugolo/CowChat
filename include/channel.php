@@ -3,17 +3,14 @@
 class Channel{
    private static $channels = [];
 
-   public static function create($name){
-      //controle the channels is exits
-      foreach(self::$channels as $channel){
-         if($channel->name() == $name)
-           return false;
-      }
-
-      $channel = new ChannelData($name);//if the channel dont exists it will be created here.
-      self::$channels[$channel->id()] = $channel;
+   public static function init(){
+	  //get all channels from the database :)
+	  $query = Database::query("SELECT * FROM ".table("channel"));
+	  while($row = $query->fetch()){
+		  self::$channels[$row['id']] = new ChannelData($row);
+	  }
    }
-
+   
    public static function remove(ChannelData $channel){
       $channel->remove();
       unset(self::$channels[$channel->id()]);
@@ -29,20 +26,71 @@ class Channel{
      }
      return $return;
    }
+   
+   public static function get($name){
+	   foreach(self::$channels as $channel){
+		   if($channel->name() == $name){
+			   return $channel;
+		   }
+	   }
+	   
+	   return null;
+   }
+   
+   public static function join($name, UserData $user, MessageParser $message = null){
+	   $channel = null;
+	   if(($channel = self::get($name)) == null){
+		   $channel = self::create($name, $user);
+	   }
+	   
+	   if($user->isMember($channel)){
+		   if($message){
+			   error($message, "You are allready member of the channel");
+		   }
+		   return false;
+	   }
+	   
+	   if($user->join($channel, $message)){
+		   Database::insert("channel_member", [
+		     'cid'    => $channel->id(),
+			 'uid'    => $user->id(),
+			 'gid'    => $channel->creater() == $user->id() ? 0 : 0,
+			 'active' => time(),
+		   ]);
+		   return true;
+	   }
+	   
+	   return false;
+   }
+   
+   public static function garbage_collect(){
+	   foreach(self::$channels as $channel){
+		   $channel->garbage_collect();
+	   }
+   }
+   
+   private static function create($name, UserData $data){
+      $data = [
+        "name"    => $name,
+        "title"   => $name,
+		"creater" => $data->id(), 
+      ];
+
+      $data["id"] = Database::insert("channel", $data);
+	  return new ChannelData($data);
+   }
 }
 
 class ChannelData{
    private $data;
-   private $members;
+   private $members = [];
 
-   function __construct($name){
-     $sql = Database::query("SELECT * FROM ".table("channel")." WHERE `name`=".qlean($name));
-     $this->data = $sql->rows() == 0 ? $this->create($name) : $sql->fetch();
-
+   function __construct($data){
+     $this->data = $data;
     $sql = Database::query("SELECT `uid` FROM ".table("channel_member")." WHERE `cid`='".$this->id()."'");
     while($row = $sql->fetch()){
        if(($user = User::get($row["uid"])) != null){//geaust is delted efter no member og channels so control it befor wee add it in cache
-          $this->members[$user->id()] = $user;
+          $this->members[$user->id()] = new ChannelMember($user, $this);
        }
     }
    }
@@ -58,9 +106,15 @@ class ChannelData{
    function title(){
      return $this->data["title"];
    }
+   
+   function creater(){
+	   return $this->data['creater'];
+   }
 
    function leave(UserData $user, $sendMessage = "Leave the channel"){
       if($this->isMember($user)){
+		//wee delete the user in the channel
+		Database::query("DELETE FROM ".table("channel_member")." WHERE `cid`='".$this->id()."' AND `uid`='".$user->id()."'");
         unset($this->members[$user->id()]);
         if(count($this->members) == 0){
            Channel::remove($this);
@@ -75,29 +129,71 @@ class ChannelData{
    function isMember(UserData $user){
       return !empty($this->members[$user->id()]);
    }
+   
+   function join(UserData $user){
+	   $this->members[$user->id()] = new ChannelMember($user, $this);
+	   return true;
+   }
 
    function send($message, UserData $user = null){
       if($user == null){
          $user = User::current();
       }
-      return send_channel($this, $user->nick()."@".$message);
+      return send_channel($this, $user, $user->nick()."@".$message);
    }
 
    function remove(){
       if(count($this->members) != 0){
          foreach($this->members as $member){
-            $member->leave($this);
+            $member->getUser()->leave($this);
          }
       }
+	  
+	  //wee also clean up in message so no message is saving from this channel :)
+	  Database::query("DELETE FROM ".table("message")." WHERE `cid`='".$this->id()."'");
    }
-
-   private function create($name){
-      $data = [
-        "name"  => $name,
-        "title" => $name,
-      ];
-
-      $data["id"] = Database::insert("channel", $data);
-      return $data;
+   
+   function garbage_collect(){
+	   //wee look after how soon is the user typed a message if more end 5 min and not more end 10 min the user is marked inaktiv. if the user has not writet more end 10 min the user is kicked out of the channel and the user need to join again :)
+	   foreach($this->members as $member){
+		   if($member->writeTime() <= time()-(60*5) && $member->writeTime() >= time()-(60*15) && !$member->isInaktiv()){
+			   $member->markInaktiv();
+		   }elseif($member->writeTime() <= time()-(60*10)){
+			   //the user need to be delteded form the channel :)
+			   $this->leave($member->getUser(), "Inaktiv to long time now");
+		   }
+	   }
    }
+}
+
+
+class ChannelMember{
+	private $user;
+	private $channel;
+	private $data;
+	
+	public function __construct(UserData $user, ChannelData $data){
+		$this->user = $user;
+		$this->user->pushChannel($data);
+		$this->data = Database::query("SELECT * FROM ".table("channel_member")." WHERE `cid`='".$data->id()."' AND `uid`='".$user->id()."'")->fetch();
+		$this->channel = $data;
+	}
+	
+	public function getUser(){
+		return $this->user;
+	}
+	
+	public function writeTime(){
+		return $this->data['active'];
+	}
+	
+	public function isInaktiv(){
+		return $this->data["isInaktiv"] == "Y";
+	}
+	
+	public function markInaktiv(){
+		$this->channel->send("INAKTIV: ".$this->user->nick(), $this->user);
+		$this->data["isInaktiv"] = "Y";
+		Database::query("UPDATE ".table("channel_member")." SET `isInaktiv`='Y' WHERE `cid`='".$this->channel->id()."' AND `uid`='".$this->user->id()."'");
+	}
 }

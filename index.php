@@ -6,12 +6,13 @@ ini_set('display_errors', '1');
 function ip(){
   if(Server::is_cli()){
      if(socket_getpeername(User::current()->socket(), $ip)){
+	   if($ip == "::1")$ip = "127.0.0.1";
        return $ip;
      }
      return null;
   }
 
-  return $_SERVER['REMOTE_ADDR'];
+  return $_SERVER['REMOTE_ADDR'] == "::1" ? "127.0.0.1" : $_SERVER["REMOTE_ADDR"];
 }
 
  class Server{
@@ -19,8 +20,15 @@ function ip(){
      public static function is_cli(){
         return php_sapi_name() == "cli";
      }
+	 
+	 public static function getLastId(){
+       $row = Database::query("SELECT `id` FROM ".table("message")." ORDER BY `id` DESC")->fetch();
+       return $row["id"];
+     }
      
     function inilize(){
+		include 'include/autoloader.php';
+		AutoLoader::set();
         include "include/firewall.php";
 
         if(!Server::is_cli() && FireWall::isBlacklist(ip())){
@@ -44,28 +52,45 @@ function ip(){
         include "include/systemgroup.php";
         include "include/head.php";
         include "include/module.php";
-        include "include/database.php";
-  
+		include "include/database.php";
+		include "include/setting.php";
+		include "include/command.php";
+    
+	    if(!file_exists("include/config.json")){
+			if(!Server::is_cli()){
+			    header("location:install.php?step=1");
+			    exit;
+			}else{
+				exit("Missing config file. install it first");
+			}
+		}
+        
+		$json = json_decode(file_get_contents("include/config.json"));
+		
+        Database::init($json->host, $json->user, $json->pass, $json->table, $json->prefix);
+		Setting::init();
         FireWall::init();
-
+        Channel::init();
         if(!Server::is_cli()){
             //wee has controled that the user is not in black list. Now wee see if the user has a temporary ban
             if(FireWall::isBan()){
                exit("You are banned. Please contact our admin to get information about the ban");
             }
-            $this->userInit();
-            if(get("ajax")){
-               //if there is post available handle the post
-               if(post("message")){
-                  $this->handlePost(explode("\r\n", post("message")));//the new style is not json but plain text
-               }
-
-               $this->showMessage();
-            }else{
-               $this->showHTML();
-            }
+			include 'include/html.php';
+               if($this->userInit()){
+                  if(get("ajax")){
+                     //if there is post available handle the post
+                     if(post("message")){
+                        $this->handlePost(explode("\r\n", post("message")));//the new style is not json but plain text
+					 }
+				     $this->showMessage();
+				  }else{
+                     $this->showChat();
+                  }
+		        }
         }else{
             include "include/console.php";
+			Channel::init();
             $this->init_websocket();
         }
     }
@@ -298,20 +323,22 @@ function ip(){
     //message sektion
     private function showMessage(){
         $mid = null;
-        $query = Database::query("SELECT m.msg, m.uid, m.id FROM ".table("message")." AS m
+        $query = Database::query("SELECT m.message, m.uid, m.id FROM ".table("message")." AS m
                                   LEFT JOIN ".table("channel_member")." AS c ON m.cid=c.cid
                                   WHERE c.uid='".User::current()->id()."'
                                   AND m.id>'".User::current()->message_id()."'");
         $my = User::current();
         while($row = $query->fetch()){
            if(!$my->isIgnore($row["uid"])){
-              echo $row["msg"]."\r\n";
+              echo $row["message"]."\r\n";
            }
            $mid = $row["id"];
         }
-
-        User::current()->message_id($mid == null ? $this->getLastId() : $mid);
-
+		
+        User::current()->message_id($mid == null ? Server::getLastId() : $mid);
+		Channel::garbage_collect();//remove all old stuff there no need for be saved (if message has life time the old message is also be deleted)
+		User::garbage_collector();
+        return;
         $data = $this->database->query("SELECT cm.isInAktiv, cm.id, cm.uid , us.nick, cm.cid, cn.name
         FROM `".DB_PREFIX."chat_member` AS cm
         LEFT JOIN `".DB_PREFIX."users` AS us ON us.user_id = cm.uid
@@ -328,11 +355,6 @@ function ip(){
 
         while($row = $data->get())
             $this->handle_inaktiv($row);
-    }
-
-    private function getLastId(){
-       $row = Database::query("SELECT `id` FROM ".table("message")." ORDER BY `id` DESC")->fetch();
-       return $row["id"];
     }
 	 
     private function handlePost($message){
@@ -361,12 +383,20 @@ function ip(){
     
     private function handleCommand($message){
         switch($message->command()){
-           case "show":
+           case "SHOW":
              Module::load("show");
              show($message);
            break;
+		   case "JOIN":
+		     Module::load("joins");
+			 joins($message);
+		   break;
+		   case "LEAVE":
+		     Module::load("leave");
+			 leave($message);
+		   break;
         }
-   
+        return;
     	switch($message->command()){
     	    case "GETSTATUS":
     	        $this->answer_getStatus();
@@ -858,18 +888,84 @@ function ip(){
 	 
     private function userInit(){
 	if($this->login()){
-           //do nothing :)
+           return true;
 	}else{
-            $this->json['location'] = "../../index.php?error=sessiong";
-            exit(json_encode($this->json));
+            if(!Server::is_cli() && get("ajax")){
+				exit("LOGIN: REQUID");
+			}
+			
+			$this->loginpage();
+			return false;
         }
     }
+	
+	private function loginpage(){
+		$this->page("login", []);
+	}
+	
+	private function showChat(){
+		$data = [
+		  'sendType' => 'AJAX',
+		];
+		
+		$data["channel"] = [];
+		foreach(Channel::getUserChannel(User::current()) as $channel){
+			$data["channel"][] = $channel->name();
+		}
+		
+		$this->page("chat", $data);
+	}
+	
+	private function page($name, $data){
+		include 'include/language.php';
+		try{
+		    Language::load($name);
+		}catch(Exception $e){
+			$this->error($e);
+		}
+		try{
+		   $loader = new Twig_Loader_Filesystem("include/style");
+		   $twig   = new Twig_Environment($loader);
+		   $twig->addFunction(new Twig_SimpleFunction('language', function () {
+			   $arg = func_get_args();
+			   if(func_num_args() == 0){
+				   throw new Exception("Language function take a lest 1 agument");
+			   }
+			   
+			   $arg[0] = Language::get($arg[0]);
+			   
+			   return call_user_func_array("sprintf", $arg);
+           }));
+		   
+		   $twig->addFunction(new Twig_SimpleFunction("setting", function($name){
+			   if(!Setting::exists($name)){
+				   throw new Exception("Unknown setting name '".$name."'");
+			   }
+			   
+			   return Setting::get($name);
+		   }));
+		   
+		   echo $twig->render($name.".html", array_merge($data,Html::getAguments()));
+		}catch(Twig_Error_Loader $e){
+			$this->error($e);
+		}catch(Twig_Error_Syntax $e){
+			$this->error($e);
+		}catch(Exception $e){
+			$this->error($e);
+		}
+	}
+	
+	private function error($e){
+		$loader = new Twig_Loader_Filesystem("include/style/system/");
+		$twig = new Twig_Environment($loader);
+		exit($twig->render("error.html", array("error" => $e)));
+	}
 
     private function login(){
-       if (cookie("chat_token")){
-          $part = explode(",", cookie("chat_token"));
+       if (cookie("token_chat")){
+          $part = explode(",", cookie("token_chat"));
           if(count($part) != 2){
-             cookieDestroy("chat_token");
+             cookieDestroy("token_chat");
              return false;
           }
 
@@ -878,14 +974,14 @@ function ip(){
           //look after the user in the database
           $query = Database::query("SELECT * FROM ".table("user")." WHERE `id`='".$id."'");
           if($query->rows() != 1){
-            cookieDestroy("chat_token");
+            cookieDestroy("token_chat");
             return false;
           }
 
           //control if the hash value is the same and the ip is the same
           $data = $query->fetch();
           if($data["hash"] != $part[1] || ip() != $data["ip"]){
-             cookieDestroy("chat_token");
+             cookieDestroy("token_chat");
              return false;
           }
 
@@ -921,20 +1017,28 @@ function ip(){
           }
 
           //create a account for this geaust. The system will take care of put it in the database 
-          $data = User::createGaust(post("nick"));
-          make_cookie("token_chat", ($user->id()+123456789).$user->hash());
+          $data = User::createGaust(post("username"));
+          make_cookie("token_chat", ($data["id"]+123456789).",".$data["hash"]);
           
        }else{
          return false;//failed to login 
        }
-
-       //in some case (mostly websocket) the user object for this user can already be created. This is mostly when the user has refreshing the webpage.
-       if(getUser($data["id"]) == null){
-          User::push($data, true);//push user to our object database and make it as the current user.
-       }
-       return true;
+	   if(($user = User::get($data['id'])) != null){
+		   User::current($user);//push to current
+           return true;
+	   }
+	   return false;
     }
  }
  
 $server = new Server();
+try{
 $server->inilize();
+}catch(Exception $e){
+	$end = "\r\n";
+	if(!Server::is_cli())$end = "<br>";
+	echo "Fail to show chat becuse:".$end;
+	echo "File: ".$e->getFile().$end;
+	echo "Line: ".$e->getLine().$end;
+	exit($e->getMessage());
+}

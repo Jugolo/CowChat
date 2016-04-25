@@ -3,33 +3,27 @@ class User{
   private static $users = [];
   private static $current = null;
 
-  public static function push($data, $setCurrent = false){
-     //wee control that the user is not set in our cache system
-     if(empty(self::$users[$data["id"]])){
-       //push the user to the cahce system 
-       self::$users[$data["id"]] = new UserData($data);
-     }
-
-     if($setCurrent)
-       self::$current = self::$users[$data["id"]];
-
-     return self::$users[$data["id"]];
-  }
-
   public static function createGaust($nick){
      $data = [
-        "nick"    => $nick,
-        "hash"    => generate_hash(),
-        "groupId" => Config::startGroupGeaust(),
-        "type"    => "g"
+        "nick"       => $nick,
+        "hash"       => generate_hash(),
+        "groupId"    => Setting::get("startGroup"),
+        "type"       => "g",
+		"ip"         => ip(),
+		"message_id" => Server::getLastId(),
+		"active"     => time(),
      ];
 
-     $data["id"] = Database::query("user", $data);
+     $data["id"] = Database::insert("user", $data);
      return $data;
   }
 
-  public static function current(){
-    return self::$current;
+  public static function current($current = null){
+	  if($current != null){
+		  self::$current = $current;
+	  }
+	  
+      return self::$current;
   }
 
   public static function remove(UserData $user){
@@ -45,24 +39,32 @@ class User{
   public static function get($uid){
      if(is_numeric($uid)){
        if(!empty(self::$users[$uid])){
-          return self::$user[$uid];
+          return self::$users[$uid];
        }
-       $field = "uid";
+       $field = "id";
      }else{
        $field = "nick";
      }
 
      $query = Database::query("SELECT * FROM ".table("user")." WHERE `".$field."`=".Database::qlean($uid));
      if($query->rows() != 0){
-        if(is_numeric($uid)){
-           return new UserData($query->fetch());
-        }else{
-           $r = $fetch();
-           return self::get($r["id"]);
-        }
+        $r = $query->fetch();
+        return self::$users[$r["id"]] = new UserData($r);
      }
 
      return null;
+  }
+  
+  public static function garbage_collector(){
+	  //run all user thrue and finde the geaust
+	  foreach(self::$users as $user){
+		  if($user->isGeaust()){
+			  if($user->active() < time()-(60*30)){
+				  $user->delete();
+				  unset(self::$users[$user->id()]);
+			  }
+		  }
+	  }
   }
 }
 
@@ -75,12 +77,18 @@ class UserData{
 
    function __construct(array $data){
       $this->data     = $data;
-      $this->channels = Channel::getUserChannel($this);
       $query = Database::query("SELECT `iid` FROM ".table("ignore")." WHERE `uid`='".$this->id()."'");
       while($row = $query->fetch()){
         $this->ignore[] = $row["iid"];
       }
       $this->group = SystemGroup::get($this);
+   }
+   
+   /**
+   *Push a channel the user is allerady in
+   */
+   function pushChannel(ChannelData $data){
+	   $this->channels[$data->id()] = $data;
    }
 
    function websocket($sock = null){
@@ -102,6 +110,14 @@ class UserData{
    function group(){
       return $this->group;
    }
+   
+   function isGeaust(){
+	   return $this->data["type"] == "g";
+   }
+   
+   function active(){
+	   return $this->data["active"];
+   }
 
    function send($msg){
       //this method will send message to all channels the users is in
@@ -110,8 +126,8 @@ class UserData{
       }
    }
 
-   function nick($new = null){
-      if($new == null){
+   function nick($nick = null){
+      if($nick != null){
          if(User::controleNick($nick, $this)){
             $query = Database::query("UPDATE ".table("user")." SET `nick`=".Database::qlean($nick)." WHERE `id`='".$this->id()."'");
             if($query->rows() != 1){
@@ -127,7 +143,26 @@ class UserData{
    }
 
    function isMember(ChannelData $data){
-     return !empty($this->channels[$data->cid()]);
+     return !empty($this->channels[$data->id()]);
+   }
+   
+   function join(ChannelData $channel, MessageParser $message = null){
+	   if($this->isMember($channel)){
+		   if($message){
+			   error($message, "You are allready member of the channel");
+		   }
+		   return false;
+	   }
+	   
+	   if($channel->join($this)){
+	       $this->channels[$channel->id()] = $channel;
+	       if($message != null){
+		      send($message, "JOIN: ".$channel->name());
+	       }
+	       return true;
+	   }else{
+		   return false;
+	   }
    }
 
    function leave(ChannelData $channel,$message = false){
@@ -173,7 +208,29 @@ class UserData{
      return true;
    }
 
-   function message_id(){
+   function message_id($id = null){
+	   if($id != null){
+		   Database::query("UPDATE ".table("user")." SET `message_id`=".Database::qlean($id)." WHERE `id`='".$this->id()."'");
+		   $this->data["message_id"] = $id;
+	   }
       return $this->data["message_id"];
    }
+   
+   function delete(){
+	   foreach($this->channels as $channel){
+		   $channel->leave($this, "Good by all");
+	   }
+	   
+	   Database::query("DELETE FROM ".table("user")." WHERE `id`='".$this->id()."'");
+   }
+}
+
+function generate_hash(){
+	$chars = "qwertyuioplkjhgfdsazxcvbnmøåQWERTYUIOPASDFGHJKLZXCVBNMÆØÅ,.-_:;'¨^*<>½§1234567890+´!\"#¤%&/()=?`";
+	$return = "";
+	for($i=0;$i<99999;$i++){
+		$return .= $chars[mt_rand(0, mt_rand(0, strlen($chars)-1))];
+	}
+	
+	return sha1($return);
 }

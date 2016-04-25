@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+ #topMenu{
+   position:absolute;
+   top:0px;
+   left:0px;
+   right:0px;
+   height:25px;
+ }
+ #leftMenu{
+   position:absolute;
+   top:25px;
+   left:0px;
+   bottom:50px;
+   width:150px;
+   border-top:1px solid black;
+   border-bottom:1px solid black;
+ }
+ 
+ #chat{
+   border:1px solid black;
+   position:absolute;
+   top:25px;
+   left:150px;
+   right:150px;
+   bottom:50px;
+ }
+ 
+ #rightMenu{
+   position:absolute;
+   top:25px;
+   right:0px;
+   bottom:50px;
+   width:150px;
+   border-top:1px solid black;
+   border-bottom:1px solid black;
+ }
+ 
+ #buttom{
+   position:absolute;
+   left:0px;
+   right:0px;
+   bottom:0px;
+   height:50px;
+ }
+ h2{
+   text-align:center;
+   border-bottom:1px solid black;
+   margin:0px;
+   background-color:#0033cc;
+ }
+ #leftMenu div{
+   text-align:center;
+   border-bottom:1px solid black;
+   font-size:20px;
+   font-weight: bold;
+   cursor:pointer;
+ }
+ .o1{
+   background-color: #0000FF;
+ }
+ 
+ .o2{
+   background-color:#0000FF;
+ }
+ 
+ .tab{
+   float:left;
+   margin-right:1px;
+   height:25px;
+ }
+ 
+ .leftWing{
+  width:15px;
+  height:25px;
+  border-left: 1px solid black;
+  border-radius: 20px 0 0 0;
+  float:left;
+ }
+ 
+ .rightWing{
+  width:15px;
+  height:25px;
+  border-right:1px solid black;
+  border-radius: 0 20px 0 0;
+  float:left;
+ }
+ 
+ .tab_title{
+   height:25px;
+   width:auto;
+   float:left;
+   cursor:pointer;
+   text-align:center;
+   font-weight: bold;
+ }
+ 
+ .tab_close{
+   float:left;
+   height:25px;
+   cursor:pointer;
+   width:20px;
+   background-image:url('img/close.png');
+   background-size: 50% 50%;
+   background-repeat:no-repeat;
+   background-position: center;
+ }
+ 
+ #smylie_buttom{
+   border:1px solid black;
+ }
+ 
+ #text_buttom{
+   border:1px solid black;
+ }
+ 
+ #send_buttom{
+   border:1px solid black;
+ }
+</style>
+<script src='js/send.js'></script>
+<script src='js/command.js'></script>
+<script src='js/channelcontrol.js'></script>
+<script src='js/page.js'></script>
+<script>
+  var sendType = '{{sendType}}';
+  
+  function helpJoin(){
+    var p = prompt("{{language('Write channel (seperate by ,)')}}");
+	if(p != null){
+	  var channels = p.split(",");
+	  for(var i=0;i<channels.length;i++){
+	    join(channels[i].trim(), function(msg){
+		  alert("[Error]"+msg.message());
+		});
+	  }
+	  sendBuffer.flush();//send all message now :)
+	}
+  }
+  
+  function onload(){
+    {%for name in channel%}
+	  appendChannel('{{name}}');
+	{%endfor%}
+	get("?ajax=true");
+  }
+</script>
+<title>{{language("Chat %s", setting("name"))}}</title>
+</head>
+<body onload='onload();'>
+<div id='topMenu'>
+ <div style='clear:both;'></div>
+</div>
+<div id='rightMenu'>
+  <h2>{{language("Online user")}}</h2>
+</div>
+<div id='chat'>
+</div>
+<div id='leftMenu'>
+  <h2>{{language('Options')}}</h2>
+  <div class='o1' onclick='helpJoin();'>{{language("Join channel")}}</div>
+</div>
+<div id='buttom'>
+<div id='smylie_buttom'>
+
+</div>
+<div id='text_buttom'>
+
+</div>
+<div id='send_buttom'>
+
+</div>
+</div>
+</body>
+</html>

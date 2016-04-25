@@ -1,57 +1,36 @@
-var prefixCache = [];
-
-function rand(min, max){
-    Math.floor((Math.random() * max) + min);
+function join(channel, error){
+	if(channel.indexOf("#") !== 0){
+	  error(language("A channel name should alweys start width #"));
+	  return;
+	}
+	send("JOIN: "+channel.trim(), function(respons){
+		if(respons.command() == "ERROR"){
+			//ohh no some thinks dont works :(
+			if(typeof error !== "undefined"){
+				error(respons);
+			}
+		}else if(respons.command() == "JOIN"){
+			appendChannel(respons.message());
+		}else if(respons.command() == "TITLE"){
+			getChannel(respons.channel()).setTitle(respons.message());
+		}
+	});
 }
 
-var letter = "QWERTYUIOPLKJHGFDSAZXCVBNM";
-var letterNumber = 0;
-var number = 0;
-
-function createPrefix(){
-  if(letterNumber >= letter.length){
-    letterNumber=0;
-    return createPrefix();
-  }
-
-  var l = letter.charAt(letterNumber);
-  number++;
-  var n = number.toString();
-  if(n.length == 1){
-    return l+"0000"+n;
-  }else if(n.length == 2){
-    return l+"000"+n;
-  }else if(n.length == 3){
-    return l+"00"+n;
-  }else if(n.length == 4){
-    return l+"0"+n;
-  }else if(n.length == 5){
-    return l+n;
-  }
-
-  number = 0;
-  letterNumber++;
-  return createPrefix();
-}
-
-function nick(nick){
-  var prefix = createPrefix();
-  prefixCache[prefix] = function(msg){
-    if(msg.command() == "NICK"){//nick command works nothings wrong
-       user.my().nick(msg.message());
-    }else{
-       error(msg);
-    }
-  };
-  send(prefix+"!NICK: "+nick);
-}
-
-function join(channel, callback){
-  if(typeof channel === "array"){
-    channel = channel.join(",");
-  }
-
-  var prefix = createPrefix();
-  prefixCache[prefix] = callback;
-  send(prefix+"!JOIN: "+channel);
+function leave(name, success, error){
+	if(name.indexOf("#") == -1){
+		return;
+	}
+	
+	send("LEAVE: "+name, function(respons){
+		if(respons.command() == "ERROR"){
+			if(typeof error != "undefined"){
+				error(respons);
+			}
+		}else{
+			if(typeof success != "undefined"){
+				success(respons);
+			}
+		}
+	});
 }

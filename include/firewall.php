@@ -60,7 +60,7 @@ class FireWall{
    }
 
    private static function garbage(){
-     return Database::query("DELETE FROM ".table("ip_ban")." WHERE `timeout`>'".time()."'")->rows();
+     return Database::query("DELETE FROM ".table("ip_ban")." WHERE `expired`>'".time()."'")->rows();
    }
 
    private static function load(){
