@@ -345,7 +345,7 @@ function ip(){
         switch($message->command()){
            case "SHOW":
              Module::load("show");
-             show($message);
+             show_command($message);
            break;
 		   case "JOIN":
 		     Module::load("join");
