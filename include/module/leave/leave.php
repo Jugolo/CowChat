@@ -1,5 +1,5 @@
 <?php 
-function leave(MessageParser $parser){
+function leave_command(MessageParser $parser){
 	if(($channel = Channel::get($parser->message())) != null){
 		$user = User::current();
 		if($user->isMember($channel)){
