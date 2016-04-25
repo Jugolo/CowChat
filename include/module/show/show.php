@@ -1,6 +1,6 @@
 <?php
 
-function show(MessageParser $message){
+function show_command(MessageParser $message){
   $command = explode(" ", $message->message());
   if(count($command) == 0){
     error($message, "/show command has not enaoug data");
@@ -8,7 +8,7 @@ function show(MessageParser $message){
   }
   
 
-  if($command[0] == "ip")
+  if($command[0] == "ip"){
     if(!User::current()->showIp()){
       error($message, "Access denaid");
       return;
