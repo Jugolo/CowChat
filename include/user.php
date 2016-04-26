@@ -12,6 +12,7 @@ class User{
 		"ip"         => ip(),
 		"message_id" => Server::getLastId(),
 		"active"     => time(),
+        "defenderCount" => 0.5,
      ];
 
      $data["id"] = Database::insert("user", $data);
@@ -84,6 +85,15 @@ class UserData{
       $this->group = SystemGroup::get($this);
    }
    
+   function defenderCount($new=null){
+      if($new != null){
+         Database::query("UPDATE `".table("user").` SET `defenderCount`='".(int)$new."' WHERE `id`='".$this->id()."'");
+         $this->data["defenderCount"] = $new;
+      }
+
+      return $this->data["defenderCount"];
+   }
+
    /**
    *Push a channel the user is allerady in
    */
