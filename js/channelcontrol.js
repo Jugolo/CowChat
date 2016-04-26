@@ -1,4 +1,5 @@
 var channelBuffer = {};
+var currentChannel = null;
 
 function getChannel(name){
 	if(typeof channelBuffer[name] == "undefined"){
@@ -17,14 +18,15 @@ var ChannelPage = (function(){
 	function ChannelPage(name){
 		this.name = name;
 		this.exit = false;
+		this.focus();
 	}
 	
 	ChannelPage.prototype.focus = function(){
-		
+		currentChannel = this;
 	};
 	
 	ChannelPage.prototype.blur = function(){
-		
+		currentChannel = null;
 	};
 	
 	ChannelPage.prototype.title = function(){

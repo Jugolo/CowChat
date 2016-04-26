@@ -49,7 +49,7 @@ function show_command(MessageParser $message){
   }
 }
 
-function showIpInfo(array $info)
+function showIpInfo(array $info){
   $return = [];
 
   foreach($info as $key => $value)

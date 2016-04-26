@@ -58,13 +58,12 @@ class User{
   
   public static function garbage_collector(){
 	  //run all user thrue and finde the geaust
-	  foreach(self::$users as $user){
-		  if($user->isGeaust()){
-			  if($user->active() < time()-(60*30)){
-				  $user->delete();
-				  unset(self::$users[$user->id()]);
-			  }
-		  }
+	  $query = Database::query("SELECT `id`, `active` FROM ".table("user")." WHERE `type`='g' AND `active`<'".(time()-(60*30))."'");
+	  while($row = $query->fetch()){
+	  	if($user = User::get($row['id'])){
+	  		$user->delete();
+	  		unset(self::$users[$user->id()]);
+	  	}
 	  }
   }
 }
@@ -87,7 +86,7 @@ class UserData{
    
    function defenderCount($new=null){
       if($new != null){
-         Database::query("UPDATE `".table("user")."` SET `defenderCount`='".(int)$new."' WHERE `id`='".$this->id()."'");
+         Database::query("UPDATE ".table("user")." SET `defenderCount`='".(string)$new."' WHERE `id`='".$this->id()."'");
          $this->data["defenderCount"] = $new;
       }
 
@@ -230,7 +229,6 @@ class UserData{
 	   foreach($this->channels as $channel){
 		   $channel->leave($this, "Good by all");
 	   }
-	   
 	   Database::query("DELETE FROM ".table("user")." WHERE `id`='".$this->id()."'");
    }
 }

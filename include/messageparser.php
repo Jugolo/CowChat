@@ -11,7 +11,7 @@ class MessageParser{
      }
      $this->data["command"] = $first[0];
      $this->data["isCommand"] = count($first) == 1;
-     $this->data["channel"] = !$this->isCommand() ? get_channel($first[1]) : null;
+     $this->data["channel"] = !$this->isCommand() ? Channel::get($first[1]) : null;
      $this->data["message"] = substr($message, strpos($message, ": ")+2);
   }
 

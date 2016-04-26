@@ -56,6 +56,7 @@ function ip(){
 		include "include/setting.php";
 		include "include/command.php";
         include "include/defender.php";
+        include "include/flood.php";
     
 	    if(!file_exists("include/config.json")){
 			if(!Server::is_cli()){
@@ -75,8 +76,19 @@ function ip(){
         if(!Server::is_cli()){
             //wee has controled that the user is not in black list. Now wee see if the user has a temporary ban
             if(FireWall::isBan()){
+            	if(get("ajax")){
+            		error(new MessageParser("JOIN: #null"), "You are banned. Please contact our admin to get information about the ban");
+            		exit;
+            	}
                exit("You are banned. Please contact our admin to get information about the ban");
             }
+            
+            //if this is not a ajax wee do a user and channel clean now
+            if(!get("ajax")){
+            	Channel::garbage_collect();
+            	User::garbage_collector();
+            }
+            
 			include 'include/html.php';
                if($this->userInit()){
                   if(get("ajax")){
@@ -333,7 +345,7 @@ function ip(){
     	if($message->isCommand()){
     		$this->handleCommand($message);
     	}else{
-            if($this->is_flood($message->channel()->id())){
+            if(Flood::controle($message->channel())){
                 $this->handleMessage($message);
                 $this->updateActivInChannel($message->channel()->id());
             }else{

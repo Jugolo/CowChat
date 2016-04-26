@@ -9,7 +9,6 @@ function send(MessageParser $parser, $message){
 
 function send_channel(ChannelData $channel, UserData $user, $message){
     if(!$user->isMember($channel)){
-		exit("Here");
        if($user == User::current()){
          send(new MessageParser(), "ERROR: notMember");
        }

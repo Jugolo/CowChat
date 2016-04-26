@@ -16,10 +16,11 @@ class FireWall{
       return self::$ip;
    }
 
-   public static ban($expire){
+   public static function ban($expire, $ip = null){
       Database::insert("ip_ban", [
-         'ip'      => ip(),
-         'expired' => $expire,
+         'ip'       => $ip == null ? ip() : $ip,
+      	 'admin_id' => 0,
+         'expired'  => $expire,
       ]);
    }
 
@@ -40,6 +41,10 @@ class FireWall{
       if(self::garbage() != 0){
          self::load();
       }
+      
+      //control the white list an if this ip is in it dont return true but false
+      if(in_array(ip(), self::getWhiteList()))
+      	return false;
 
       return in_array(ip(), self::$ip);
    }
@@ -67,7 +72,7 @@ class FireWall{
    }
 
    private static function garbage(){
-     return Database::query("DELETE FROM ".table("ip_ban")." WHERE `expired`>'".time()."'")->rows();
+     return Database::query("DELETE FROM ".table("ip_ban")." WHERE `expired`<'".time()."'")->rows();
    }
 
    private static function load(){

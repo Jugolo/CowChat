@@ -34,3 +34,12 @@ function leave(name, success, error){
 		}
 	});
 }
+
+function message(channel, message){
+	send("MESSAGE "+channel+": "+cleanMessage(message));
+}
+
+function cleanMessage(message){
+	message = message.replace(/\n/g, "[br]");
+	return message;
+}

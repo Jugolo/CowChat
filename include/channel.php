@@ -74,7 +74,7 @@ class Channel{
 	   }
 	   
 	   if($user->join($channel, $message)){
-		   Database::insert("channel_member", [
+	   	   $data["id"] = Database::insert("channel_member",[
 		     'cid'    => $channel->id(),
 			 'uid'    => $user->id(),
 			 'gid'    => $channel->creater() == $user->id() ? 0 : 0,
@@ -100,7 +100,7 @@ class Channel{
       ];
 
       $data["id"] = Database::insert("channel", $data);
-	  return new ChannelData($data);
+	  return self::$channels[$data["id"]] = new ChannelData($data);
    }
 }
 
@@ -136,6 +136,7 @@ class ChannelData{
 
    function leave(UserData $user, $sendMessage = "Leave the channel"){
       if($this->isMember($user)){
+      exit($sendMessage);
 		//wee delete the user in the channel
 		Database::query("DELETE FROM ".table("channel_member")." WHERE `cid`='".$this->id()."' AND `uid`='".$user->id()."'");
         unset($this->members[$user->id()]);
@@ -162,6 +163,7 @@ class ChannelData{
       if($user == null){
          $user = User::current();
       }
+      exit($message);
       return send_channel($this, $user, $user->nick()."@".$message);
    }
 
@@ -181,9 +183,9 @@ class ChannelData{
 	   foreach($this->members as $member){
 		   if($member->writeTime() <= time()-(60*5) && $member->writeTime() >= time()-(60*15) && !$member->isInaktiv()){
 			   $member->markInaktiv();
-		   }elseif($member->writeTime() <= time()-(60*10)){
+		   }elseif($member->writeTime() <= time()-(60*15)){
 			   //the user need to be delteded form the channel :)
-			   $this->leave($member->getUser(), "Inaktiv to long time now");
+			   $this->leave($member->getUser(), "(".$member->writeTime()."|".(time()-(60*15)).")Inaktiv to long time now");
 		   }
 	   }
    }
@@ -207,6 +209,9 @@ class ChannelMember{
 	}
 	
 	public function writeTime(){
+		if(empty($this->data["active"])){
+			print_r($this->data);
+		}
 		return $this->data['active'];
 	}
 	
