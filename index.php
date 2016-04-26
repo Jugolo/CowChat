@@ -55,6 +55,7 @@ function ip(){
 		include "include/database.php";
 		include "include/setting.php";
 		include "include/command.php";
+        include "include/defender.php";
     
 	    if(!file_exists("include/config.json")){
 			if(!Server::is_cli()){
