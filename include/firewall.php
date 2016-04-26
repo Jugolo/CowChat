@@ -16,6 +16,13 @@ class FireWall{
       return self::$ip;
    }
 
+   public static ban($expire){
+      Database::insert("ip_ban", [
+         'ip'      => ip(),
+         'expired' => $expire,
+      ]);
+   }
+
    public static function getInfoBan($ip){
       $query = Database::query("SELECT * FROM ".table("ip_ban")." WHERE `ip`='".Database::qlean($ip));
       if($query->rows() != 1)
