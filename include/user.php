@@ -87,7 +87,7 @@ class UserData{
    
    function defenderCount($new=null){
       if($new != null){
-         Database::query("UPDATE `".table("user").` SET `defenderCount`='".(int)$new."' WHERE `id`='".$this->id()."'");
+         Database::query("UPDATE `".table("user")."` SET `defenderCount`='".(int)$new."' WHERE `id`='".$this->id()."'");
          $this->data["defenderCount"] = $new;
       }
 
