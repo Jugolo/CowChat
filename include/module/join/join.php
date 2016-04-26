@@ -5,6 +5,7 @@ function join_command(MessageParser $message){
 			title($message, $message->message(), Channel::get($message->message())->title());
 		}
 	}else{
+                Defender::updateCount(-0.12);
 		error($message, "A channel need to start width #");
 	}
 }
