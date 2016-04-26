@@ -15,7 +15,7 @@ function controleChannelName($name){
 
   //wee could use regex to find out wich char there is in but no. 
   for($i=0;$i<strlen($name);$i++){
-     if(($char = ord($name[$i])) <= 65 && $char >= 90 && $char <= 97 && $char >= 122){
+     if(($char = ord($name[$i])) < 65 || $char > 90 && $char < 97 || $char > 122){
         return false;
      }
   }
