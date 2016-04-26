@@ -10,6 +10,8 @@ function show_command(MessageParser $message){
 
   if($command[0] == "ip"){
     if(!User::current()->showIp()){
+      //tell the defender to change count for the user
+      Defender::updateCount(-0.5);
       error($message, "Access denaid");
       return;
     }
