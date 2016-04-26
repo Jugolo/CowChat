@@ -3,7 +3,7 @@
 class Defender{
    private $data = [];
 
-   public function updateCount($data){
+   public static function updateCount($data){
       if($data > 0){
          if(User::current()->defenderCount() >= 1){
            return;
