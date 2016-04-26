@@ -20,7 +20,7 @@ class Defender{
       //wee controle if the new count is less end 0
       $n = User::defenderCount()+$data;
       if($n < 0){
-         FireWall::ban(time()*(60+(($n + 15) * 15)));
+         FireWall::ban(time()*(60+((+$n + 15) * 15)));
       }
       User::defenderCount($n);
    }
