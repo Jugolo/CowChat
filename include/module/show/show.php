@@ -17,6 +17,7 @@ function show_command(MessageParser $message){
     }
 
     if(count($command) <= 1){
+      Defender::updateCount(-0.001);//soft error no need to take count to fast for this
       error($message, "Missing agument for /show ip");
       return;
     }
@@ -33,12 +34,14 @@ function show_command(MessageParser $message){
        break;
        case "info":
           if(count($command) <= 2){
+            Defender::updateCount(-0.001);
             error($message, "Missing info for /show info [ip]");
             return;
           }
           send($message, "SHOW: info ".showInfoBan(FireWall::getInfoBan($command[2])));
        break;
        deadult:
+         Defender::updateCount(-0.002);
          error($message, "Unknown show aguments");
          return;
        break;
