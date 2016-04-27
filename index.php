@@ -307,10 +307,23 @@ function ip(){
            }
            $mid = $row["id"];
         }
+
+        //wee got pm to this user here it are more simple end the channel system
+        $query = Database::query("SELECT `from`, `msg` FROM ".table("pm")." WHERE `to`='".User::current()->id()."'");
+        if($query->rows() != 0){
+          while($row = $query->fetch()){
+             //wee controle if the user exists so wee dont show message from geaust there is delete. 
+             if(($from = User::get($row["from"])) != null){
+                echo "MESSAGE ".$from->nick().": ".$row["msg"]."\r\n";
+             }
+          }
+          //Wee rome the message here. 
+          Database::query("DELETE FROM ".table("pm")." WHERE `to`='".User::current()->id()."'");
+        }
 		
         User::current()->message_id($mid == null ? Server::getLastId() : $mid);
-		Channel::garbage_collect();//remove all old stuff there no need for be saved (if message has life time the old message is also be deleted)
-		User::garbage_collector();
+        Channel::garbage_collect();
+	User::garbage_collector();
         return;
         $data = $this->database->query("SELECT cm.isInAktiv, cm.id, cm.uid , us.nick, cm.cid, cn.name
         FROM `".DB_PREFIX."chat_member` AS cm
