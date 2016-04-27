@@ -35,6 +35,11 @@ class MessageParser{
      return $this->data["message"];
   }
 
+  function encode(){
+     //this method encode the message so it can be sendt secure to the user (it not standart becuse it can be error in some module)
+     $this->data["message"] = htmlentities($this->data["message"]);
+  }
+
   function hasPrefix(){
      return !empty($this->data["prefix"]);
   }
