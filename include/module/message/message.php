@@ -1,19 +1,22 @@
 <?php
 function message_command(MessageParser $message){
-   if(User::current()->isMember($message->channel())){
+   if($message->channel() != null){
 
    }else{
-     //the user is not member of this channel so wee look after if this is a channel or not
-     if(substr($message->channelName(), 0, 1) == "#"){
-       error($message, "You are not member of the channel");
-     }else{
-       //private channel do not be createt width join command but will be createt here :)
-       if(($user = User::get($message->channelName())) != null){
-          //okay wee has a private message to anthor user. If this is a websocket chat only it is easy. But this should also work
-          //width ajax so wee need to crate a name there is easy for the system to finde out how to work. 
+     if(substr($channel->channelName(), 0, 1) == "#"){
+       //controle if wee got a user width that name
+       if(($user = User::get($channel->channelName())) != null){
+         //insert into pm table so the user can se it 
+         Database::insert("pm", [
+           "from" => User::current()->id(),
+           "to"   => $user->id(),
+           "msg"  => $message->message()
+         ]);
        }else{
-          error($message, "Unknown user");
+         error($message, "Unknown user");
        }
+     }else{
+       error($message, "Unknown channel");
      }
    }
 }
