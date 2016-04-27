@@ -1,7 +1,12 @@
 <?php
 function message_command(MessageParser $message){
+   $message->encode();
    if($message->channel() != null){
-
+      if($message->channel()->isMember(User::current())){
+        $message->channel()->send("MESSAGE ".$message->channelName().": ".$message->message());
+      }else{
+       error($message, "You are not member of the channel");
+      }
    }else{
      if(substr($channel->channelName(), 0, 1) == "#"){
        //controle if wee got a user width that name
