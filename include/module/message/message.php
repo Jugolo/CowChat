@@ -17,6 +17,7 @@ function message_command(MessageParser $message){
            "to"   => $user->id(),
            "msg"  => $message->message()
          ]);
+         send($message, "MESSAGE ".$user->nick().": ".$message);
        }else{
          error($message, "Unknown user");
        }
