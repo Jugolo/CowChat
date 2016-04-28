@@ -21,6 +21,7 @@ class User{
 
   public static function current($current = null){
 	  if($current != null){
+                  $current->updateCount();
 		  self::$current = $current;
 	  }
 	  
