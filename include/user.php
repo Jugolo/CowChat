@@ -93,8 +93,19 @@ class UserData{
       return $this->data["defenderCount"];
    }
 
+   function updateCount(){
+      if($this->defenderCount() < 1){
+         $count = ((($time = time()) - $this->data["countUpdatet"])*60)*0.001;
+         if($count > 1){
+           $count = 1;
+         }
+         Database::query("UPDATE ".table("user")." SET `countUpdatet`='".$time."', `defenderCount`='".$count."' WHERE `id`='".$this->id()."'");
+         $this->data["defenderCount"] = $count;
+      }
+   }
+
    /**
-   *Push a channel the user is allerady in
+   ) Push a channel the user is allerady in
    */
    function pushChannel(ChannelData $data){
 	   $this->channels[$data->id()] = $data;
