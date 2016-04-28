@@ -96,7 +96,7 @@ class UserData{
 
    function updateCount(){
       if($this->defenderCount() < 1){
-         $count = ((($time = time()) - $this->data["countUpdatet"])*60)*0.001;
+         $count = ((($time = time()) - $this->data["countUpdatet"])*60)*0.000104;
          if($count > 1){
            $count = 1;
          }
