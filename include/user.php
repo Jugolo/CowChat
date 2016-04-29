@@ -5,14 +5,15 @@ class User{
 
   public static function createGaust($nick){
      $data = [
-        "nick"       => $nick,
-        "hash"       => generate_hash(),
-        "groupId"    => Setting::get("startGroup"),
-        "type"       => "g",
-		"ip"         => ip(),
-		"message_id" => Server::getLastId(),
-		"active"     => time(),
+        "nick"          => $nick,
+        "hash"          => generate_hash(),
+        "groupId"       => Setting::get("startGroup"),
+        "type"          => "g",
+		"ip"            => ip(),
+		"message_id"    => Server::getLastId(),
+		"active"        => time(),
         "defenderCount" => 0.5,
+        "countUpdatet"  => time(),
      ];
 
      $data["id"] = Database::insert("user", $data);
@@ -96,11 +97,12 @@ class UserData{
 
    function updateCount(){
       if($this->defenderCount() < 1){
-         $count = ((($time = time()) - $this->data["countUpdatet"])*3600)*0.000625;
-         if($count > 1){
-           $count = 1;
+         $count = ((($time = time()) - $this->data["countUpdatet"])/86400)*0.00625;
+         //exit($count."<-".$time."|".$this->data["countUpdatet"]);
+         if($count > 1.0){
+           $count = 1.0;
          }
-         Database::query("UPDATE ".table("user")." SET `countUpdatet`='".$time."', `defenderCount`='".$count."' WHERE `id`='".$this->id()."'");
+         Database::query("UPDATE ".table("user")." SET `countUpdatet`='".$time."', `defenderCount`='".(string)$count."' WHERE `id`='".$this->id()."'");
          $this->data["defenderCount"] = $count;
       }
    }
@@ -139,6 +141,10 @@ class UserData{
    function active(){
 	   return $this->data["active"];
    }
+   
+   function updateActive(){
+   	  Database::query("UPDATE ".table("user")." SET `active`='".time()."' WHERE `id`='".$this->id()."'");
+   }
 
    function send($msg){
       //this method will send message to all channels the users is in
@@ -165,25 +171,6 @@ class UserData{
 
    function isMember(ChannelData $data){
      return !empty($this->channels[$data->id()]);
-   }
-   
-   function join(ChannelData $channel, MessageParser $message = null){
-	   if($this->isMember($channel)){
-		   if($message){
-			   error($message, "You are allready member of the channel");
-		   }
-		   return false;
-	   }
-	   
-	   if($channel->join($this)){
-	       $this->channels[$channel->id()] = $channel;
-	       if($message != null){
-		      send($message, "JOIN: ".$channel->name());
-	       }
-	       return true;
-	   }else{
-		   return false;
-	   }
    }
 
    function leave(ChannelData $channel,$message = false){

@@ -359,8 +359,8 @@ function ip(){
     		$this->handleCommand($message);
     	}else{
             if(Flood::controle($message->channel())){
-                $this->handleMessage($message);
-                $this->updateActivInChannel($message->channel()->id());
+                $this->handleCommand($message);
+                User::current()->updateActive();
             }else{
                 send($message, "FLOOD ". $message->channel()->name().": Reach");
             }
@@ -381,6 +381,10 @@ function ip(){
 		     Module::load("leave");
 			 leave_command($message);
 		   break;
+		   case "MESSAGE":
+		   	Module::load("message");
+		   	message_command($message);
+		   	break;
         }
         return;
     	switch($message->command()){
@@ -897,6 +901,12 @@ function ip(){
 		$data["channel"] = [];
 		foreach(Channel::getUserChannel(User::current()) as $channel){
 			$data["channel"][] = $channel->name();
+		}
+		
+		$data["smylie"] = [];
+		$query = Database::query("SELECT * FROM ".table("smylie"));
+		while($row = $query->fetch()){
+			$data["smylie"][] = $row;
 		}
 		
 		$this->page("chat", $data);

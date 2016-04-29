@@ -73,17 +73,20 @@ class Channel{
 		   return false;
 	   }
 	   
-	   if($user->join($channel, $message)){
-	   	   $data["id"] = Database::insert("channel_member",[
-		     'cid'    => $channel->id(),
-			 'uid'    => $user->id(),
-			 'gid'    => $channel->creater() == $user->id() ? 0 : 0,
-			 'active' => time(),
-		   ]);
-		   return true;
+	   $data["id"] = Database::insert("channel_member",[
+		   'cid'    => $channel->id(),
+		   'uid'    => $user->id(),
+		   'gid'    => $channel->creater() == $user->id() ? 0 : 0,
+		   'active' => time(),
+	   ]);
+	   
+	   
+	   $user->pushChannel($channel);
+	   if($message != null){
+	   	 send($message, "JOIN: ".$channel->name());
 	   }
 	   
-	   return false;
+	   return true;
    }
    
    public static function garbage_collect(){
@@ -136,7 +139,7 @@ class ChannelData{
 
    function leave(UserData $user, $sendMessage = "Leave the channel"){
       if($this->isMember($user)){
-      exit($sendMessage);
+      //exit($sendMessage);
 		//wee delete the user in the channel
 		Database::query("DELETE FROM ".table("channel_member")." WHERE `cid`='".$this->id()."' AND `uid`='".$user->id()."'");
         unset($this->members[$user->id()]);
@@ -163,8 +166,13 @@ class ChannelData{
       if($user == null){
          $user = User::current();
       }
-      exit($message);
       return send_channel($this, $user, $user->nick()."@".$message);
+   }
+   
+   function updateActive(UserData $user){
+   	  if(!empty($member = $this->members[$user->id()])){
+   	  	  $member->updateActive();
+   	  }
    }
 
    function remove(){
@@ -219,8 +227,19 @@ class ChannelMember{
 		return $this->data["isInaktiv"] == "Y";
 	}
 	
+	public function updateActive(){
+		$append = "";
+		if($this->isInaktiv()){
+			$append = ", `isInaktiv`='N'";
+			$this->data["isInaktiv"] = "N";
+			$this->channel->send("INAKTIV ".$this->channel->name().": NO", $this->user);
+		}
+		
+		Database::query("UPDATE ".table("channel_member")." SET `active`='".time()."'".$append." WHERE `id`='".$this->data["id"]."'");
+	}
+	
 	public function markInaktiv(){
-		$this->channel->send("INAKTIV: ".$this->user->nick(), $this->user);
+		$this->channel->send("INAKTIV ".$this->channel->name().": YES", $this->user);
 		$this->data["isInaktiv"] = "Y";
 		Database::query("UPDATE ".table("channel_member")." SET `isInaktiv`='Y' WHERE `cid`='".$this->channel->id()."' AND `uid`='".$this->user->id()."'");
 	}

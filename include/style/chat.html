@@ -148,6 +148,29 @@
    border-right:1px solid black;
     box-sizing: border-box;
  }
+ 
+ .smylie_but{
+   width:25px;
+   height:25px;
+   border-radius: 10px;
+ }
+ 
+ #smylie_buttom{
+   margin-left:5px;
+   margin-top:5px;
+   border-radius: 10px;
+   border:1px solid black;
+   width:25px;
+   height:25px;
+ }
+ 
+ #smylie{
+   cursor:pointer;
+ }
+ 
+ #smylie_list div{
+   cursor:pointer;
+ }
 </style>
 <script src='js/send.js'></script>
 <script src='js/command.js'></script>
@@ -219,9 +242,16 @@
   <div class='o1' onclick='helpJoin();'>{{language("Join channel")}}</div>
 </div>
 <div id='buttom'>
+{%if smylie%}
 <div id='smylie_buttom'>
-
+    <div id='smylie_list'>
+      {%for i in smylie%}
+        <div><img class='smylie_but' src='{{i["url"]}}' title="{{i["title"]}}" alt="{{i["tag"]}}"> {{i["title"]}}</div>
+      {%endfor%} 
+    </div>
+    <div id='smylie'><img class='smylie_but' src='{{smylie[0]["url"]}}' title="{{smylie[0]["title"]}}" alt="{{smylie[0]["tag"]}}"></div>
 </div>
+{%endif%}
 <div id='text_buttom'>
  <textarea onkeydown='okp(event, this);'></textarea>
 </div>
