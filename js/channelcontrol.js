@@ -38,6 +38,23 @@ var ChannelPage = (function(){
 		this.t = title;
 	};
 	
+        ChannelPage.prototype.write = function(msg){
+            function template(user, context){
+               var date = new Date();
+               return "<div class='msg'><span class='time'>["+date.getHours()+":"+date.getMinutes()+"]</span><span class='user'>"+user+":</span> <span class='message'>"+msg+"</span></div>";
+            }
+
+            switch(msg.command()){
+               case "MESSAGE":
+                 this.appendHtml(template(msg.nick(), parseMsg(msg)));
+               break;
+            }
+        };
+
+        ChannelPage.prototype.appendHTML = function(html){
+          
+        };
+
 	ChannelPage.prototype.onClose = function(){
 		if(!this.exit){
 			leave(this.name, function(){
