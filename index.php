@@ -897,11 +897,19 @@ function ip(){
 		$data = [
 		  'sendType' => 'AJAX',
 		];
-		
+		$controle = [];
+                if(get("channels")){
+                   $controle = explode(",", get("channels"));
+                }
+
 		$data["channel"] = [];
 		foreach(Channel::getUserChannel(User::current()) as $channel){
 			$data["channel"][] = $channel->name();
 		}
+
+                foreach($contole as $chan){
+                   
+                }
 		
 		$data["smylie"] = [];
 		$query = Database::query("SELECT * FROM ".table("smylie"));
