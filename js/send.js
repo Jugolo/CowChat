@@ -123,6 +123,13 @@ var MessageParser  = (function(){
 			this.data["prefix"] = parts[0];
 			first[0] = parts[1];
 		}
+
+                //some respons from the server has a user nick (never username)
+                if(first[0].indexOf("@") != -1){
+                        parts = first[0].split("@");
+                        this.data["nick"] = parts[0];
+                        first[0] = parts[1];
+                }
 		
 		this.data["command"] = first[0];
 		this.data["channel"] = first.length <= 1 ? null : first[1];
@@ -136,6 +143,10 @@ var MessageParser  = (function(){
 	MessageParser.prototype.prefix = function(){
 		return this.data["prefix"];
 	};
+
+        MessageParser.prototype.nick = function(){
+                return this.data["nick"];
+        };
 	
 	MessageParser.prototype.command = function(){
 		return this.data["command"];
