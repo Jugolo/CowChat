@@ -897,18 +897,18 @@ function ip(){
 		$data = [
 		  'sendType' => 'AJAX',
 		];
-		$controle = [];
-                if(get("channels")){
-                   $controle = explode(",", get("channels"));
-                }
 
 		$data["channel"] = [];
 		foreach(Channel::getUserChannel(User::current()) as $channel){
 			$data["channel"][] = $channel->name();
 		}
 
-                foreach($contole as $chan){
-                   
+                if(get("channels")){
+                   foreach(explode("," get("channels")) as $channel){
+                      if(!in_array($channel, $data["channel"]) && controleChannelName($channel) && Channel::join($channel, User::current())){
+                         $data["channel"][] = $channel;
+                      }
+                   }
                 }
 		
 		$data["smylie"] = [];
@@ -917,6 +917,15 @@ function ip(){
 			$data["smylie"][] = $row;
 		}
 		
+                if(count($data["channel"]) == 0){
+                   //ohhh no this user missing channel to join so wee use start channel to join the user in.
+                   if(Channel::join(Setting::get("startGroup"), User::current())){
+                      $data["channel"][] = Setting::get("startGroup");
+                   }else{
+                     throw new Exception("Failed to join the chat start group");
+                   }
+                }
+
 		$this->page("chat", $data);
 	}
 	
