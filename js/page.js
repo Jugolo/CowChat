@@ -1,4 +1,5 @@
 var pageBuffer = [];
+var currentPage = null;
 
 function renderPage(callback){
   for(var i=0;i<pageBuffer.length;i++){
@@ -6,6 +7,13 @@ function renderPage(callback){
         break;
      }
   }
+}
+
+function pageFocus(page){
+   if(currentPage == null){
+     return false;
+   }
+   return currentPage == page;
 }
 
 function savePage(page){
@@ -41,6 +49,8 @@ function savePage(page){
 	rightWing.className = "rightWing";
 	rightWing.innerHTML = " ";
 	tab.appendChild(rightWing);
+        page.focus();
+        currentPage = page;
 
    document.getElementById("topMenu").insertBefore(tab, document.getElementById("topMenu").firstChild);	
 }
