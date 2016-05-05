@@ -46,13 +46,13 @@ var ChannelPage = (function(){
 
             switch(msg.command()){
                case "MESSAGE":
-                 this.appendHtml(template(msg.nick(), parseMsg(msg.message())));
+                 this.appendHTML(template(msg.nick(), parseMsg(msg.message())));
                break;
             }
         };
 
         ChannelPage.prototype.appendHTML = function(html){
-            this.cache.push("<div class='"+(this.cache.length%2)+"'>"+html+"</div>");
+            this.cache.push("<div class='item_"+(this.cache.length%2)+"'>"+html+"</div>");
             if(pageFocus(this)){
               document.getElementBiId("chat").innerHTML +=html;
             }
