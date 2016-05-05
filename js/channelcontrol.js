@@ -19,7 +19,6 @@ var ChannelPage = (function(){
 		this.name = name;
 		this.exit = false;
                 this.cache = [];
-		this.focus();
 	}
 	
 	ChannelPage.prototype.focus = function(){
