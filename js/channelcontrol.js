@@ -46,7 +46,7 @@ var ChannelPage = (function(){
 
             switch(msg.command()){
                case "MESSAGE":
-                 this.appendHtml(template(msg.nick(), parseMsg(msg)));
+                 this.appendHtml(template(msg.nick(), parseMsg(msg.message())));
                break;
             }
         };
