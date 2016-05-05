@@ -54,7 +54,7 @@ var ChannelPage = (function(){
         ChannelPage.prototype.appendHTML = function(html){
             this.cache.push("<div class='"+(this.cache.length%2)+"'>"+html+"</div>";
             if(pageFocus(this)){
-              document.getElementBiId().innerHTML +=html;
+              document.getElementBiId("chat").innerHTML +=html;
             }
         };
 
