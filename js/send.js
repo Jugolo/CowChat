@@ -155,6 +155,10 @@ var MessageParser  = (function(){
 	MessageParser.prototype.channel = function(){
 		return this.data["channel"];
 	};
+
+        MessageParser.prototype.hasChannel = function(){
+                return this.channel() != null;
+        };
 	
 	MessageParser.prototype.message = function(){
 		return this.data["message"];
@@ -170,6 +174,14 @@ function onIncomming(msg){
 		delete callbackBuffer[msg.prefix()];
 		buffer(msg);
 	}else{
-		
+		if(msg.hasChannel()){
+                   var found = renderPage(function(page){
+                      if(msg.channel() == page.title()){
+                           page.write(msg);
+                           return true;
+                      }
+                      return false;
+                   });
+                }
 	}
 }
