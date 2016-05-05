@@ -1,4 +1,12 @@
-var pageBuffer = []
+var pageBuffer = [];
+
+function renderPage(callback){
+  for(var i=0;i<pageBuffer.length;i++){
+     if(callback(pageBuffer[i])){
+        break;
+     }
+  }
+}
 
 function savePage(page){
 	pageBuffer.push(page);
