@@ -1,3 +1,17 @@
+function title(channel, tit){
+   if(channel.indexOf("#") !== 0){
+     return;
+   }
+
+   send("TITLE "+channel": "+tit, function(respons){
+      if(respons.command() = "ERROR"){
+         getChannel(channel).error(language(respons.message()));
+      }else{
+         getChannel(channel).setTitle(respons.message());
+      }
+   });
+}
+
 function join(channel, error){
 	if(channel.indexOf("#") !== 0){
 	  error(language("A channel name should alweys start width #"));
