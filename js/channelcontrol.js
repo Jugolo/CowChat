@@ -34,7 +34,7 @@ var ChannelPage = (function(){
 	};
 	
 	ChannelPage.prototype.setTitle = function(title){
-		this.write("<span color='green'>Topic: "+title+"</span>")
+		this.appendHTML("<span color='green'>Topic: "+title+"</span>")
 		this.t = title;
 	};
 	
