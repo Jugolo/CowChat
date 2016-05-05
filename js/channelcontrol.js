@@ -72,3 +72,15 @@ var ChannelPage = (function(){
 	
 	return ChannelPage;
 })();
+
+function parseMsg(msg){
+   //first wee take all single single block first
+   msg = msg.replace(/\[(.*)\]/g, function(all, item){
+      switch(item){
+         case "br":
+           return "\n";
+      }
+      return all;
+   });
+   
+}
