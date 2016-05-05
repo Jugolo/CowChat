@@ -41,7 +41,7 @@ var ChannelPage = (function(){
         ChannelPage.prototype.write = function(msg){
             function template(user, context){
                var date = new Date();
-               return "<div class='msg'><span class='time'>["+date.getHours()+":"+date.getMinutes()+"]</span><span class='user'>"+user+":</span> <span class='message'>"+msg+"</span></div>";
+               return "<span class='time'>["+date.getHours()+":"+date.getMinutes()+"]</span><span class='user'>"+user+":</span> <span class='message'>"+msg+"</span>";
             }
 
             switch(msg.command()){
@@ -52,7 +52,7 @@ var ChannelPage = (function(){
         };
 
         ChannelPage.prototype.appendHTML = function(html){
-          
+            var id = this.cache.push("<div class='"+(this.cache.length%2)+"'>"+html+"</div>";
         };
 
 	ChannelPage.prototype.onClose = function(){
