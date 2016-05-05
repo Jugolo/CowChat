@@ -1,9 +1,7 @@
 <?php
 function join_command(MessageParser $message){
 	if(controleChannelName($message->message())){
-		if(Channel::join($message->message(), User::current(), $message)){
-			title($message, $message->message(), Channel::get($message->message())->title());
-		}else{
+		if(!Channel::join($message->message(), User::current(), $message)){
 			error($message, "Somthink width the join failed");
 		}
 	}else{
