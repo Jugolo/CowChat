@@ -83,4 +83,5 @@ function parseMsg(msg){
       return all;
    });
    
+   return msg;
 }
