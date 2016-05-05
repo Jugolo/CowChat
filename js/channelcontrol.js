@@ -52,9 +52,10 @@ var ChannelPage = (function(){
         };
 
         ChannelPage.prototype.appendHTML = function(html){
-            this.cache.push("<div class='item_"+(this.cache.length%2)+"'>"+html+"</div>");
+            var n = "<div class='item_"+(this.cache.length%2)+"'>"+html+"</div>";
+            this.cache.push(n);
             if(pageFocus(this)){
-              document.getElementById("chat").innerHTML +=html;
+              document.getElementById("chat").innerHTML +=n;
             }
         };
 
