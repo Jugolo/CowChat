@@ -904,7 +904,7 @@ function ip(){
 		}
 
                 if(get("channels")){
-                   foreach(explode("," get("channels")) as $channel){
+                   foreach(explode(",", get("channels")) as $channel){
                       if(!in_array($channel, $data["channel"]) && controleChannelName($channel) && Channel::join($channel, User::current())){
                          $data["channel"][] = $channel;
                       }
