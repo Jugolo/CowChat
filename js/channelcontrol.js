@@ -52,7 +52,10 @@ var ChannelPage = (function(){
         };
 
         ChannelPage.prototype.appendHTML = function(html){
-            var id = this.cache.push("<div class='"+(this.cache.length%2)+"'>"+html+"</div>";
+            this.cache.push("<div class='"+(this.cache.length%2)+"'>"+html+"</div>";
+            if(pageFocus(this)){
+              document.getElementBiId().innerHTML +=html;
+            }
         };
 
 	ChannelPage.prototype.onClose = function(){
