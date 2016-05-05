@@ -19,6 +19,8 @@ var ChannelPage = (function(){
 		this.name = name;
 		this.exit = false;
                 this.cache = [];
+                //wee wish to get the title from here. The command from the user should be /title. To set title /title title context
+                title(this.name, "");
 	}
 	
 	ChannelPage.prototype.focus = function(){
