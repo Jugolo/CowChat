@@ -49,6 +49,20 @@ function leave(name, success, error){
 	});
 }
 
+function online(channel, callback, error){
+   if(channel.index("#") !== 0){
+      return;
+   }
+
+   send("ONLINE: "+channel, function(respons){
+       if(respons.command() == "ERROR" && typeof error !== "undefined"){
+          error(respons.message());
+       }else{
+          callback(respons.message().split(","));//the message is nick,nick,nick
+       }
+   });
+}
+
 function message(channel, message){
 	send("MESSAGE "+channel+": "+cleanMessage(message));
 }
