@@ -103,6 +103,18 @@ class Channel{
       ];
 
       $data["id"] = Database::insert("channel", $data);
+
+      $group = [];
+      $group["admin"] = Database::insert("channel_group", [
+         "name"        => "Admin",
+         "cid"         => $data["id"],
+         "standart"    => "N",
+         "changeTitle" => "Y"
+      ]);
+      $group["moderater"] = Database::insert("channel_group", [
+         "name"        => "Moderater",
+         "cid"         => $data["id"]
+      ]);
 	  return self::$channels[$data["id"]] = new ChannelData($data);
    }
 }
