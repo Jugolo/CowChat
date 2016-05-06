@@ -166,6 +166,10 @@ class ChannelData{
 	   return $this->data['creater'];
    }
 
+   function getMember(){
+      return $this->members;
+   }
+
    function leave(UserData $user, $sendMessage = "Leave the channel"){
       if($this->isMember($user)){
       //exit($sendMessage);
