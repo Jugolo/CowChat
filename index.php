@@ -373,8 +373,8 @@ function ip(){
              Module::load("show");
              show_command($message);
            break;
-		   case "JOIN":
-		     Module::load("join");
+           case "JOIN":
+	     Module::load("join");
 			 join_command($message);
 		   break;
 		   case "LEAVE":
@@ -388,6 +388,10 @@ function ip(){
                   case "TITLE":
                         Module::load("title");
                         title_command($message);
+                        break;
+                  case "ONLINE":
+                        Module::load("online");
+                        online_command($message);
                         break;
         }
         return;
