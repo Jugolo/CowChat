@@ -11,7 +11,7 @@ class Flood{
 			]);
 			return 1;
 		}
-		$row = $query->row();
+		$row = $query->fetch();
 		Database::query("UPDATE ".table("flood")." SET `count`=count+1 WHERE `id`=".Database::qlean($row["id"]));
 		return $row["count"]+1;
 	}
