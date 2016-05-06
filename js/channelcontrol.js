@@ -19,6 +19,7 @@ var ChannelPage = (function(){
 		this.name = name;
 		this.exit = false;
                 this.cache = [];
+                this.users = {};
                 //wee wish to get the title from here. The command from the user should be /title. To set title /title title context
                 var self = this;
                 title(this.name, "");
@@ -34,11 +35,30 @@ var ChannelPage = (function(){
                 //wee got all the command wee need now in the buffer let send the commands now
                 sendBuffer.flush();
 	}
+
+        ChannelPage.prototype.appendUser = function(user){
+                var self = this;
+                userInfo(this.name, user, function(info){
+                   self.users[user] = new UserData(info);
+                   //wee push the user in online list :)
+                   self.appendOnlineList(user);
+               });
+        };
 	
 	ChannelPage.prototype.focus = function(){
 		currentChannel = this;
 	};
 	
+        ChannelPagw.prototype.appendOnlineList = function(nick){
+            if(!pageFocus(nick)){//if this channel is not on the focus wee dont add it
+               return;
+            }
+            var html = "<div class='user' nick='"+nick+"'>" +
+            "<div class='nick'>"+nick+"</nick>";
+            
+            document.getElementById("online").innerHTML += html+"</div>";
+        };
+
 	ChannelPage.prototype.blur = function(){
 		currentChannel = null;
 	};
