@@ -1,5 +1,5 @@
 <?php
-function title_command(MessagePaser $msg){
+function title_command(MessageParser $msg){
    if(User::current()->isMember($msg->channel())){
       if($msg->message() == ""){
          title($msg, $msg->channel()->title(), false);
