@@ -3,7 +3,7 @@ function title(channel, tit){
      return;
    }
 
-   send("TITLE "+channel": "+tit, function(respons){
+   send("TITLE "+channel+": "+tit, function(respons){
       if(respons.command() = "ERROR"){
          getChannel(channel).error(language(respons.message()));
       }else{
