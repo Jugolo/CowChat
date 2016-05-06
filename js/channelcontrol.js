@@ -43,7 +43,7 @@ var ChannelPage = (function(){
         ChannelPage.prototype.write = function(msg){
             function template(user, context){
                var date = new Date();
-               return "<span class='time'>["+date.getHours()+":"+date.getMinutes()+"]</span><span class='user'>"+user+":</span> <span class='message'>"+context+"</span>";
+               return "<span class='time'>["+date.getHours()+":"+date.getMinutes()+"]</span><span class='user'>"+user+":</span> <span class='msg'>"+context+"</span>";
             }
 
             switch(msg.command()){
