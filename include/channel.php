@@ -63,8 +63,16 @@ class Channel{
    public static function join($name, UserData $user, MessageParser $message = null){
 	   $channel = null;
 	   if(($channel = self::get($name)) == null){
-		   $channel = self::create($name, $user);
-	   }
+		   list($group, $channel) = self::create($name, $user);
+	   }else{
+                    $query = Database::query("SELECT `id` FROM ".table("channel_group")." WHERE `standart`='Y'");
+                    if($query->rows() != 1){
+                       error($message, "Could not finde a group for you");
+                       return false;
+                    }
+                    $row = $query->fetch();
+                    $group = $row["id"];
+           }
 	   
 	   if($user->isMember($channel)){
 		   if($message){
@@ -76,7 +84,7 @@ class Channel{
 	   $data["id"] = Database::insert("channel_member",[
 		   'cid'    => $channel->id(),
 		   'uid'    => $user->id(),
-		   'gid'    => $channel->creater() == $user->id() ? 0 : 0,
+		   'gid'    => $group,
 		   'active' => time(),
 	   ]);
 	   
@@ -104,18 +112,26 @@ class Channel{
 
       $data["id"] = Database::insert("channel", $data);
 
-      $group = [];
-      $group["admin"] = Database::insert("channel_group", [
+      $group = Database::insert("channel_group", [
          "name"        => "Admin",
          "cid"         => $data["id"],
          "standart"    => "N",
          "changeTitle" => "Y"
       ]);
-      $group["moderater"] = Database::insert("channel_group", [
+      Database::insert("channel_group", [
          "name"        => "Moderater",
-         "cid"         => $data["id"]
+         "cid"         => $data["id"],
+         "standart"    => "N",
+         "changeTitle" => "N",
       ]);
-	  return self::$channels[$data["id"]] = new ChannelData($data);
+      Database::insert("channel_group", [
+         "name"        => "User",
+         "cid"         => $data["id"],
+         "standart"    => "Y",
+         "changeTitle" => "N",
+      ]);
+        
+	  return [$group, (self::$channels[$data["id"]] = new ChannelData($data))];
    }
 }
 
