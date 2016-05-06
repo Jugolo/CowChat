@@ -1,3 +1,20 @@
+function userInfo(channel, nick, callback, error){
+   send("INFO "+channel+": "+nick, function(respons){
+      if(respons.command() == "ERROR" && typeof error !== "undefined"){
+         error(respons.message());
+      }else{
+         //it a single string as key=vale;key=value
+         var values = {};
+         var part = respons.message().split(";");
+         for(var i=0;i<part.length;i++){
+            var value = part[i].split("=");
+            values[value[0]]= value[1];
+         } 
+         callback(values);
+      }
+   });
+}
+
 function title(channel, tit){
    if(channel.indexOf("#") !== 0){
      return;
