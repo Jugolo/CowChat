@@ -20,7 +20,19 @@ var ChannelPage = (function(){
 		this.exit = false;
                 this.cache = [];
                 //wee wish to get the title from here. The command from the user should be /title. To set title /title title context
+                var self = this;
                 title(this.name, "");
+                online(this.name, function(users){
+                  for(var i=0;i<users.length;i++){
+                     self.appendUser(users[i]);
+                  }
+                  //wee got all commands from appendUser in buffer let send them now
+                  sendBuffer.flush();
+                }, function(msg){
+                     self.error(msg);
+                });
+                //wee got all the command wee need now in the buffer let send the commands now
+                sendBuffer.flush();
 	}
 	
 	ChannelPage.prototype.focus = function(){
