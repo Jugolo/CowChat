@@ -42,6 +42,8 @@ var ChannelPage = (function(){
                    self.users[user] = new UserData(info);
                    //wee push the user in online list :)
                    self.appendOnlineList(user);
+               }, function(msg){
+                   self.error(msg);
                });
         };
 	
