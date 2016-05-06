@@ -4,7 +4,7 @@ function title(channel, tit){
    }
 
    send("TITLE "+channel+": "+tit, function(respons){
-      if(respons.command() = "ERROR"){
+      if(respons.command() == "ERROR"){
          getChannel(channel).error(language(respons.message()));
       }else{
          getChannel(channel).setTitle(respons.message());
