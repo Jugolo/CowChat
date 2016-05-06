@@ -385,6 +385,10 @@ function ip(){
 		   	Module::load("message");
 		   	message_command($message);
 		   	break;
+                  case "TITLE":
+                        Module::load("title");
+                        title_command($message);
+                        break;
         }
         return;
     	switch($message->command()){
