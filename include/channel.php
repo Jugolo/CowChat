@@ -36,7 +36,7 @@ class Channel{
       $channel->remove();
       unset(self::$channels[$channel->id()]);
       Database::query("DELETE FROM ".table("channel")." WHERE `id`='".$channel->id()."'");
-      Database::query("DELETE FROM ".table("channel_group")." WHERE `cid`='".$channel->id()."`");
+      Database::query("DELETE FROM ".table("channel_group")." WHERE `cid`='".$channel->id()."'");
    }
 
    public static function getUserChannel(UserData $user){
