@@ -904,6 +904,7 @@ function ip(){
 	private function showChat(){
 		$data = [
 		  'sendType' => 'AJAX',
+                  'nick'     => User::current()->nick();
 		];
 
 		$data["channel"] = [];
