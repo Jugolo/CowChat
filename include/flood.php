@@ -7,7 +7,7 @@ class Flood{
 		if($query->rows() == 0){
 			Database::insert("flood", [
 					'uid' => User::current()->id(),
-					'cid' => User::current()->id(),
+					'cid' => $data->id(),
 			]);
 			return 1;
 		}
