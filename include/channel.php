@@ -243,15 +243,23 @@ class ChannelMember{
 	private $user;
 	private $channel;
 	private $data;
-        private $group;
+        private $groups;
 	
 	public function __construct(UserData $user, ChannelData $data){
 		$this->user = $user;
 		$this->user->pushChannel($data);
 		$this->data = Database::query("SELECT * FROM ".table("channel_member")." WHERE `cid`='".$data->id()."' AND `uid`='".$user->id()."'")->fetch();
 		$this->channel = $data;
-                $this->group = new ChannelGroup($this);
+                $this->groups = new ChannelGroup($this);
 	}
+
+        public function group(){
+           return $this->groups;
+        }
+
+        public function groupId(){
+            return $this->data["gid"];
+        }
 	
 	public function getUser(){
 		return $this->user;
@@ -287,5 +295,22 @@ class ChannelMember{
 }
 
 class ChannelGroup{
+   private $data;
 
+   function __construct(ChannelMember $member){
+     //wee get the information for the group :) 
+     $this->data = Database::query("SELECT * FROM ".table("channel_group")." WHERE `id`='".$member->groupId()."'")->fetch();
+   }
+
+   //get all data in a single string
+   public function __toString(){
+       $data = $this->data;
+       unset($data["cid"]);
+       $return = [];
+       foreach($data as $key => $value){
+          $return[] = $key."=".$value;
+       }
+
+       return implode(";", $return);
+   }
 }
