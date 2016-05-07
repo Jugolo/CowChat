@@ -904,7 +904,7 @@ function ip(){
 	private function showChat(){
 		$data = [
 		  'sendType' => 'AJAX',
-                  'nick'     => User::current()->nick();
+                  'nick'     => User::current()->nick(),
 		];
 
 		$data["channel"] = [];
@@ -944,6 +944,7 @@ function ip(){
 		    Language::load($name);
 		}catch(Exception $e){
 			$this->error($e);
+                        return;
 		}
 		try{
 		   $loader = new Twig_Loader_Filesystem("include/style");
