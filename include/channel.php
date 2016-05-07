@@ -6,15 +6,13 @@ function controleChannelName($name){
     return false;
   }
 
-  $name = substr($name, 1);
-
   //controle length
   if(strlen($name) < 3 || strlen($name) > 10){
     return false;
   }
 
   //wee could use regex to find out wich char there is in but no. 
-  for($i=0;$i<strlen($name);$i++){
+  for($i=1;$i<strlen($name);$i++){
      if(($char = ord($name[$i])) < 65 || $char > 90 && $char < 97 || $char > 122){
         return false;
      }
