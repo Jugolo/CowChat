@@ -243,12 +243,14 @@ class ChannelMember{
 	private $user;
 	private $channel;
 	private $data;
+        private $group;
 	
 	public function __construct(UserData $user, ChannelData $data){
 		$this->user = $user;
 		$this->user->pushChannel($data);
 		$this->data = Database::query("SELECT * FROM ".table("channel_member")." WHERE `cid`='".$data->id()."' AND `uid`='".$user->id()."'")->fetch();
 		$this->channel = $data;
+                $this->group = new ChannelGroup($this);
 	}
 	
 	public function getUser(){
@@ -282,4 +284,8 @@ class ChannelMember{
 		$this->data["isInaktiv"] = "Y";
 		Database::query("UPDATE ".table("channel_member")." SET `isInaktiv`='Y' WHERE `cid`='".$this->channel->id()."' AND `uid`='".$this->user->id()."'");
 	}
+}
+
+class ChannelGroup{
+
 }
