@@ -3,8 +3,12 @@ function message_command(MessageParser $message){
    $message->encode();
    if($message->channel() != null){
       if($message->channel()->isMember(User::current())){
-        $message->channel()->send("MESSAGE ".$message->channelName().": ".$message->message());
-        $message->channel()->updateActive(User::current());
+          if(!empty(($msg = $message->message())) && trim($msg)){
+            $message->channel()->send("MESSAGE ".$message->channelName().": ".$message->message());
+            $message->channel()->updateActive(User::current());
+          }else{
+            error($message, "You can not send empty message");
+          }
       }else{
        error($message, "You are not member of the channel");
       }
