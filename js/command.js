@@ -67,7 +67,7 @@ function leave(name, success, error){
 }
 
 function online(channel, callback, error){
-   if(channel.index("#") !== 0){
+   if(channel.indexOf("#") !== 0){
       return;
    }
 
