@@ -85,12 +85,12 @@ function online(channel, callback, error){
  * @param channel the channel name
  * @param callback a function to handle the list
  */
-function inaktive(channel, callback){
+function inaktiv(channel, nick, callback){
     if(channel.indexOf("#") !== 0){
 		return;
 	}
 	
-	send("INAKTIVE: "+channel, callback);
+	send("INAKTIV "+channel+": "+nick, callback);
 }
 
 function message(channel, message){

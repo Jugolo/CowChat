@@ -2,10 +2,12 @@
 class Language{
 	
 	private static $language = [];
+	private static $name = null;
 	
 	public static function load($name){
 		if(cookie("language") && file_exists("include/language/".cookie("language")."/".$name.".php")){
 			include "include/language/".cookie("language")."/".$name.".php";
+			self::$name = cookie("language");
 			self::$language = $lang;
 		}else{
 			if(strpos($_SERVER["HTTP_ACCEPT_LANGUAGE"], ",")){
@@ -15,6 +17,7 @@ class Language{
 					$lang = substr($lang, 0, strpos("-", $lang));
 				}
 				if(file_exists("include/language/".$lang."/".$name.".php")){
+					self::$name = $lang;
 					include "include/language/".$lang."/".$name.".php";
 					self::$language = $lang;
 					return;//stop here
@@ -24,6 +27,7 @@ class Language{
 				if(file_exists("include/language/".$_SERVER["HTTP_ACCEPT_LANGUAGE"]."/".$name.".php")){
 					include "include/language/".$_SERVER["HTTP_ACCEPT_LANGUAGE"]."/".$name.".php";
 					self::$language = $lang;
+					self::$name = $lang;
 					return;
 				} 
 			}
@@ -36,5 +40,9 @@ class Language{
 		}		
 		
 		return $text;
+	}
+	
+	public static function getLanguageName(){
+		return self::$name;
 	}
 }

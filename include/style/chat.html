@@ -204,12 +204,35 @@ textarea {
 .inaktiv{
   display:none;
 }
+
+.u{
+  text-decoration: underline;
+}
+
+.strong{
+  font-weight: bold;
+}
+
+a{
+  color:black;
+  text-decoration:none;
+}
+
+.menu_show{
+  display:block;
+}
+
+.menu_hide{
+  display:none;
+}
 </style>
 <script src='js/send.js'></script>
 <script src='js/command.js'></script>
 <script src='js/channelcontrol.js'></script>
 <script src='js/page.js'></script>
 <script src='js/user.js'></script>
+<script src='js/language.php'></script>
+<script src='js/phpjs.js'></script>
 <script>
   var sendType = '{{sendType}}';
   var myNick = '{{nick}}';
@@ -270,6 +293,18 @@ textarea {
   function fane_show(obj){
 	  
   }
+  
+  function hide_menu(){
+	  var dom = document.getElementsByClassName("menu_show");
+	  for(var i=0;i<dom.length;i++){
+		dom[i].className = dom[i].className.replace("menu_show", "menu_hide");
+	  }
+  }
+  
+  function show_smylie(){
+	  var dom = document.getElementById("smylie_list");
+	  dom.className = dom.className.replace("menu_hide", "menu_show");
+  }
 
   window.onerror = function (errorMsg, url, lineNumber) {
      alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
@@ -277,7 +312,7 @@ textarea {
 </script>
 <title>{{language("Chat %s", setting("name"))}}</title>
 </head>
-<body onload='onload();'>
+<body onload='onload();' onclick='hide_menu();'>
 	<div id='topMenu'>
 		<div style='clear: both;'></div>
 	</div>
@@ -294,7 +329,7 @@ textarea {
 	<div id='buttom'>
 		{%if smylie%}
 		<div id='smylie_buttom'>
-			<div id='smylie_list'>
+			<div id='smylie_list' class='menu_hide'>
 				{%for i in smylie%}
 				<div>
 					<img class='smylie_but' src='{{i["url"]}}' title="{{i["
@@ -302,7 +337,7 @@ textarea {
 				</div>
 				{%endfor%}
 			</div>
-			<div id='smylie'>
+			<div id='smylie' onclick='show_smylie()'>
 				<img class='smylie_but' src='{{smylie[0]["url"]}}'
 					title="{{smylie[0][" title"]}}" alt="{{smylie[0]["tag"]}}">
 			</div>

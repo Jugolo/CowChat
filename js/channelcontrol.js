@@ -30,20 +30,51 @@ var ChannelPage = (function(){
                   }
                   //wee got all commands from appendUser in buffer let send them now
                   sendBuffer.flush();
-                  inaktive(self.name);
-                  //wee flush the buffer agin
-                  sendBuffer.flush();
                 }, function(msg){
                      self.error(msg);
                 });
                 //wee got all the command wee need now in the buffer let send the commands now
                 sendBuffer.flush();
 	}
+	
+	ChannelPage.prototype.removeInaktiv = function(name){
+		if(typeof this.users[name] !== "undefined" && this.users[name].inaktiv()){
+			this.users[name].inaktiv(false);
+			var dom = document.getElementsByClassName("user");
+			for(var i=0;i<dom.length;i++){
+				if(dom[i].getAttribute("nick") == name){
+					dom[i].getElementsByClassName("inaktiv")[0].style.display = "none";
+					return;
+				}
+			}
+		}
+	}
+	
+	ChannelPage.prototype.makeInaktiv = function(name){
+		if(typeof this.users[name] !== "undefined"){
+			this.users[name].inaktiv(true);
+			var dom = document.getElementsByClassName("user");
+			for(var i=0;i<dom.length;i++){
+				if(dom[i].getAttribute("nick") == name){
+					dom[i].getElementsByClassName("inaktiv")[0].style.display = 'block';
+					return;
+				}
+			}
+		}else{
+			console.log("Unknown user in inaktive: "+name);
+		}
+	};
 
         ChannelPage.prototype.appendUser = function(user){
                 var self = this;
                 userInfo(this.name, user, function(info){
                    self.appendOnlineList(self.users[user] = new UserData(user, info));
+                   inaktiv(self.name, user, function(respons){
+                	  if(respons.message() == "YES"){
+                		  self.makeInaktiv(user);
+                	  } 
+                   });
+                   sendBuffer.flush();
                }, function(msg){
                    self.error(msg);
                });
@@ -52,7 +83,7 @@ var ChannelPage = (function(){
 	ChannelPage.prototype.focus = function(){
 		currentChannel = this;
 		for(var nick in this.users){
-			this.appendOnlineList(nick);
+			this.appendOnlineList(this.users[nick]);
 		}
 		
 		//wee append context to the chat place
@@ -87,7 +118,7 @@ var ChannelPage = (function(){
         ChannelPage.prototype.write = function(msg){
             function template(user, context){
                var date = new Date();
-               return "<span class='time'>["+date.getHours()+":"+date.getMinutes()+"]</span><span class='nick'>"+user+":</span> <span class='msg'>"+context+"</span>";
+               return "<span class='time'>["+controleDataNumber(date.getHours())+":"+controleDataNumber(date.getMinutes())+"]</span><span class='nick'>"+user+":</span> <span class='msg'>"+context+"</span>";
             }
 
             switch(msg.command()){
@@ -96,6 +127,16 @@ var ChannelPage = (function(){
                break;
                case "TITLE":
             	   this.setTitle(msg.message());
+               break;
+               case "INAKTIV":
+            	   console.log("["+msg.nick()+"]");
+            	   if(msg.message() == "YES"){
+            		   this.makeInaktiv(msg.nick());
+            		   this.appendHTML(language("%s is inaktiv", msg.nick()));
+            	   }else if(msg.message() == "NO"){
+            		   this.removeInaktiv(msg.nick);
+            		   this.appendHTML(language("%s is no longer inaktiv", msg.nick()));
+            	   }
                break;
             }
         };
@@ -109,10 +150,9 @@ var ChannelPage = (function(){
         };
         
     ChannelPage.prototype.pushChat = function(msg){
-    	
-    	//console.log(document.getElementById("chat").scrollHeight+"|"+document.getElementById("chat").offsetHeight);
-    	document.getElementById("chat").innerHTML += msg;
-    	document.getElementById("chat").scrollTo(0,document.getElementById("chat").scrollHeight);
+    	var dom = document.getElementById("chat");
+    	dom.innerHTML += msg;
+    	dom.scrollTop = dom.scrollHeight;
     };
 
 	ChannelPage.prototype.onClose = function(){
@@ -140,5 +180,26 @@ function parseMsg(msg){
       return all;
    });
    
-   return msg;
+   //wee has a lot of bb code first [i][b][url]
+   var regex = /\[([a-zA-Z]*)(.*?)\](.*?)\[\/\1\]/g;
+   return msg.replace(regex, function(all, identify, extra, context){
+	  switch(identify){
+	  case "url":
+		  return "<a target='_blank' rel='nofollow' href='"+extra.substr(1)+"'>"+parseMsg(context)+"</a>";
+	  case "b":
+		  return "<span class='strong'>"+parseMsg(context)+"</span>";
+	  case "u":
+		  return "<span class='u'>"+parseMsg(context)+"</span>";
+	  }
+	  console.log(arg)
+	  return all;
+   });
+}
+
+function controleDataNumber(n){
+	if(n < 10){
+		return "0"+n;
+	}
+	
+	return n;
 }

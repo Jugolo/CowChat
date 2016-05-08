@@ -275,9 +275,6 @@ class ChannelMember{
 	}
 	
 	public function writeTime(){
-		if(empty($this->data["active"])){
-			print_r($this->data);
-		}
 		return $this->data['active'];
 	}
 	
@@ -287,6 +284,7 @@ class ChannelMember{
 	
 	public function updateActive(){
 		$append = "";
+		$this->data["active"] = time();
 		if($this->isInaktiv()){
 			$append = ", `isInaktiv`='N'";
 			$this->data["isInaktiv"] = "N";
@@ -297,7 +295,6 @@ class ChannelMember{
 	}
 	
 	public function markInaktiv(){
-		inaktiv(null, $this->channel->name(), $this->user);
 		$this->channel->send("INAKTIV ".$this->channel->name().": YES", $this->user);
 		$this->data["isInaktiv"] = "Y";
 		Database::query("UPDATE ".table("channel_member")." SET `isInaktiv`='Y' WHERE `cid`='".$this->channel->id()."' AND `uid`='".$this->user->id()."'");

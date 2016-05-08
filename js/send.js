@@ -92,6 +92,11 @@ function ajax(url, data, callback){
 		if(this.readyState == 4 && this.status == 200){
 			var parts = this.responseText.split("\r\n");
 			for(var i=0;i<parts.length;i++){
+				//controle if this is login message
+				if(parts[i] == "LOGIN: REQUID"){
+					location.assign("?login=false&page=login.html&defender=enabled");
+					return;
+				}
 				onIncomming(parts[i]);
 			}
 			

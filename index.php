@@ -27,6 +27,13 @@ function ip(){
      }
      
     function inilize(){
+    	//set CHAT_PATH
+    	if(!defined("CHAT_PATH")){
+    		define("CHAT_PATH", dirname(__FILE__)."\\");
+    		//set include path so wee can include from this dir
+    		set_include_path(CHAT_PATH);
+    	}
+    	
 		include 'include/autoloader.php';
 		AutoLoader::set();
         include "include/firewall.php";
@@ -57,8 +64,8 @@ function ip(){
 		include "include/command.php";
         include "include/defender.php";
         include "include/flood.php";
-    
-	    if(!file_exists("include/config.json")){
+    exit(CHAT_PATH."include/config.json");
+	    if(!file_exists(CHAT_PATH."include/config.json")){
 			if(!Server::is_cli()){
 			    header("location:install.php?step=1");
 			    exit;
@@ -67,7 +74,7 @@ function ip(){
 			}
 		}
         
-		$json = json_decode(file_get_contents("include/config.json"));
+		$json = json_decode(file_get_contents(CHAT_PATH."include/config.json"));
 		
         Database::init($json->host, $json->user, $json->pass, $json->table, $json->prefix);
 		Setting::init();
@@ -397,6 +404,10 @@ function ip(){
                         Module::load("info");
                         info_command($message);
                         break;
+                  case "INAKTIV":
+                  	    Module::load("inaktiv");
+                  	    inaktiv_command($message);
+                  	    break;
         }
         return;
     	switch($message->command()){
@@ -948,10 +959,13 @@ function ip(){
 		    Language::load($name);
 		}catch(Exception $e){
 			$this->error($e);
-                        return;
+            return;
+		}
+		if(defined("NO_CONTEXT")){
+			return;
 		}
 		try{
-		   $loader = new Twig_Loader_Filesystem("include/style");
+		   $loader = new Twig_Loader_Filesystem(CHAT_PATH."include/style");
 		   $twig   = new Twig_Environment($loader);
 		   $twig->addFunction(new Twig_SimpleFunction('language', function () {
 			   $arg = func_get_args();
@@ -983,7 +997,7 @@ function ip(){
 	}
 	
 	private function error($e){
-		$loader = new Twig_Loader_Filesystem("include/style/system/");
+		$loader = new Twig_Loader_Filesystem(CHAT_PATH."include/style/system/");
 		$twig = new Twig_Environment($loader);
 		exit($twig->render("error.html", array("error" => $e)));
 	}

@@ -65,8 +65,7 @@ function savePage(page){
 	rightWing.className = "rightWing";
 	rightWing.innerHTML = " ";
 	tab.appendChild(rightWing);
-        page.focus();
-        currentPage = page;
+    setFocus(page);
 
    document.getElementById("topMenu").insertBefore(tab, document.getElementById("topMenu").firstChild);	
 }

@@ -13,7 +13,7 @@ class AutoLoader{
 	
 	private static function LoadTwig($name){
 		//remove Twig_ becuse no need to use it and replace all _ to /
-		$dir = "include/twig/".str_replace("_", "/", substr($name, 5)).".php";
+		$dir = CHAT_PATH."include/twig/".str_replace("_", "/", substr($name, 5)).".php";
 		if(file_exists($dir)){
 			include $dir;
 		}
