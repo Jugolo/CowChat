@@ -4,7 +4,7 @@ function info_command(MessageParser $parser){
        //wee controle if the user is member of the channel
        if(($user = User::get($parser->message())) != null){
            //wee controle the user is member of the channel
-           if($user->isMember($parser->channel())){
+           if($parser->channel()->isMember($user)){
               //okay wee send the user data to the user
               send($parser, "INFO ".$parser->channel()->name().": ".$parser->channel()->getMember($user)->group());
            }else{
