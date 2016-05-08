@@ -51,7 +51,7 @@ var ChannelPage = (function(){
 		currentChannel = this;
 	};
 	
-        ChannelPagw.prototype.appendOnlineList = function(nick){
+        ChannelPage.prototype.appendOnlineList = function(nick){
             if(!pageFocus(nick)){//if this channel is not on the focus wee dont add it
                return;
             }
