@@ -52,7 +52,7 @@ var ChannelPage = (function(){
 	};
 	
         ChannelPage.prototype.appendOnlineList = function(nick){
-            if(!pageFocus(nick)){//if this channel is not on the focus wee dont add it
+            if(!pageFocus(this)){//if this channel is not on the focus wee dont add it
                return;
             }
             var html = "<div class='user' nick='"+nick+"'>" +
