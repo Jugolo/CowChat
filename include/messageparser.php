@@ -23,6 +23,10 @@ class MessageParser{
       return $this->data["command"];
   }
 
+  /**
+   * Get the channel data object
+   * @return ChannelData channel data object
+   */
   function channel(){
      return $this->data["channel"];
   }

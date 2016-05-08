@@ -23,11 +23,15 @@ var ChannelPage = (function(){
                 //wee wish to get the title from here. The command from the user should be /title. To set title /title title context
                 var self = this;
                 title(this.name, "");
+                //wee get our data :)
                 online(this.name, function(users){
                   for(var i=0;i<users.length;i++){
                      self.appendUser(users[i]);
                   }
                   //wee got all commands from appendUser in buffer let send them now
+                  sendBuffer.flush();
+                  inaktive(self.name);
+                  //wee flush the buffer agin
                   sendBuffer.flush();
                 }, function(msg){
                      self.error(msg);
@@ -39,9 +43,7 @@ var ChannelPage = (function(){
         ChannelPage.prototype.appendUser = function(user){
                 var self = this;
                 userInfo(this.name, user, function(info){
-                   self.users[user] = new UserData(info);
-                   //wee push the user in online list :)
-                   self.appendOnlineList(user);
+                   self.appendOnlineList(self.users[user] = new UserData(user, info));
                }, function(msg){
                    self.error(msg);
                });
@@ -49,14 +51,22 @@ var ChannelPage = (function(){
 	
 	ChannelPage.prototype.focus = function(){
 		currentChannel = this;
+		for(var nick in this.users){
+			this.appendOnlineList(nick);
+		}
+		
+		//wee append context to the chat place
+		for(var i=0;i<this.cache.length;i++){
+			this.pushChat(this.cache[i]);
+		}
 	};
 	
-        ChannelPage.prototype.appendOnlineList = function(nick){
+        ChannelPage.prototype.appendOnlineList = function(user){
             if(!pageFocus(this)){//if this channel is not on the focus wee dont add it
                return;
             }
-            var html = "<div class='user' nick='"+nick+"'>" +
-            "<div class='nick'>"+nick+"</nick>";
+            var html = "<div class='user' nick='"+user.nick+"'>" +
+            "<h3 onclick='fane_show(this);'><span class='inaktiv'>[I]</span>"+user.nick+"</h3>";
             
             document.getElementById("online").innerHTML += html+"</div>";
         };
@@ -77,12 +87,15 @@ var ChannelPage = (function(){
         ChannelPage.prototype.write = function(msg){
             function template(user, context){
                var date = new Date();
-               return "<span class='time'>["+date.getHours()+":"+date.getMinutes()+"]</span><span class='user'>"+user+":</span> <span class='msg'>"+context+"</span>";
+               return "<span class='time'>["+date.getHours()+":"+date.getMinutes()+"]</span><span class='nick'>"+user+":</span> <span class='msg'>"+context+"</span>";
             }
 
             switch(msg.command()){
                case "MESSAGE":
                  this.appendHTML(template(msg.nick(), parseMsg(msg.message())));
+               break;
+               case "TITLE":
+            	   this.setTitle(msg.message());
                break;
             }
         };
@@ -91,9 +104,16 @@ var ChannelPage = (function(){
             var n = "<div class='item_"+(this.cache.length%2)+" message'>"+html+"</div>";
             this.cache.push(n);
             if(pageFocus(this)){
-              document.getElementById("chat").innerHTML +=n;
+              this.pushChat(n);
             }
         };
+        
+    ChannelPage.prototype.pushChat = function(msg){
+    	
+    	//console.log(document.getElementById("chat").scrollHeight+"|"+document.getElementById("chat").offsetHeight);
+    	document.getElementById("chat").innerHTML += msg;
+    	document.getElementById("chat").scrollTo(0,document.getElementById("chat").scrollHeight);
+    };
 
 	ChannelPage.prototype.onClose = function(){
 		if(!this.exit){
@@ -112,10 +132,10 @@ var ChannelPage = (function(){
 
 function parseMsg(msg){
    //first wee take all single single block first
-   msg = msg.replace(/\[(.*)\]/g, function(all, item){
+   msg = msg.replace(/\[(.*)\/\]/g, function(all, item){
       switch(item){
          case "br":
-           return "\n";
+           return "<br>";
       }
       return all;
    });

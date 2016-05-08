@@ -80,11 +80,24 @@ function online(channel, callback, error){
    });
 }
 
+/**
+ * Get all inaktiv in the channel
+ * @param channel the channel name
+ * @param callback a function to handle the list
+ */
+function inaktive(channel, callback){
+    if(channel.indexOf("#") !== 0){
+		return;
+	}
+	
+	send("INAKTIVE: "+channel, callback);
+}
+
 function message(channel, message){
 	send("MESSAGE "+channel+": "+cleanMessage(message));
 }
 
 function cleanMessage(message){
-	message = message.replace(/\n/g, "[br]");
+	message = message.replace(/\n/g, "[br/]");
 	return message;
 }

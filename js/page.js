@@ -16,22 +16,38 @@ function pageFocus(page){
    return currentPage == page;
 }
 
+function setFocus(obj){
+	if(currentPage != null){
+		currentPage.blur();
+	}
+	
+	// wee unset the diffrence pages :)
+	document.getElementById("chat").innerHTML = "";
+	document.getElementById("online").innerHTML = "";
+	currentPage = obj;
+	obj.focus();
+}
+
 function savePage(page){
 	pageBuffer.push(page);
-	//wee append a tab to the top menu where the user can close it and push it and so on
+	// wee append a tab to the top menu where the user can close it and push it
+	// and so on
     var tab = document.createElement("div");
     tab.className = "tab";
 	
-	//wee need to set <| as the begin :)
+	// wee need to set <| as the begin :)
 	var leftWing = document.createElement("div");
 	leftWing.innerHTML = " ";
 	leftWing.className = "leftWing";
 	tab.appendChild(leftWing);
 	
-	//wee append the name here
+	// wee append the name here
 	var main = document.createElement("div");
 	main.className = 'tab_title';
 	main.innerHTML = page.title();
+	main.onclick = function(){
+		setFocus(page);
+	};
 	tab.appendChild(main);
 	
 	var close = document.createElement("div");

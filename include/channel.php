@@ -64,9 +64,9 @@ class Channel{
 	   if(($channel = self::get($name)) == null){
 		   list($group, $channel) = self::create($name, $user);
 	   }else{
-                    $query = Database::query("SELECT `id` FROM ".table("channel_group")." WHERE `standart`='Y'");
+                    $query = Database::query("SELECT `id` FROM ".table("channel_group")." WHERE `standart`='Y' AND `cid`='".$channel->id()."'");
                     if($query->rows() != 1){
-                       error($message, "Could not finde a group for you");
+                       error($message == null ? new MessageParser("JOIN: unknown") : $message, "Could not finde a group for you");
                        return false;
                     }
                     $row = $query->fetch();
@@ -156,7 +156,12 @@ class ChannelData{
      return $this->data["name"];
    }
 
-   function title(){
+   function title($new = null){
+   	 if($new != null){
+   	 	//wee append a title here
+   	 	Database::query("UPDATE ".table("channel")." SET `title`=".Database::qlean($new)." WHERE `id`='".$this->id()."'");
+   	 	$this->data["title"] = $new;
+   	 }
      return $this->data["title"];
    }
    
@@ -164,6 +169,10 @@ class ChannelData{
 	   return $this->data['creater'];
    }
 
+   /**
+    * Get ChannelMember array 
+    * @return array ChannelMember itam
+    */
    function getMembers(){
       return $this->members;
    }
@@ -288,6 +297,7 @@ class ChannelMember{
 	}
 	
 	public function markInaktiv(){
+		inaktiv(null, $this->channel->name(), $this->user);
 		$this->channel->send("INAKTIV ".$this->channel->name().": YES", $this->user);
 		$this->data["isInaktiv"] = "Y";
 		Database::query("UPDATE ".table("channel_member")." SET `isInaktiv`='Y' WHERE `cid`='".$this->channel->id()."' AND `uid`='".$this->user->id()."'");
@@ -302,6 +312,10 @@ class ChannelGroup{
      $this->data = Database::query("SELECT * FROM ".table("channel_group")." WHERE `id`='".$member->groupId()."'")->fetch();
    }
 
+   function allowChangeTitle(){
+   	  return $this->data["changeTitle"] == "Y";
+   }
+   
    //get all data in a single string
    public function __toString(){
        $data = $this->data;

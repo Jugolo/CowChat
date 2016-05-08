@@ -1,11 +1,11 @@
 <?php
 function online_command(MessageParser $msg){
     if(User::current()->isMember(Channel::get($msg->message()))){
-      $member = [];
-      foreach(Channel::get($msg->message())->getMember() as $member){
-         $member[] = $member->getUser()->nick();
+      $members = [];
+      foreach(Channel::get($msg->message())->getMembers() as $member){
+         $members[] = $member->getUser()->nick();
       }
-      send($msg, implode(",", $member));
+      send($msg, "ONLINE ".Channel::get($msg->message())->name().": ".implode(",", $members));
     }else{
        error($msg, "You are not member of the channel");
     }
