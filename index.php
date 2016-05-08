@@ -393,6 +393,10 @@ function ip(){
                         Module::load("online");
                         online_command($message);
                         break;
+                  case "INFO":
+                        Module::load("info");
+                        info_command($message);
+                        break;
         }
         return;
     	switch($message->command()){
