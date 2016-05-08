@@ -14,6 +14,6 @@ function info_command(MessageParser $parser){
           error($parser, "Unknown user");
        }
     }else{
-       error($parser, "You are not member of the channel);
+       error($parser, "You are not member of the channel");
     }
 }
