@@ -169,8 +169,8 @@ class UserData{
       return $this->data["nick"];
    }
 
-   function isMember(ChannelData $data){
-     return !empty($this->channels[$data->id()]);
+   function isMember($name){
+     return Channel::get($name)->isMember($this);
    }
 
    function leave(ChannelData $channel,$message = false){
