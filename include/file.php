@@ -2,7 +2,6 @@
 
 class Files{
   public static function changeDir($dir){
-     set_include_path($dir);
      //to get file_exists to work and in websocket server wee need to change dir
      chdir($dir);
   }
