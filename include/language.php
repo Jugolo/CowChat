@@ -5,7 +5,7 @@ class Language{
 	private static $name = null;
 	
 	public static function load($name){
-		if(cookie("language") && file_exists("include/language/".cookie("language")."/".$name.".php")){
+		if(cookie("language") && Files::exists("include/language/".cookie("language")."/".$name.".php")){
 			include "include/language/".cookie("language")."/".$name.".php";
 			self::$name = cookie("language");
 			self::$language = $lang;
@@ -16,7 +16,7 @@ class Language{
 				if(strpos("-", $lang)){
 					$lang = substr($lang, 0, strpos("-", $lang));
 				}
-				if(file_exists("include/language/".$lang."/".$name.".php")){
+				if(Files::exists("include/language/".$lang."/".$name.".php")){
 					self::$name = $lang;
 					include "include/language/".$lang."/".$name.".php";
 					self::$language = $lang;
@@ -24,7 +24,7 @@ class Language{
 				}
 			}
 			}else{
-				if(file_exists("include/language/".$_SERVER["HTTP_ACCEPT_LANGUAGE"]."/".$name.".php")){
+				if(Files::exists("include/language/".$_SERVER["HTTP_ACCEPT_LANGUAGE"]."/".$name.".php")){
 					include "include/language/".$_SERVER["HTTP_ACCEPT_LANGUAGE"]."/".$name.".php";
 					self::$language = $lang;
 					self::$name = $lang;
