@@ -1,13 +1,11 @@
 <?php
 
 class Files{
-  public static function changeDir($dir){
-     //to get file_exists to work and in websocket server wee need to change dir
-     chroot($dir);
-  }
-
   public static function exists($name){
-     return file_exists($name);
+     $fopen = @fopen($name, "r", true);
+     $exists = $fopen == true;
+     fclose($fopen);
+     return $fopen;
   }
 
   public static function context($name){
