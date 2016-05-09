@@ -9,3 +9,9 @@ class Files{
     return file_get_contents($name, true);
   }
 }
+
+class Dirs{
+   public static function isDir($name){
+      return is_dir(get_include_path().$name);
+   }
+}
