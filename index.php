@@ -33,7 +33,7 @@ function ip(){
                 set_include_path(CHAT_PATH);
     	}
      
-        include CHAT_PATH."include/file.php";
+        include "include/file.php";
         
         Files::changeDir(CHAT_PATH);
     	
