@@ -50,15 +50,15 @@ class FireWall{
    }
 
    public static function getBlacklist(){
-      if(file_exists(CHAT_PATH."include/firewall/blacklist.txt")){
-         return explode("\r\n", file_get_contents(CHAT_PATH."include/firewall/blacklist.txt"));
+      if(Files::exists("include/firewall/blacklist.txt")){
+         return explode("\r\n", Files::context("include/firewall/blacklist.txt"));
       }
       return [];
    }
 
    public static function getWhiteList(){
-       if(file_exists(CHAT_PATH."include/firewall/whitelist.txt")){
-          return explode("\r\n", file_get_contents(CHAT_PATH."include/firewall/whitelist.txt"));
+       if(Files::exists("include/firewall/whitelist.txt")){
+          return explode("\r\n", Files::context("include/firewall/whitelist.txt"));
        }
        return [];
    }
