@@ -30,9 +30,11 @@ function ip(){
     	//set CHAT_PATH
     	if(!defined("CHAT_PATH")){
     		define("CHAT_PATH", dirname(__FILE__)."\\");
+                set_include_path(CHAT_PATH);
     	}
      
         include CHAT_PATH."include/file.php";
+        
         Files::changeDir(CHAT_PATH);
     	
 		include 'include/autoloader.php';
