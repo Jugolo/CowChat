@@ -10,7 +10,7 @@ class Files{
   }
 
   public static function isFile($name){
-     return is_file(get_include_path().$name);
+     return @file($name, FILE_USE_INCLUDE_PATH) != false;
   }
 }
 
