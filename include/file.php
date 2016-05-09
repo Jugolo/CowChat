@@ -3,7 +3,7 @@
 class Files{
   public static function changeDir($dir){
      //to get file_exists to work and in websocket server wee need to change dir
-     chdir($dir);
+     chroot($dir);
   }
 
   public static function exists($name){
