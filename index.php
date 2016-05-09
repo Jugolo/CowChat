@@ -30,9 +30,10 @@ function ip(){
     	//set CHAT_PATH
     	if(!defined("CHAT_PATH")){
     		define("CHAT_PATH", dirname(__FILE__)."\\");
-    		//set include path so wee can include from this dir
-    		set_include_path(CHAT_PATH);
     	}
+     
+        include CHAT_PATH."include/file.php";
+        Files::changeDir(CHAT_PATH);
     	
 		include 'include/autoloader.php';
 		AutoLoader::set();
@@ -64,8 +65,7 @@ function ip(){
 		include "include/command.php";
         include "include/defender.php";
         include "include/flood.php";
-    exit(CHAT_PATH."include/config.json");
-	    if(!file_exists(CHAT_PATH."include/config.json")){
+	    if(!Files::exists("include/config.json")){
 			if(!Server::is_cli()){
 			    header("location:install.php?step=1");
 			    exit;
@@ -74,7 +74,7 @@ function ip(){
 			}
 		}
         
-		$json = json_decode(file_get_contents(CHAT_PATH."include/config.json"));
+		$json = json_decode(Files::context("include/config.json"));
 		
         Database::init($json->host, $json->user, $json->pass, $json->table, $json->prefix);
 		Setting::init();
