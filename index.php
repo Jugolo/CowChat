@@ -84,10 +84,12 @@ function ip(){
             //wee has controled that the user is not in black list. Now wee see if the user has a temporary ban
             if(FireWall::isBan()){
             	if(get("ajax")){
-            		error(new MessageParser("JOIN: #null"), "You are banned. Please contact our admin to get information about the ban");
+            		exit("LOGIN: REQUID");
             		exit;
             	}
-               exit("You are banned. Please contact our admin to get information about the ban");
+               $data = FireWall::getInfoBan(ip());
+               exit(date("H:i:s d-m-Y", time()-(31104000/((0.000625 / -0.14)*86400))));
+               exit("You are banet to: ".date("H:i:s d-m-Y", $data["expired"]));
             }
             
             //if this is not a ajax wee do a user and channel clean now
@@ -365,13 +367,16 @@ function ip(){
     	if($message->isCommand()){
     		$this->handleCommand($message);
     	}else{
-            if($message->channel() != null && Flood::controle($message->channel())){
+    		$handle = true;
+    		if($message->command() == "MESSAGE"){
+    			//flood is only triggers on message (command will ip ban the user to fast
+    			$handle = Flood::controle($message->channel());
+    		}
+            if($handle){
                 $this->handleCommand($message);
                 User::current()->updateActive();
             }else{
-            	if($message->channel() != null){
-            		send($message, "FLOOD ". $message->channel()->name().": Reach");
-            	}
+            	send($message, "FLOOD ". $message->channel()->name().": Reach");
             }
         }
     }

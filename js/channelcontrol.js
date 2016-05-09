@@ -117,8 +117,7 @@ var ChannelPage = (function(){
 	
         ChannelPage.prototype.write = function(msg){
             function template(user, context){
-               var date = new Date();
-               return "<span class='time'>["+controleDataNumber(date.getHours())+":"+controleDataNumber(date.getMinutes())+"]</span><span class='nick'>"+user+":</span> <span class='msg'>"+context+"</span>";
+               return "<span class='nick'>"+user+":</span> <span class='msg'>"+context+"</span>";
             }
 
             switch(msg.command()){
@@ -138,11 +137,19 @@ var ChannelPage = (function(){
             		   this.appendHTML(language("%s is no longer inaktiv", msg.nick()));
             	   }
                break;
+               case "FLOOD":
+            	   this.error(language("You has type message to fast. Please wait a little couple of time and try agian"));
+              break;
             }
         };
+        
+        ChannelPage.prototype.error = function(msg){
+        	this.appendHTML("<span class='error'>[Error]"+language(msg)+"</span>");
+        }
 
         ChannelPage.prototype.appendHTML = function(html){
-            var n = "<div class='item_"+(this.cache.length%2)+" message'>"+html+"</div>";
+        	var date = new Date();
+            var n = "<div class='item_"+(this.cache.length%2)+" message'><span class='time'>["+controleDataNumber(date.getHours())+":"+controleDataNumber(date.getMinutes())+"]</span>"+html+"</div>";
             this.cache.push(n);
             if(pageFocus(this)){
               this.pushChat(n);

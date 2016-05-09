@@ -20,21 +20,15 @@ class FireWall{
       Database::insert("ip_ban", [
          'ip'       => $ip == null ? ip() : $ip,
       	 'admin_id' => 0,
-         'expired'  => $expire,
+         'expired'  => (string)$expire,
       ]);
    }
 
    public static function getInfoBan($ip){
-      $query = Database::query("SELECT * FROM ".table("ip_ban")." WHERE `ip`='".Database::qlean($ip));
+      $query = Database::query("SELECT * FROM ".table("ip_ban")." WHERE `ip`=".Database::qlean($ip));
       if($query->rows() != 1)
         return null;
-
-      $return = [];
-      foreach($this->fetch() as $key => $value)
-         $return[$key] = $value;
-
-      return $return;
-          
+      return $query->fetch();    
    }
 
    public static function isBan(){

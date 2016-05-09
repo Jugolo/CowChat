@@ -1,7 +1,7 @@
 function userInfo(channel, nick, callback, error){
    send("INFO "+channel+": "+nick, function(respons){
       if(respons.command() == "ERROR" && typeof error !== "undefined"){
-         error(respons.message());
+         getChannel(channel).error(respons.message());
       }else{
          //it a single string as key=vale;key=value
          var values = {};
