@@ -365,11 +365,13 @@ function ip(){
     	if($message->isCommand()){
     		$this->handleCommand($message);
     	}else{
-            if(Flood::controle($message->channel())){
+            if($message->channel() != null && Flood::controle($message->channel())){
                 $this->handleCommand($message);
                 User::current()->updateActive();
             }else{
-                send($message, "FLOOD ". $message->channel()->name().": Reach");
+            	if($message->channel() != null){
+            		send($message, "FLOOD ". $message->channel()->name().": Reach");
+            	}
             }
         }
     }

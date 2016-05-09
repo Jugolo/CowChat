@@ -73,7 +73,7 @@ class Channel{
                     $group = $row["id"];
            }
 	   
-	   if($user->isMember($channel)){
+	   if($channel->isMember($user)){
 		   if($message){
 			   error($message, "You are allready member of the channel");
 		   }

@@ -18,7 +18,9 @@ if(User::current() == null){
 
 echo "var languageArray = {";
   if(Language::getLanguageName() != null){
-  	
+  	 if(Dirs::isDir("include/temp/js/language/".Language::getLanguageName().".tmp")){
+  	 	echo Files::context("include/temp/js/language/".Language::getLanguageName().".temp");
+  	 }
   }
 echo "};";
 ?>

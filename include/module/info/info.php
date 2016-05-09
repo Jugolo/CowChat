@@ -1,6 +1,6 @@
 <?php
 function info_command(MessageParser $parser){
-    if(User::current()->isMember($parser->channel())){
+    if($parser->channel()->isMember(User::current())){
        //wee controle if the user is member of the channel
        if(($user = User::get($parser->message())) != null){
            //wee controle the user is member of the channel

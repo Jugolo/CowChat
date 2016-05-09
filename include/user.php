@@ -174,7 +174,7 @@ class UserData{
    }
 
    function leave(ChannelData $channel,$message = false){
-      if($this->isMember($channel)){
+      if($channel->isMember($this)){
          unset($this->channels[$channel->id()]);
          $channel->leave($this, $message);
       }

@@ -89,7 +89,6 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
     {
         // invalidate the cache
         $this->cache = $this->errorCache = array();
-
         if (!Dirs::isDir($path)) {
             throw new Twig_Error_Loader(sprintf('The "%s" directory does not exist.', $path));
         }
@@ -128,7 +127,7 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
      */
     public function getSource($name)
     {
-        return File::context($this->findTemplate($name));
+        return Files::context($this->findTemplate($name));
     }
 
     /**
@@ -197,7 +196,7 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
         }
 
         foreach ($this->paths[$namespace] as $path) {
-            if (File::isFile($path.'/'.$shortname)) {
+            if (Files::isFile($path.'/'.$shortname)) {
                 if (false !== $realpath = realpath($path.'/'.$shortname)) {
                     return $this->cache[$name] = $realpath;
                 }

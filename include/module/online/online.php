@@ -1,6 +1,6 @@
 <?php
 function online_command(MessageParser $msg){
-    if(User::current()->isMember(Channel::get($msg->message()))){
+    if(User::current()->isMember($msg->message())){
       $members = [];
       foreach(Channel::get($msg->message())->getMembers() as $member){
          $members[] = $member->getUser()->nick();
