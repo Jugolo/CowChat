@@ -12,6 +12,6 @@ class Files{
   }
 
   public static function context($name){
-    return file_get_contents($name);
+    return file_get_contents($name, true);
   }
 }
