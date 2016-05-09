@@ -967,7 +967,7 @@ function ip(){
 			return;
 		}
 		try{
-		   $loader = new Twig_Loader_Filesystem(CHAT_PATH."include/style");
+		   $loader = new Twig_Loader_Filesystem("include/style");
 		   $twig   = new Twig_Environment($loader);
 		   $twig->addFunction(new Twig_SimpleFunction('language', function () {
 			   $arg = func_get_args();
@@ -999,7 +999,7 @@ function ip(){
 	}
 	
 	private function error($e){
-		$loader = new Twig_Loader_Filesystem(CHAT_PATH."include/style/system/");
+		$loader = new Twig_Loader_Filesystem("include/style/system/");
 		$twig = new Twig_Environment($loader);
 		exit($twig->render("error.html", array("error" => $e)));
 	}
