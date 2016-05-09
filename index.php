@@ -34,8 +34,6 @@ function ip(){
     	}
      
         include "include/file.php";
-        
-        Files::changeDir(CHAT_PATH);
     	
 		include 'include/autoloader.php';
 		AutoLoader::set();
