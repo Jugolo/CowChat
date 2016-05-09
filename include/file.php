@@ -2,10 +2,7 @@
 
 class Files{
   public static function exists($name){
-     $fopen = @fopen($name, "r", true);
-     $exists = $fopen == true;
-     fclose($fopen);
-     return $fopen;
+     return @fopen($name, "r", true) == true;
   }
 
   public static function context($name){
