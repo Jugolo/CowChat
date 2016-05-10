@@ -187,6 +187,20 @@ function parseMsg(msg){
       return all;
    });
    
+   msg = msg.replace(/([a-zA-Z]*)/g, function(all, nick){
+	   if(currentChannel != null){
+		   if(typeof currentChannel.users[nick] !== "undefined"){
+			   //this is a user nick :)
+			   return "<span class='inlineNick' title='"+language("Write to %s", nick)+"' onclick='nick(\""+nick+"\");'>"+nick+"</span>";
+		   }
+	   }
+	   return nick;
+   });
+   
+   msg = msg.replace(/(#[a-zA-Z]*?)/g, function(all, channel){
+	   
+   });
+   
    //wee has a lot of bb code first [i][b][url]
    var regex = /\[([a-zA-Z]*)(.*?)\](.*?)\[\/\1\]/g;
    return msg.replace(regex, function(all, identify, extra, context){

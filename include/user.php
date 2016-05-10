@@ -1,4 +1,24 @@
 <?php
+function hash_password($clean, $hash, $time){
+	$renderPart = function($use) use($time){
+		
+		$part1 = "";
+		
+		for($i=0;$i<strlen($use);$i++){
+			$part1 .= md5(chr((ord($use[$i]) << 2)));
+		}
+		
+		//wee run again but this time wee * width time (as it is a int) and return sha1 of it
+		$part2 = "";
+		for($i=0;$i<strlen($part1);$i++){
+			$part2 .= ord($part1[$i])*$time;
+		}
+		return sha1($part2);
+	};
+	 
+	return $renderPart($clean).$renderPart($hash).$renderPart($time);
+}
+
 class User{
   private static $users = [];
   private static $current = null;
@@ -18,6 +38,26 @@ class User{
 
      $data["id"] = Database::insert("user", $data);
      return $data;
+  }
+  
+  public static function createUser($nick, $password, $email){
+  	$hash = generate_hash();
+  	$data = [
+  			"username"      => $nick,
+  			"nick"          => $nick,
+  			"password"      => hash_password($password, $hash, $time = time()),
+  			"hash"          => $hash,
+  			"groupId"       => Setting::get("startGroup"),
+  			"message_id"    => Server::getLastId(),
+  			"type"          => "u",
+  			"ip"            => ip(),
+  			"active"        => $time,
+  			"defenderCount" => 0.5,
+  			"countUpdatet"  => $time,
+  	];
+  	
+  	$data["id"] = Database::insert("user", $data);
+  	return $data;
   }
 
   public static function current($current = null){

@@ -177,6 +177,10 @@ textarea {
 	cursor: pointer;
 }
 
+#smylie_list{
+  z-index:2;
+}
+
 .message {
 	border-bottom: 1px solid black;
 }
@@ -229,6 +233,10 @@ a{
 
 .menu_hide{
   display:none;
+}
+
+.inlineNick{
+  cursor:pointer;
 }
 </style>
 <script src='js/send.js'></script>
@@ -302,7 +310,7 @@ a{
   function hide_menu(){
 	  var dom = document.getElementsByClassName("menu_show");
 	  for(var i=0;i<dom.length;i++){
-		dom[i].className = dom[i].className.replace("menu_show", "menu_hide");
+		//dom[i].className = dom[i].className.replace("menu_show", "menu_hide");
 	  }
   }
   

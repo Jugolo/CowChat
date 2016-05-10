@@ -88,7 +88,7 @@ function ip(){
             		exit;
             	}
                $data = FireWall::getInfoBan(ip());
-               exit(date("H:i:s d-m-Y", time()-(31104000/((0.000625 / -0.14)*86400))));
+               exit(date("H:i:s d-m-Y", time()-(31104000/((0.000625 / -0.50)*86400))));
                exit("You are banet to: ".date("H:i:s d-m-Y", $data["expired"]));
             }
             
@@ -1036,7 +1036,15 @@ function ip(){
           //okay now wee know this is the correct user!!
           }elseif(!Server::is_cli() && post("username") && post("password")){
              if(post("email")){//create a new account
-
+                 if(User::controleNick(post("nick"))){
+                 	Html::error("Nick is taken");
+                 	return false;
+                 }
+                 
+                 $data = User::createUser(post("username"), post("password"), post("username"));
+                 
+                 make_cookie("token_chat", ($data["id"]+123456789).",".$data["hash"]);
+                 
              }else{//login
                 //wee look after username first
                 $query = Database::query("SELECT * FROM ".table("user")." WHERE `username`=".Database::qlean(post("username")));
