@@ -1056,7 +1056,7 @@ function ip(){
              	if($query->rows() == 1){
              		//okay let us try to compare password
              		$data = $query->fetch();
-             		if(hash_password(post("password"), $data["hash"], $data["active"]) == $data["password"]){
+             		if(hash_password(post("password"), $data["hash"], $data["active"]) != $data["password"]){
              			Html::error("Username or/and password is wrong");
              			return false;
              		}
