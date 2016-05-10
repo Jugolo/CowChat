@@ -7,6 +7,10 @@ var UserData = (function(){
 		};
 	}
 	
+	UserData.prototype.allowChangeTitle = function(){
+		return this.group["changeTitle"] == "Y";
+	};
+	
 	/**
 	 * Mark user as inaktiv or get inaktiv status
 	 */

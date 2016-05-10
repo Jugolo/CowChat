@@ -115,19 +115,22 @@ class Channel{
          "name"        => "Admin",
          "cid"         => $data["id"],
          "standart"    => "N",
-         "changeTitle" => "Y"
+         "changeTitle" => "Y",
+      	 "ignoreFlood" => "Y",
       ]);
       Database::insert("channel_group", [
          "name"        => "Moderater",
          "cid"         => $data["id"],
          "standart"    => "N",
          "changeTitle" => "N",
+      	 "ignoreFlood" => "N",
       ]);
       Database::insert("channel_group", [
          "name"        => "User",
          "cid"         => $data["id"],
          "standart"    => "Y",
          "changeTitle" => "N",
+      	 "ignoreFlood" => "N"
       ]);
         
 	  return [$group, (self::$channels[$data["id"]] = new ChannelData($data))];
@@ -311,6 +314,10 @@ class ChannelGroup{
 
    function allowChangeTitle(){
    	  return $this->data["changeTitle"] == "Y";
+   }
+   
+   function allowIgnoreFlood(){
+   	  return $this->data["ignoreFlood"] == "Y";
    }
    
    //get all data in a single string

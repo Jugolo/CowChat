@@ -6,7 +6,9 @@ function info_command(MessageParser $parser){
            //wee controle the user is member of the channel
            if($parser->channel()->isMember($user)){
               //okay wee send the user data to the user
-              send($parser, "INFO ".$parser->channel()->name().": ".$parser->channel()->getMember($user)->group());
+              send($parser, "INFO ".$parser->channel()->name().": ".implode(";", [
+              	  	"changeTitle=".(allowChangeTitle($parser->channel()->name()) ? "Y" : "N"),
+              ]));
            }else{
               error($parser, "The user is not member of the channel");
            }

@@ -74,6 +74,9 @@ var ChannelPage = (function(){
                 		  self.makeInaktiv(user);
                 	  } 
                    });
+                   if(user == myNick){
+                	   self.initLeftMenu(self.users[user]);
+                   }
                    sendBuffer.flush();
                }, function(msg){
                    self.error(msg);
@@ -171,6 +174,13 @@ var ChannelPage = (function(){
 				this.write("<span style='color:red;'>[Error]"+respons.message()+"</span>");
 			});
 			sendBuffer.flush();
+		}
+	};
+	
+	ChannelPage.prototype.initLeftMenu = function(user){
+		//title menu
+		if(user.allowChangeTitle()){
+			appendLeftMenu("<div onclick='changeTitle();'>"+language("Change title")+"</div>");
 		}
 	};
 	

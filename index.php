@@ -65,6 +65,7 @@ function ip(){
 		include "include/command.php";
         include "include/defender.php";
         include "include/flood.php";
+        include "include/access.php";
 	    if(!Files::exists("include/config.json")){
 			if(!Server::is_cli()){
 			    header("location:install.php?step=1");
@@ -369,12 +370,17 @@ function ip(){
     	}else{
     		$handle = true;
     		if($message->command() == "MESSAGE"){
-    			//flood is only triggers on message (command will ip ban the user to fast
-    			$handle = Flood::controle($message->channel());
+    			if($message->channel() != null){
+    				if(!allowIgnoreFlood($message->channel()->name()))
+    					$handle = Flood::controle($message->channel());
+    			}else{
+    				return;
+    			}
+    			
+    			User::current()->updateLastMessage();
     		}
             if($handle){
                 $this->handleCommand($message);
-                User::current()->updateActive();
             }else{
             	send($message, "FLOOD ". $message->channel()->name().": Reach");
             }
@@ -1045,26 +1051,19 @@ function ip(){
                  
                  make_cookie("token_chat", ($data["id"]+123456789).",".$data["hash"]);
                  
-             }else{//login
-                //wee look after username first
-                $query = Database::query("SELECT * FROM ".table("user")." WHERE `username`=".Database::qlean(post("username")));
-                if($query->rows() != 1){
-                   Html::error("Wrong username or/and password");
-                   return false;
-                }
-
-                //now wee control the password to see if the passwords is equally.
-                $data = $query->fetch();
-                if(!password_equels(post("password"), $data["password"], $data["hash"])){
-                   Html::error("Wrong username or/and password");
-                   return false;
-                }
-
-                //update the user ip in database...
-                Database::query("UPDATE ".table("user")." SET `ip`=".Database::qlean(ip())." WHERE `id`='".$data["id"]."'");
-                $data["ip"] = ip();
-                //create a cookie so the user can use webseocket or ajax chat
-                make_cookie("token_chat", ($data["id"]+123456789).$data["hash"]);
+             }else{
+             	$query = Database::query("SELECT * FROM ".table("user")." WHERE `username`=".Database::qlean(post("username")));
+             	if($query->rows() == 1){
+             		//okay let us try to compare password
+             		$data = $query->fetch();
+             		if(!hash_password(post("password"), $data["hash"], $data["active"]) == $data["password"]){
+             			Html::error("Username or/and password is wrong");
+             			return false;
+             		}
+             	}else{
+             		Html::error("Username or/and password is wrong");
+             		return false;
+             	}
              }
        }elseif(!Server::is_cli() && post("username")){//geaust login
           if(User::controleNick(post("username"))){

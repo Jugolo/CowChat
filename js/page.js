@@ -24,6 +24,7 @@ function setFocus(obj){
 	// wee unset the diffrence pages :)
 	document.getElementById("chat").innerHTML = "";
 	document.getElementById("online").innerHTML = "";
+	document.getElementById("leftMenuItem").innerHTML = "";
 	currentPage = obj;
 	obj.focus();
 }
@@ -68,4 +69,8 @@ function savePage(page){
     setFocus(page);
 
    document.getElementById("topMenu").insertBefore(tab, document.getElementById("topMenu").firstChild);	
+}
+
+function appendLeftMenu(html){
+	document.getElementById("leftMenuItem").innerHTML += html;
 }

@@ -249,18 +249,9 @@ a{
 <script>
   var sendType = '{{sendType}}';
   var myNick = '{{nick}}';
-  
-  function helpJoin(){
-    var p = prompt("{{language('Write channel (seperate by ,)')}}");
-	if(p != null){
-	  var channels = p.split(",");
-	  for(var i=0;i<channels.length;i++){
-	    join(channels[i].trim(), function(msg){
-		  alert("[Error]"+msg.message());
-		});
-	  }
-	  sendBuffer.flush();//send all message now :)
-	}
+  var old = alert;
+  alert = function(){
+	  old(language.apply(this, arguments));
   }
   
   function onload(){
@@ -318,6 +309,24 @@ a{
 	  var dom = document.getElementById("smylie_list");
 	  dom.className = dom.className.replace("menu_hide", "menu_show");
   }
+  
+  function changeTitle(){
+	  //has wee currentChannel
+	  if(currentChannel != null){
+		  //controle if the user can change title
+		  if(currentChannel.users[myNick].allowChangeTitle()){
+			  var popup = prompt(language("Write the new tite for channel: %s", currentChannel.title()));
+			  if(popup != null){
+			     title(currentChannel.title(), popup);
+			     sendBuffer.flush();
+			  }
+		  }else{
+			  alert("You can not change title in %s", currentChannel.title());
+		  }
+	  }else{
+		  alert("Unknown channel");
+	  }
+  }
 
   window.onerror = function (errorMsg, url, lineNumber) {
      alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
@@ -336,8 +345,7 @@ a{
 	<div id='chat'></div>
 	<div id='leftMenu'>
 		<h2>{{language('Options')}}</h2>
-		<div class='o1' onclick='helpJoin();'>{{language("Join
-			channel")}}</div>
+		<div id='leftMenuItem'></div>
 	</div>
 	<div id='buttom'>
 		{%if smylie%}

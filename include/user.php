@@ -16,7 +16,7 @@ function hash_password($clean, $hash, $time){
 		return sha1($part2);
 	};
 	 
-	return $renderPart($clean).$renderPart($hash).$renderPart($time);
+	return sha1($renderPart($clean).$renderPart($hash).$renderPart($time));
 }
 
 class User{
@@ -34,6 +34,7 @@ class User{
 		"active"        => time(),
         "defenderCount" => 0.5,
         "countUpdatet"  => time(),
+     	"lastMessage"   => time(),
      ];
 
      $data["id"] = Database::insert("user", $data);
@@ -54,6 +55,7 @@ class User{
   			"active"        => $time,
   			"defenderCount" => 0.5,
   			"countUpdatet"  => $time,
+  			"lastMessage"   => $time,
   	];
   	
   	$data["id"] = Database::insert("user", $data);
@@ -100,7 +102,7 @@ class User{
   
   public static function garbage_collector(){
 	  //run all user thrue and finde the geaust
-	  $query = Database::query("SELECT `id`, `active` FROM ".table("user")." WHERE `type`='g' AND `active`<'".(time()-(60*30))."'");
+	  $query = Database::query("SELECT `id`, `active` FROM ".table("user")." WHERE `type`='g' AND `countUpdatet`<'".(time()-(60*30))."'");
 	  while($row = $query->fetch()){
 	  	if($user = User::get($row['id'])){
 	  		$user->delete();
@@ -124,6 +126,11 @@ class UserData{
         $this->ignore[] = $row["iid"];
       }
       $this->group = SystemGroup::get($this);
+   }
+   
+   function updateLastMessage(){
+   	  $this->data["lastMessage"] = time();
+   	  Database::query("UPDATE ".table("user")." SET `lastMessage`='".time()."' WHERE `id`='".$this->data["id"]."'");
    }
    
    function defenderCount($new=null){
@@ -180,10 +187,6 @@ class UserData{
    
    function active(){
 	   return $this->data["active"];
-   }
-   
-   function updateActive(){
-   	  Database::query("UPDATE ".table("user")." SET `active`='".time()."' WHERE `id`='".$this->id()."'");
    }
 
    function send($msg){
