@@ -29,8 +29,8 @@ function ip(){
     function inilize(){
     	//set CHAT_PATH
     	if(!defined("CHAT_PATH")){
-    		define("CHAT_PATH", dirname(__FILE__)."\\");
-                set_include_path(CHAT_PATH);
+    		define("CHAT_PATH", dirname(__FILE__).'\\');
+            set_include_path(CHAT_PATH);
     	}
      
         include "include/file.php";

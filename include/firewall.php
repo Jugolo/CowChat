@@ -51,8 +51,9 @@ class FireWall{
    }
 
    public static function getWhiteList(){
-       if(Files::exists("include/firewall/whitelist.txt")){
-          return explode("\r\n", Files::context("include/firewall/whitelist.txt"));
+   	   $dir = "include/firewall/whitelist.txt";
+       if(Files::exists($dir)){
+          return explode("\r\n", Files::context($dir));
        }
        return [];
    }

@@ -6,7 +6,7 @@ class Files{
   }
 
   public static function context($name){
-    return file_get_contents($name, true);
+    return file_get_contents(getDir().$name);
   }
 
   public static function isFile($name){
