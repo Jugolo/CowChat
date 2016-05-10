@@ -1060,6 +1060,7 @@ function ip(){
              			Html::error("Username or/and password is wrong");
              			return false;
              		}
+                        make_cookie("token_chat", ($data["id"]+123456789).",".$data["hash"]);
              	}else{
              		Html::error("Username or/and password is wrong");
              		return false;
