@@ -78,7 +78,13 @@ class User{
   }
 
   public static function controleNick($nick, UserData $user = null){
-     return Database::query("SELECT `id` FROM ".table("user")." WHERE `nick`=".Database::qlean($nick).($user != null ? " AND `id`<>'".$user->id()."'" : ""))->rows() != 0;
+     $nick = Database::qlean($nick);
+     $sql = "SELECT `id` FROM ".table("user")." WHERE (`nick`=".$nick." OR `username`=".$nick.")";
+
+     if($user != null){
+        $sql .= " AND `id`<>'".$user->id()."'";
+     }
+     return Database::query($sql)->rows() != 0;
   }
 
   public static function get($uid){
