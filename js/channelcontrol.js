@@ -42,6 +42,19 @@ var ChannelPage = (function(){
                 this.users[n] = this.users[old];
                 delete this.users[old];
                 this.appendHTML(language("%s change nick to %s", old, n));
+                if(!pageFocus(this)){
+                   return;
+                }
+                //wee update the dom in online listso wee not show a old nick
+                var dom = document.getElementsByClassName("user");
+                for(var i=0;i<dom.length;i++){
+                   if(dom[i].getAttribute("nick") == old){
+                      var node = dom[i];
+                      node.setAttribute("nick", n);
+                      node.getElementsByClassName("user_nick")[0].innerHTML = n;
+                      return;
+                   }
+                }
            }
         };
 
@@ -108,7 +121,7 @@ var ChannelPage = (function(){
                return;
             }
             var html = "<div class='user' nick='"+user.nick+"'>" +
-            "<h3 onclick='fane_show(this);'><span class='inaktiv'>[I]</span>"+user.nick+"</h3>";
+            "<h3 onclick='fane_show(this);'><span class='inaktiv'>[I]</span><span class='user_nick'>"+user.nick+"</span></h3>";
             
             document.getElementById("online").innerHTML += html+"</div>";
         };
