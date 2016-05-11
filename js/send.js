@@ -187,6 +187,23 @@ function onIncomming(msg){
                       }
                       return false;
                    });
+                }else{
+                   switch(msg.command()){
+                      case "NICK":
+                        onNick(msg);
+                      break;
+                   }
                 }
 	}
+}
+
+function onNick(msg){
+     //if the old nick this user update 'myNick'
+     if(msg.nick() == myNick){
+        myNick = msg.message();
+     }
+
+     for(var i=0;i<channelBuffer.length;i++){
+        channelBuffer[i].updateNick(msg.nick(), msg.message());
+     }
 }
