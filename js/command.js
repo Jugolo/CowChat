@@ -1,3 +1,7 @@
+function nick(to){
+   send("NICK: "+to);
+}
+
 function userInfo(channel, nick, callback, error){
    send("INFO "+channel+": "+nick, function(respons){
       if(respons.command() == "ERROR" && typeof error !== "undefined"){
