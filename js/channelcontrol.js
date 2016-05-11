@@ -41,7 +41,7 @@ var ChannelPage = (function(){
            if(typeof this.users[old] !== "undefined"){
                 this.users[n] = this.users[old];
                 delete this.users[old];
-                this.appendHTML(language("%s change nick to %s, old, n));
+                this.appendHTML(language("%s change nick to %s", old, n));
            }
         };
 
