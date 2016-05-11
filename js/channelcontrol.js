@@ -37,6 +37,14 @@ var ChannelPage = (function(){
                 sendBuffer.flush();
 	}
 	
+        ChannelPage.prototype.updateNick = function(old, n){
+           if(typeof this.users[old] !== "undefined"){
+                this.users[n] = this.users[old];
+                delete this.users[old];
+                this.appendHTML(language("%s change nick to %s, old, n));
+           }
+        };
+
 	ChannelPage.prototype.removeInaktiv = function(name){
 		if(typeof this.users[name] !== "undefined" && this.users[name].inaktiv()){
 			this.users[name].inaktiv(false);
