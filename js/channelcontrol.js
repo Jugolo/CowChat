@@ -165,7 +165,7 @@ var ChannelPage = (function(){
             	   this.error(language("You has type message to fast. Please wait a little couple of time and try again"));
                break;
                case "NICK":
-                  this.updateNick(msg.nick(), msg.messasge());
+                  this.updateNick(msg.nick(), msg.message());
                break;
             }
         };
