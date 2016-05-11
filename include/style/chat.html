@@ -286,6 +286,9 @@ a{
 			  break;
 		  case "title":
 			  title(currentChannel.name, commandBody);
+                  break;
+                  case "nick":
+                     nick(commandBody);
 		  }
 	  }else{
 		  message(currentChannel.title(), txt);
