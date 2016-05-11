@@ -161,6 +161,14 @@ class UserData{
 	   $this->channels[$data->id()] = $data;
    }
 
+   function renderChannels($callback){
+      foreach($this->channels as $chan){
+         if($callback($chan)){
+             return;
+         }
+      }
+   }
+
    function websocket($sock = null){
       if($sock != null){
          $this->_websocket = $sock;
