@@ -1,4 +1,14 @@
 <?php
+function nick_taken($nick, UserData $user=null){
+     $nick = Database::qlean($nick);
+     $sql = "SELECT `id` FROM ".table("user")." WHERE (`nick`=".$nick." OR `username`=".$nick.")";
+
+     if($user != null){
+        $sql .= " AND `id`<>'".$user->id()."'";
+     }
+     return Database::query($sql)->rows() != 0;
+}
+
 function hash_password($clean, $hash, $time){
 	$renderPart = function($use) use($time){
 		
@@ -75,16 +85,6 @@ class User{
     if(!empty(self::$users[$user->id()])){
        unset(self::$users[$user->id()]);
     }
-  }
-
-  public static function controleNick($nick, UserData $user = null){
-     $nick = Database::qlean($nick);
-     $sql = "SELECT `id` FROM ".table("user")." WHERE (`nick`=".$nick." OR `username`=".$nick.")";
-
-     if($user != null){
-        $sql .= " AND `id`<>'".$user->id()."'";
-     }
-     return Database::query($sql)->rows() != 0;
   }
 
   public static function get($uid){
@@ -212,7 +212,7 @@ class UserData{
 
    function nick($nick = null){
       if($nick != null){
-         if(User::controleNick($nick, $this)){
+         if(!nick_taken($nick, $this)){
             $this->send("NICK %s: ".$nick);
             $query = Database::query("UPDATE ".table("user")." SET `nick`=".Database::qlean($nick)." WHERE `id`='".$this->id()."'");
             if($query->rows() != 1){
