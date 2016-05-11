@@ -200,18 +200,18 @@ class UserData{
    function send($msg){
       //this method will send message to all channels the users is in
       foreach($this->channels as $channel){
-         $channel->send($msg, $this);
+         $channel->send(sprintf($msg, $channel->name()), $this);
       }
    }
 
    function nick($nick = null){
       if($nick != null){
          if(User::controleNick($nick, $this)){
+            $this->send("NICK %s: ".$nick);
             $query = Database::query("UPDATE ".table("user")." SET `nick`=".Database::qlean($nick)." WHERE `id`='".$this->id()."'");
             if($query->rows() != 1){
                return false;
             }
-            $this->send("NICK: ".$nick);
             $this->data["nick"] = $nick;
          }else{
            return false;
