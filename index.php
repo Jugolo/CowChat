@@ -418,9 +418,14 @@ function ip(){
                         info_command($message);
                         break;
                   case "INAKTIV":
-                  	    Module::load("inaktiv");
-                  	    inaktiv_command($message);
-                  	    break;
+                         Module::load("inaktiv");
+                        inaktiv_command($message);
+                  break;
+                  case "NICK":
+                         Module::load("nick");
+                         nick_command($message);
+                  break;
+                   
         }
         return;
     	switch($message->command()){
