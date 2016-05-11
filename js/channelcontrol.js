@@ -149,8 +149,11 @@ var ChannelPage = (function(){
             	   }
                break;
                case "FLOOD":
-            	   this.error(language("You has type message to fast. Please wait a little couple of time and try agian"));
-              break;
+            	   this.error(language("You has type message to fast. Please wait a little couple of time and try again"));
+               break;
+               case "NICK":
+                  this.updateNick(msg.nick(), msg.messasge());
+               break;
             }
         };
         
