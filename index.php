@@ -1047,7 +1047,7 @@ function ip(){
           //okay now wee know this is the correct user!!
           }elseif(!Server::is_cli() && post("username") && post("password")){
              if(post("email")){//create a new account
-                 if(User::controleNick(post("nick"))){
+                 if(nick_taken(post("nick"))){
                  	Html::error("Nick is taken");
                  	return false;
                  }
@@ -1072,7 +1072,7 @@ function ip(){
              	}
              }
        }elseif(!Server::is_cli() && post("username")){//geaust login
-          if(User::controleNick(post("username"))){
+          if(nick_taken(post("username"))){
              Html::error("Nick is taken. Please pick a anthoter one and try again");
              return false;
           }
