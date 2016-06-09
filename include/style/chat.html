@@ -177,8 +177,8 @@ textarea {
 	cursor: pointer;
 }
 
-#smylie_list{
-  z-index:2;
+#smylie_list {
+	z-index: 2;
 }
 
 .message {
@@ -205,38 +205,47 @@ textarea {
 	cursor: pointer;
 }
 
-.inaktiv{
-  display:none;
+.user_menu {
+	display: none;
+	background-color: #00bfff;
 }
 
-.u{
-  text-decoration: underline;
+.inaktiv {
+	display: none;
 }
 
-.strong{
-  font-weight: bold;
+.u {
+	text-decoration: underline;
 }
 
-.error{
-  color:red;
-  font-weight:bold;
+.strong {
+	font-weight: bold;
 }
 
-a{
-  color:black;
-  text-decoration:none;
+.error {
+	color: red;
+	font-weight: bold;
 }
 
-.menu_show{
-  display:block;
+a {
+	color: black;
+	text-decoration: none;
 }
 
-.menu_hide{
-  display:none;
+.menu_show {
+	display: block;
 }
 
-.inlineNick{
-  cursor:pointer;
+.menu_hide {
+	display: none;
+}
+
+.inlineNick {
+	cursor: pointer;
+}
+
+span[onclick], div[onclick] {
+	cursor: pointer;
 }
 </style>
 <script src='js/send.js'></script>
@@ -273,6 +282,38 @@ a{
 	  }
   }
   
+  function pushMessage(){
+	  var msg = document.getElementById("msg_input");
+	  if(msg.value.trim() != ""){
+		  parseUserInput(msg.value);
+	  }
+	  
+	  msg.value = "";
+  }
+  
+  function insert_nick(nick){
+	  atCursor("@"+nick);
+  }
+  
+  function atCursor(str){
+	  var texteare = document.getElementById("msg_input");
+	  texteare.focus();
+	  if(document.selection){//ie
+	      sel = document.selection.createRange();
+	      sel.text = str;
+	  }else if(texteare.selectionStart || texteare.selectionStart == '0'){
+		  var startPos = texteare.selectionStart;
+	        var endPos = texteare.selectionEnd;
+	        texteare.value = texteare.value.substring(0, startPos)
+	            + str
+	            + texteare.value.substring(endPos, texteare.value.length);
+	        texteare.selectionStart = endPos+str.length;
+	        texteare.selectionEnd   = endPos+str.length;
+	  }else{
+		  texteare.value += str;
+	  }
+  }
+  
   function parseUserInput(txt){
 	  if(txt.indexOf("/") == 0){
 		  var commandBody = txt.substr(txt.split(" ")[0].length);
@@ -298,7 +339,13 @@ a{
   }
   
   function fane_show(obj){
+	  //hide all menus first
+	  var menus = document.getElementsByClassName("user_menu");
+	  for(var i=0;i<menus.length;i++){
+		  menus[i].style.display = "none";
+	  }
 	  
+	  obj.parentNode.getElementsByClassName("user_menu")[0].style.display = "block";
   }
   
   function hide_menu(){
@@ -368,10 +415,10 @@ a{
 		</div>
 		{%endif%}
 		<div id='text_buttom'>
-			<textarea onkeydown='okp(event, this);'></textarea>
+			<textarea id='msg_input' onkeydown='okp(event, this);'></textarea>
 		</div>
 		<div id='send_buttom'>
-			<button id='sButton'>{{language("Send")}}</button>
+			<button id='sButton' onclick='pushMessage();'>{{language("Send")}}</button>
 		</div>
 		<div style='clear: both;'></div>
 	</div>

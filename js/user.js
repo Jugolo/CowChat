@@ -11,6 +11,10 @@ var UserData = (function(){
 		return this.group["changeTitle"] == "Y";
 	};
 	
+	UserData.prototype.allowKick = function(){
+		return this.group["kick"] == "Y";
+	};
+	
 	/**
 	 * Mark user as inaktiv or get inaktiv status
 	 */

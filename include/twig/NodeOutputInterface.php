@@ -14,6 +14,5 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-interface Twig_NodeOutputInterface
-{
+interface Twig_NodeOutputInterface{
 }

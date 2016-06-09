@@ -17,6 +17,5 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-interface Twig_Extension_GlobalsInterface
-{
+interface Twig_Extension_GlobalsInterface{
 }

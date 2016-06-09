@@ -15,6 +15,5 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class Twig_Node_Expression extends Twig_Node
-{
+abstract class Twig_Node_Expression extends Twig_Node{
 }

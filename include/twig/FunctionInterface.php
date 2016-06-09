@@ -16,25 +16,19 @@
  * Use Twig_SimpleFunction instead.
  *
  * @author Arnaud Le Blanc <arnaud.lb@gmail.com>
- *
+ *        
  * @deprecated since 1.12 (to be removed in 2.0)
  */
-interface Twig_FunctionInterface
-{
-    /**
-     * Compiles a function.
-     *
-     * @return string The PHP code for the function
-     */
-    public function compile();
-
-    public function needsEnvironment();
-
-    public function needsContext();
-
-    public function getSafe(Twig_Node $filterArgs);
-
-    public function setArguments($arguments);
-
-    public function getArguments();
+interface Twig_FunctionInterface{
+	/**
+	 * Compiles a function.
+	 *
+	 * @return string The PHP code for the function
+	 */
+	public function compile();
+	public function needsEnvironment();
+	public function needsContext();
+	public function getSafe(Twig_Node $filterArgs);
+	public function setArguments($arguments);
+	public function getArguments();
 }

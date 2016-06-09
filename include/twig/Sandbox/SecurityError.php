@@ -14,6 +14,5 @@
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Twig_Sandbox_SecurityError extends Twig_Error
-{
+class Twig_Sandbox_SecurityError extends Twig_Error{
 }

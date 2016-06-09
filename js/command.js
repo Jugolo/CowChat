@@ -2,6 +2,14 @@ function nick(to){
    send("NICK: "+to);
 }
 
+/**
+ * Get the info about the user.
+ * @param string channel the name of the channel 
+ * @param string nick the nick of the user (Username is never used in this chat. it is only admin)
+ * @param function callback to call when the result is success
+ * @param function error to call when the resuslt is error
+ * @return null.
+ */
 function userInfo(channel, nick, callback, error){
    send("INFO "+channel+": "+nick, function(respons){
       if(respons.command() == "ERROR" && typeof error !== "undefined"){
@@ -33,9 +41,10 @@ function title(channel, tit){
    });
 }
 
-function join(channel, error){
+function join(channel, error, noBuffer){
 	if(channel.indexOf("#") !== 0){
-	  error(language("A channel name should alweys start width #"));
+		if(typeof error !== "undefined")
+			error(language("A channel name should alweys start width #"));
 	  return;
 	}
 	send("JOIN: "+channel.trim(), function(respons){
@@ -50,6 +59,9 @@ function join(channel, error){
 			getChannel(respons.channel()).setTitle(respons.message());
 		}
 	});
+	if(typeof noBuffer !== "undefined" && noBuffer){
+		sendBuffer.flush();
+	}
 }
 
 function leave(name, success, error){
@@ -104,4 +116,11 @@ function message(channel, message){
 function cleanMessage(message){
 	message = message.replace(/\n/g, "[br/]");
 	return message;
+}
+
+function kick(username, channel, flush){
+	send("KICK "+channel+": "+username);
+	if(typeof flush !== "undefined" && flush){
+		sendBuffer.flush();
+	}
 }

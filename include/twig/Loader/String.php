@@ -8,7 +8,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 @trigger_error('The Twig_Loader_String class is deprecated since version 1.18.1 and will be removed in 2.0. Use Twig_Loader_Array instead or Twig_Environment::createTemplate().', E_USER_DEPRECATED);
 
 /**
@@ -22,42 +21,45 @@
  * control, you need to take care of clearing the old cache file by yourself.
  *
  * @deprecated since 1.18.1 (to be removed in 2.0)
- *
+ *            
  * @internal
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Twig_Loader_String implements Twig_LoaderInterface, Twig_ExistsLoaderInterface
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function getSource($name)
-    {
-        return $name;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function exists($name)
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCacheKey($name)
-    {
-        return $name;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isFresh($name, $time)
-    {
-        return true;
-    }
+class Twig_Loader_String implements Twig_LoaderInterface, Twig_ExistsLoaderInterface{
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function getSource($name){
+		return $name;
+	}
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function exists($name){
+		return true;
+	}
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function getCacheKey($name){
+		return $name;
+	}
+	
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 */
+	public function isFresh($name, $time){
+		return true;
+	}
 }
