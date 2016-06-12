@@ -62,13 +62,9 @@ class Server{
 		include "include/flood.php";
 		include "include/access.php";
 		
-		if(!Files::exists("include" . DIR_SEP() . "config.json")){
-			if(!Server::is_cli()){
-				header("location:install.php?step=1");
-				exit();
-			}else{
-				exit("Missing config file in [" . getDir() . "include" . DIR_SEP() . "config.json]. install it first");
-			}
+		if(Files::exists("setup/info.json")){
+			include "include/setup.php";
+                        new Setup();
 		}
 		
 		$json = json_decode(Files::context("include" . DIR_SEP() . "config.json"));
