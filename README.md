@@ -15,3 +15,7 @@ if wee cange and add every think i can think of will relate at the chat never wo
 * new: error every time there is a throw there is not catch the error woud be logged. every module would have ther owen file.
 * new: firewall log. firewall wold log event (ban, unban and so on) in file.
 * new: log function "bool log(string $dir, bool $prefix = false);" there handle log. every log part would be saved in a log directory
+* new: when user create a account there will be sent a email to activate the account.
+* new: when defender ip ban a user there will be sent a email to the user with information about the ban.
+* new: start project ChatPlugin. the class would be in devolper mode so do not use a lot of time on create plugin becuse there are no guarantee it would work in next versions.
+* new: commands: "/show plugin" to show all plugin. "/show plugin enabled" to show all plugin there is enabled. "/show plugin disabled" show plugin there is not enabled. "/plugin [name] [enable/deable]" to enable or debale plugin.
