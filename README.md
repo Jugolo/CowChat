@@ -19,3 +19,8 @@ if wee cange and add every think i can think of will relate at the chat never wo
 * new: when defender ip ban a user there will be sent a email to the user with information about the ban.
 * new: start project ChatPlugin. the class would be in devolper mode so do not use a lot of time on create plugin becuse there are no guarantee it would work in next versions.
 * new: commands: "/show plugin" to show all plugin. "/show plugin enabled" to show all plugin there is enabled. "/show plugin disabled" show plugin there is not enabled. "/plugin [name] [enable/deable]" to enable or debale plugin.
+* change: only support php version 7 or heigher.
+
+# PHP version 
+the first version of chat has no requirement for php version but the ajax part of the chat need to be very fast to load.
+the older version of php is fast but it is not fast enough so for be sure the chat work as i will the chat would not work on lower version.
