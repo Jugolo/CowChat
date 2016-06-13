@@ -291,7 +291,8 @@ class Server{
 		$query = Database::query("SELECT m.message, m.uid, m.id FROM " . table("message") . " AS m
                                   LEFT JOIN " . table("channel_member") . " AS c ON m.cid=c.cid
                                   WHERE c.uid='" . User::current()->id() . "'
-                                  AND m.id>'" . User::current()->message_id() . "'");
+                                  AND m.id>'" . User::current()->message_id() . "'
+				                  AND (`isPriv`='N' OR `isPriv`='Y' AND `privTo`='".User::current()->id()."')");
 		$my = User::current();
 		while($row = $query->fetch()){
 			if(!$my->isIgnore($row["uid"])){
@@ -300,17 +301,13 @@ class Server{
 			$mid = $row["id"];
 		}
 		
-		// wee got pm to this user here it are more simple end the channel system
-		$query = Database::query("SELECT `from`, `msg` FROM " . table("pm") . " WHERE `to`='" . User::current()->id() . "'");
+		$query = Database::query("SELECT `message` FROM ".table("user_msg")." WHERE `uid`='".User::current()->id()."'");
 		if($query->rows() != 0){
 			while($row = $query->fetch()){
-				// wee controle if the user exists so wee dont show message from geaust there is delete.
-				if(($from = User::get($row["from"])) != null){
-					echo "MESSAGE " . $from->nick() . ": " . $row["msg"] . "\r\n";
-				}
+				echo $row["message"]."\r\n";
 			}
-			// Wee rome the message here.
-			Database::query("DELETE FROM " . table("pm") . " WHERE `to`='" . User::current()->id() . "'");
+			//delete all rows
+			Database::query("DELETE FROM ".table("user_msg")." WHERE `uid`='".User::current()->id()."'");
 		}
 		
 		User::current()->message_id($mid == null ? Server::getLastId() : $mid);
@@ -326,7 +323,7 @@ class Server{
 		}elseif(is_string($message)){
 			$message = new MessageParser($message);
 		}elseif(!($message instanceof MessageParser)){
-			trigger_error("$message is not a instanceof MessageParser");
+			trigger_error("\$message is not a instanceof MessageParser");
 		}
 		
 		if($message->isCommand()){

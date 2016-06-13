@@ -6,6 +6,27 @@ function send(MessageParser $parser, $message){
 	
 	echo $message . "\r\n";
 }
+function send_privmsg(UserData $user, ChannelData $channel, $message){
+	if(!$channel->isMember(User::current()) || !$channel->isMember($user)){
+		send(new MessageParser("NO: COMMAND"), "ERROR: Unknown channel");
+		return;
+	}
+	Database::insert("message", [
+			'uid'     => User::current()->id(),
+			'cid'     => $channel->id(),
+			'message' => $message,
+			'isPriv'  => 'Y',
+			'privTo'  => $user->id()
+	]);
+}
+
+function send_user(UserData $user, $msg){
+	Database::insert("user_msg", [
+			'uid'     => $user->id(),
+			'message' => $msg,
+	]);
+}
+
 function send_channel(ChannelData $channel, UserData $user, $message){
 	if(!$channel->isMember($user)){
 		if($user == User::current()){
@@ -16,7 +37,6 @@ function send_channel(ChannelData $channel, UserData $user, $message){
 	Database::insert("message", [
 			'uid' => $user->id(),
 			'cid' => $channel->id(),
-			'message_qlean' => $message,
 			'message' => $message
 	]);
 	

@@ -29,7 +29,7 @@ var ChannelPage = (function() {
 		sendBuffer.flush();
 		online(this.name, function(users) {
 			for (var i = 0; i < users.length; i++) {
-				if(users[i] != myNick){
+				if (users[i] != myNick) {
 					self.appendUser(users[i]);
 				}
 			}
@@ -64,23 +64,25 @@ var ChannelPage = (function() {
 		}
 	};
 
-	ChannelPage.prototype.changeInaktivState = function(name, prefix){
-		if(typeof this.users[name] !== "undefined"){
+	ChannelPage.prototype.changeInaktivState = function(name, prefix) {
+		if (typeof this.users[name] !== "undefined") {
 			var dom = document.getElementsByClassName("user");
-			for(var i=0;i<dom.length;i++){
-				if(dom[i].getAttribute("nick") == name){
+			for (var i = 0; i < dom.length; i++) {
+				if (dom[i].getAttribute("nick") == name) {
 					dom[i].getElementsByClassName("inaktiv")[0].style.display = prefix;
 					return true;
 				}
 			}
 		}
-		
+
 		return false;
 	};
 
 	/**
 	 * Append the user nick to this channel.
-	 * @param string user. the user nick
+	 * 
+	 * @param string
+	 *            user. the user nick
 	 * @return null.
 	 */
 	ChannelPage.prototype.appendUser = function(user) {
@@ -119,7 +121,7 @@ var ChannelPage = (function() {
 
 	ChannelPage.prototype.appendOnlineList = function(user) {
 		if (!pageFocus(this)) {// if this channel is not on the focus wee dont
-								// add it
+			// add it
 			return;
 		}
 		var html = "<div class='user' nick='"
@@ -127,11 +129,11 @@ var ChannelPage = (function() {
 				+ "'>"
 				+ "<h3 onclick='fane_show(this);'><span class='inaktiv'>[I]</span><span class='user_nick'>"
 				+ user.nick + "</span></h3><div class='user_menu'>";
-		
-		if(this.users[myNick].allowKick()){
-			html += "<div onclick='kick(\""+user.nick+"\", \""+this.title()+"\", true);'>"
-				 + language("Kick user")
-				 + "</div>";
+
+		if (this.users[myNick].allowKick() && user.nick != myNick) {
+			html += "<div onclick='kick(\"" + user.nick + "\", \""
+					+ this.title() + "\", kickError, true);'>" + language("Kick user")
+					+ "</div>";
 		}
 		document.getElementById("online").innerHTML += html + "</div></div>";
 	};
@@ -164,24 +166,48 @@ var ChannelPage = (function() {
 			this.setTitle(msg.message());
 			break;
 		case "INAKTIV":
-			this.changeInaktivState(msg.nick(), msg.message() == "YES" ? "inline-block" : "none");
+			this.changeInaktivState(msg.nick(),
+					msg.message() == "YES" ? "inline-block" : "none");
+			this.appendHTML("<span style='color: "+(msg.message() == "YES" ? "red" : "green")+";'>"+language(msg.message() == "YES" ? "%s is now inaktiv" : "%s is now no longer inaktiv", msg.nick)+"</span>");
 			break;
 		case "FLOOD":
-			this.error(language("You has type message to fast. Please wait a little couple of time and try again"));
+			this
+					.error(language("You has type message to fast. Please wait a little couple of time and try again"));
 			break;
 		case "NICK":
 			this.updateNick(msg.nick(), msg.message());
 			break;
-		case "KICK": 
-			this.appendHTML(language("%s kicked %s ud af channel", msg.nick(), msg.message()));
-			
+		case "KICK":
+			if (msg.message() != myNick) {
+				this.appendHTML(language("%s kicked %s ud af channel", msg
+						.nick(), msg.message()));
+			} else {
+				this.onClose(true);
+			}
+			this.leave(msg.message());
+			break;
 		}
+	};
+
+	ChannelPage.prototype.leave = function(name) {
+		if (typeof this.users[name] !== "undefined") {
+			var dom = document.getElementsByClassName("user");
+			for (var i = 0; i < dom.length; i++) {
+				if (dom[i].getAttribute("nick") == name) {
+					dom[i].parentNode.removeChild(dom[i]);
+					this.users[name] = undefined;
+					return true;
+				}
+			}
+		}
+
+		return false;
 	};
 
 	ChannelPage.prototype.error = function(msg) {
 		this.appendHTML("<span class='error'>[Error]" + language(msg)
 				+ "</span>");
-	}
+	};
 
 	ChannelPage.prototype.appendHTML = function(html) {
 		var date = new Date();
@@ -202,16 +228,24 @@ var ChannelPage = (function() {
 		dom.scrollTop = dom.scrollHeight;
 	};
 
-	ChannelPage.prototype.onClose = function() {
+	ChannelPage.prototype.onClose = function(noLeave) {
+		if (typeof noLeave === "undefined")
+			noLeave = false;
 		if (!this.exit) {
-			leave(this.name, function() {
+			if (!noLeave) {
+				var self = this;
+				leave(this.title(), function() {
+					delete channelBuffer[this.name];
+				}, function(respons) {
+					// this is error
+					self.appendHTML("<span style='color:red;'>[Error]"
+							+ respons.message() + "</span>");
+				});
+				sendBuffer.flush();
+			}else{
 				delete channelBuffer[this.name];
-			}, function(respons) {
-				// this is error
-				this.appendHTML("<span style='color:red;'>[Error]"
-						+ respons.message() + "</span>");
-			});
-			sendBuffer.flush();
+			}
+			removePage(this);
 		}
 	};
 
@@ -278,4 +312,11 @@ function controleDataNumber(n) {
 	}
 
 	return n;
+}
+
+function kickError(msg){
+	if(msg.command() == "ERROR"){
+		currentPage.appendHTML("<span style='color:red;'>[Error]"
+							+ msg.message() + "</span>");
+	}
 }

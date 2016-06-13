@@ -22,4 +22,8 @@ class Setup{
   private function is_new(){
     return version_compare(CHAT_VERSION, $this->version(), ">");
   }
+  
+  private function version(){
+  	return $this->data["version"];
+  }
 }

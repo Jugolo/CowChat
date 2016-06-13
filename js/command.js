@@ -118,8 +118,8 @@ function cleanMessage(message){
 	return message;
 }
 
-function kick(username, channel, flush){
-	send("KICK "+channel+": "+username);
+function kick(username, channel, error, flush){
+	send("KICK "+channel+": "+username, error);
 	if(typeof flush !== "undefined" && flush){
 		sendBuffer.flush();
 	}

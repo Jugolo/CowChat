@@ -19,7 +19,7 @@ function DIR_SEP(){
 	return Server::is_cli() ? DIRECTORY_SEPARATOR : "/";
 }
 function getDir(){
-	$sep = Server::is_cli() ? DIRECTORY_SEPARATOR : "/";
+	$sep = DIR_SEP();
 	$current_dir = str_replace(array(
 			"\\",
 			"/"

@@ -29,6 +29,28 @@ function setFocus(obj){
 	obj.focus();
 }
 
+function removePage(obj){
+	var index = pageBuffer.indexOf(obj);
+	if(index == -1){
+		console.log("unknown page: "+obj.title());
+		return false;
+	}
+	
+	pageBuffer.splice(index, 1);
+	//render all fane :)
+	var doms = document.getElementsByClassName("tab");
+	for(var i=0;i<doms.length;i++){
+		var title = doms[i].getElementsByClassName("tab_title")[0];
+		if(title.innerHTML == obj.title()){
+			doms[i].parentNode.removeChild(doms[i]);
+		}
+	}
+	
+	if(pageBuffer.length != 0){
+		setFocus(pageBuffer[0]);
+	}
+}
+
 function savePage(page){
 	pageBuffer.push(page);
 	// wee append a tab to the top menu where the user can close it and push it

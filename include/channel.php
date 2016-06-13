@@ -33,6 +33,7 @@ class Channel{
 		unset(self::$channels[$channel->id()]);
 		Database::query("DELETE FROM " . table("channel") . " WHERE `id`='" . $channel->id() . "'");
 		Database::query("DELETE FROM " . table("channel_group") . " WHERE `cid`='" . $channel->id() . "'");
+		Database::query("DELETE FROM " . table("flood") . " WHERE `cid`='".$channel->id()."'");//clean up in flood table.
 	}
 	public static function getUserChannel(UserData $user){
 		$return = [];
