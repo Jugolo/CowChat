@@ -11,8 +11,12 @@ class Setup{
     $this->data = json_decode(Files::context("setup/info.json"), true);
 
     if(!$this->is_new()){
-      exit("You need to delete the setup dir to let the chat work");
+       if(Files::exists("include/config.json")){
+         exit("You need to delete the setup dir to let the chat work");
+       }
     }
+    header("location:setup/index.php");
+    exit;
   }
 
   private function is_new(){
