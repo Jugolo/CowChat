@@ -330,6 +330,10 @@ span[onclick], div[onclick] {
                   break;
                   case "nick":
                      nick(commandBody);
+                  break;
+                  case "show":
+                    show(commandBody);
+                  break;
 		  }
 	  }else{
 		  message(currentChannel.title(), txt);
