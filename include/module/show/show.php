@@ -47,10 +47,5 @@ function show_command(MessageParser $message){
 	}
 }
 function showIpInfo(array $info){
-	$return = [];
-	
-	foreach($info as $key => $value)
-		$return[] = $key . "=" . $value;
-	
-	return implode(";", $return);
+	return $info["ip"].",".$info["dec"];
 }
