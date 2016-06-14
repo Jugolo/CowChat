@@ -332,9 +332,7 @@ span[onclick], div[onclick] {
                      nick(commandBody);
                   break;
                   case "show":
-                    show(commandBody, function(msg){
-     
-                    });
+                    show(commandBody, handle_show);
                   break;
 		  }
 	  }else{
@@ -382,6 +380,37 @@ span[onclick], div[onclick] {
 	  }else{
 		  alert("Unknown channel");
 	  }
+  }
+
+  function handle_show(msg){
+     var handler = msg.split(" ")[0];
+     var body = msg.substr(handler.length+1);
+     switch(handler){
+        case "blacklist":
+            html = language("this is the black listed ip from firewall")+":";
+            ip   = body.split(",");
+            for(var i=0;i<ip.length;i++){
+               html += "<div class='show_ip'>"+ip[i]+"</div>";
+            }
+        break;
+        case "whitelisted":
+           html = language("this is the white listed ip from firewall (this will never be bannet)")+":";
+           ip = body.split(",");
+           for(var i=0;i<ip.length;i++){
+              html += "<div class='show_ip'>"+ip[i]+"</div>";
+           }
+        break;
+        case "ban":
+           html = language("here is ip there is bannet")+":";
+           ip = body.split(",");
+           for(var i=0;i<ip.length;i++){
+              html += "<div class='ip_show'>"+ip[i]+"</div>";
+           }
+        break;
+
+     }
+
+     currentPage.appendHTML(html);
   }
 
   window.onerror = function (errorMsg, url, lineNumber) {
