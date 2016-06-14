@@ -127,6 +127,14 @@ function kick(username, channel, error, flush){
 
 function show(command, success, error){
    send("SHOW: "+command, function(msg){
-
+     if(msg.command() != "SHOW"){
+       if(typeof error !== "undefined"){
+         error(msg);
+       }
+     }else{
+       if(typeof success !== "undefined"){
+          success(msg);
+       }
+     }
    });
 }
