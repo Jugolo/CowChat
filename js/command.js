@@ -124,3 +124,9 @@ function kick(username, channel, error, flush){
 		sendBuffer.flush();
 	}
 }
+
+function show(command, success, error){
+   send("SHOW: "+command, function(msg){
+
+   });
+}
