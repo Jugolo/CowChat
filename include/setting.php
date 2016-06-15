@@ -12,4 +12,15 @@ class Setting{
 	public static function get($name){
 		return self::$settings[$name];
 	}
+        public static function push($key, $value){
+                if(!self::exists($key)){
+                    Database::insert("setting", [
+                        "key"   : $key,
+                        "value" : $value
+                    ]);
+                }else{
+                    Database::query("UPDATE ".table("setting")." SET `value`=".Database::qlean($value)." WHERE `key`=".Database::qlean($key));
+                }
+                self::settings[$key] = $value;
+        }
 }
