@@ -20,6 +20,7 @@ if wee cange and add every think i can think of will relate at the chat never wo
 * new: start project ChatPlugin. the class would be in devolper mode so do not use a lot of time on create plugin becuse there are no guarantee it would work in next versions.
 * new: commands: "/show plugin" to show all plugin. "/show plugin enabled" to show all plugin there is enabled. "/show plugin disabled" show plugin there is not enabled. "/plugin [name] [enable/deable]" to enable or debale plugin.
 * change: only support php version 7 or heigher.
+* new: a better config handling. When a admin visit the chat there will in left menu where a option "Configuration" when click on this there will be a popup width all config. 
 
 # PHP version 
 the first version of chat has no requirement for php version but the ajax part of the chat need to be very fast to load.
