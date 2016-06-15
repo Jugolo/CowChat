@@ -1,6 +1,6 @@
 <?php
 function send(MessageParser $parser, $message){
-	if($parser->hasPrefix()){
+	if($parser != null && $parser->hasPrefix()){
 		$message = $parser->prefix() . "!" . $message;
 	}
 	
@@ -8,7 +8,7 @@ function send(MessageParser $parser, $message){
 }
 function send_privmsg(UserData $user, ChannelData $channel, $message){
 	if(!$channel->isMember(User::current()) || !$channel->isMember($user)){
-		send(new MessageParser("NO: COMMAND"), "ERROR: Unknown channel");
+		send(null, "ERROR: Unknown channel");
 		return;
 	}
 	Database::insert("message", [
@@ -30,7 +30,7 @@ function send_user(UserData $user, $msg){
 function send_channel(ChannelData $channel, UserData $user, $message){
 	if(!$channel->isMember($user)){
 		if($user == User::current()){
-			send(new MessageParser("UNKNOWN: no message"), "ERROR: notMember");
+			send(null, "ERROR: notMember");
 		}
 		return false;
 	}
