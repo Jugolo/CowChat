@@ -23,4 +23,10 @@ class Setting{
                 }
                 self::settings[$key] = $value;
         }
+        public static function delete($key){
+                if(self::exists($key)){
+                      Database::query("DELETE FROM ".table("setting")." WHERE `key`=".Database::qlean($key));
+                      unset(self::settings[$key]);
+                }
+        }
 }
