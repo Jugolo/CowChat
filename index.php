@@ -1,5 +1,5 @@
 <?php
-define("CHAT_VERSION", "V0.0.3");
+define("CHAT_VERSION", "V0.1T1");
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 function ip(){
