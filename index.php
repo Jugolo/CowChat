@@ -69,7 +69,9 @@ class Server{
 		
 		$json = json_decode(Files::context("include" . DIR_SEP() . "config.json"));
 		
-		Database::init($json->host, $json->user, $json->pass, $json->table, $json->prefix);
+		if(!Database::init($json->host, $json->user, $json->pass, $json->table, $json->prefix)){
+                    throw new Exception("Could not connect to the database");
+                }
 		
 		Setting::init();
 		FireWall::init();
