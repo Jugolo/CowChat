@@ -62,7 +62,7 @@ class Server{
 		include "include/flood.php";
 		include "include/access.php";
 		
-		if(Files::exists("setup/info.json")){
+		if(!defined("IN_SETUP") && Files::exists("setup/info.json")){
 			include "include/setup.php";
                         new Setup();
 		}
