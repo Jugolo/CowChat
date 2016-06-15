@@ -6,10 +6,10 @@ class Database{
 		self::$connection = @new mysqli($host, $user, $pass, $data);
 		if(empty(self::$connection->connect_error)){
 			self::$prefix = $prefix;
-			return;
+			return true;
 		}
 		
-		exit("DATABASE ERROR: " . self::$connection->connect_error);
+		return false;
 	}
 	public static function query($q){
 		$query = self::$connection->query($q);
