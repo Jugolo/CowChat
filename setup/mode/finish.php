@@ -58,7 +58,7 @@ function get_tab_create_item(array $data){
   }
 
   if(array_key_exists("not_null", $data) && $data["not_null"]){
-    $sql .= "NOT NULL";
+    $sql .= " NOT NULL";
   }
   return $sql;
 }
