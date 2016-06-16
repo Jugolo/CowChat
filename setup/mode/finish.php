@@ -19,7 +19,33 @@ function zip_get_context(ZipArchive $zip, $name){
 }
 
 function controle_table(array $data){
+   $query = Database::query("SHOW TABLES");//get all table in the database
+   $current = [];
+   while($row = $query->fetch()){
+      if(strpos($row[0], Database::$prefix) === 0){
+         $current[] = substr($row[0], strlen(Database::$prefix)+1);
+      }
+   }
 
+   create_table(array_diff($data["need_table"], $current), $data);
+}
+
+function create_table($name, array $data){
+   if(is_array($name)){
+      foreach($name as $tname){
+         create_table($tname);
+      }
+      return;
+   }
+
+   $sql = "CREATE TABLE `".Database::$prefix."_".$name."` (";
+   $item = [];
+   if(array_key_exists("primary_key", $data["table"])){
+     $item[] = "PRIMARY KEY (`".$data["table"]["primary_key"]."`)";
+   }
+   $sql .= " ".implode("\r\n ", $item);
+   $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+   Database::query($sql);
 }
 
 //controle if the zip file exists
