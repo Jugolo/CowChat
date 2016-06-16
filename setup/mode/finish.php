@@ -27,7 +27,21 @@ function controle_table(array $data){
       }
    }
 
-   create_table(array_diff($data["need_table"], $current), $data);
+   create_table(array_diff($data["need_table"], $current), $data);//create missing table
+   delete_table(array_diff($current, $data["need_table"]));//delete the table. There for do not create table widt the prefix. Use plugin_[prefix]_[name]
+
+   //run through all the table the chat us using    
+}
+
+function delete_table($name){
+   if(is_array($name)){
+      foreach($name as $tname){
+         delete_table($tname);
+      }
+      return;
+   }
+  
+   Database::query("DROP TABLE `".$name."`");
 }
 
 function create_table($name, array $data){
