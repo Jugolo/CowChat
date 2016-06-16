@@ -47,7 +47,7 @@ function create_table($name, array $data){
      $item[] = "PRIMARY KEY (`".$data["table"][$name]["primary_key"]."`)";
    }
    $sql .= " ".implode(",\r\n ", $item);
-   $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+   $sql .= "\r\n) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
    Database::query($sql);
 }
 
