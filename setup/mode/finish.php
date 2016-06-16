@@ -43,7 +43,7 @@ function create_table($name, array $data){
    if(array_key_exists("primary_key", $data["table"])){
      $item[] = "PRIMARY KEY (`".$data["table"]["primary_key"]."`)";
    }
-   $sql .= " ".implode("\r\n ", $item);
+   $sql .= " ".implode(",\r\n ", $item);
    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
    Database::query($sql);
 }
