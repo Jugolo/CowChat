@@ -40,12 +40,22 @@ function create_table($name, array $data){
 
    $sql = "CREATE TABLE `".Database::$prefix."_".$name."` (";
    $item = [];
-   if(array_key_exists("primary_key", $data["table"])){
-     $item[] = "PRIMARY KEY (`".$data["table"]["primary_key"]."`)";
+   foreach($data["table"][$name]["item"] as $i){
+      $item[] = get_tab_create_item($i);
+   }
+   if(array_key_exists("primary_key", $data["table"][$name])){
+     $item[] = "PRIMARY KEY (`".$data["table"][$name]["primary_key"]."`)";
    }
    $sql .= " ".implode(",\r\n ", $item);
    $sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
    Database::query($sql);
+}
+
+function get_tab_create_item(array $data){
+  $sql .= "`".$data["name"]."`";
+  if(array_key_exists("length", $data)){
+    $sql .= "(".$data["length"].")";
+  }
 }
 
 //controle if the zip file exists
