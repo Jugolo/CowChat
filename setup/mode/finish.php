@@ -56,6 +56,11 @@ function get_tab_create_item(array $data){
   if(array_key_exists("length", $data)){
     $sql .= "(".$data["length"].")";
   }
+
+  if(array_key_exists("not_null", $data) && $data["not_null"]){
+    $sql .= "NOT NULL";
+  }
+  return $sql;
 }
 
 //controle if the zip file exists
