@@ -39,7 +39,19 @@ function controle_table(array $data){
 
 function controle_columns($name, array $data){
    $query = Database::query("SHOW COLUMNS FROM `".Database::$prefix."_".$name."`");
-   $
+   $buffer = [];
+   while($row = $query->fetch()){
+     $buffer[$row["Field"]] = $row;
+   }
+
+   //wee add missing columns
+   foreach(array_diff(array_keys($data["table"][$name]["item"]), array_keys($buffer)) as $col){
+      create_columns($name, $$col, $buffer[$col]
+   }
+}
+
+function create_columns($table, $name, $data){
+
 }
 
 function delete_table($name){
