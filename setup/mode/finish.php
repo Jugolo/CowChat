@@ -2,7 +2,7 @@
 include "../index.php";
 
 function zip_dir(){
-  return "zip/".str_replace(".","_",CHAT_OLD_VERSION).".zip";
+  return "zip/temp.zip";
 }
 
 function zip_get_context(ZipArchive $zip, $name){
@@ -30,7 +30,15 @@ function controle_table(array $data){
    create_table(array_diff($data["need_table"], $current), $data);//create missing table
    delete_table(array_diff($current, $data["need_table"]));//delete the table. There for do not create table widt the prefix. Use plugin_[prefix]_[name]
 
-   //run through all the table the chat us using    
+   //run through all the table the chat is using
+   foreach($data["need_table"] as $table){
+     controle_columns($table, $data, Database::query("SHOW COLUMNS FROM `".Database::$prefix."_".$table."`"));
+   }
+     
+}
+
+function controle_columns($name, array $data, DatabaseResult $query){
+   //wee controle 
 }
 
 function delete_table($name){
@@ -41,7 +49,7 @@ function delete_table($name){
       return;
    }
   
-   Database::query("DROP TABLE `".$name."`");
+   Database::query("DROP TABLE `".Database::$prefix."_".$name."`");
 }
 
 function create_table($name, array $data){
