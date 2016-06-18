@@ -32,13 +32,14 @@ function controle_table(array $data){
 
    //run through all the table the chat is using
    foreach($data["need_table"] as $table){
-     controle_columns($table, $data, Database::query("SHOW COLUMNS FROM `".Database::$prefix."_".$table."`"));
+     controle_columns($table, $data);
    }
      
 }
 
-function controle_columns($name, array $data, DatabaseResult $query){
-   //wee controle 
+function controle_columns($name, array $data){
+   $query = Database::query("SHOW COLUMNS FROM `".Database::$prefix."_".$name."`");
+   $
 }
 
 function delete_table($name){
