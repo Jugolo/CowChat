@@ -51,7 +51,17 @@ function controle_columns($name, array $data){
 }
 
 function create_columns($table, $name, $data){
+  $end = " ";
+  
+  if(array_key_exists("length", $data)){
+    $end .= "(".$data["length"].")";
+  }
 
+  if(array_key_exists("not_null", $data) && $data["not_null"]){
+    $end .= " NOT NULL";
+  }
+
+  Database::query("ALTER TABLE `".Database::$prefix."_".$table."` ADD `".$name."`".$end);
 }
 
 function delete_table($name){
