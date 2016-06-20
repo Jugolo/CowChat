@@ -34,7 +34,17 @@ function controle_table(array $data){
    foreach($data["need_table"] as $table){
      controle_columns($table, $data);
    }
-     
+
+   foreach($data["context"] as $table => $context){
+
+   }   
+}
+
+function controle_context($table, array $data){
+  //get all information in the table soo wee can append the items (or updatet)
+  $query = Database::query("SELECT `".implode("`,`", array_keys($data))."` FROM `".$table."`");
+  while($row = $query->fetch()){
+    
 }
 
 function controle_columns($name, array $data){
@@ -46,8 +56,17 @@ function controle_columns($name, array $data){
 
    //wee add missing columns
    foreach(array_diff(array_keys($data["table"][$name]["item"]), array_keys($buffer)) as $col){
-      create_columns($name, $$col, $buffer[$col]);
+      create_columns($name, $col, $buffer[$col]);
    }
+
+   //wee remove columnen.
+   foreach(array_diff(array_keys($buffer), array_keys($data["table"][$name]["item"])) as $col){
+      drop_column($name, $col);
+   }
+}
+
+function drop_column($table, $column){
+   Database::query("ALTER TABLE `".Database::$prefix."_".$table."` DROP COLUMN `".$column."`");
 }
 
 function create_columns($table, $name, $data){
@@ -108,4 +127,4 @@ if(!$zip->open(zip_dir())){
   exit("fail to open zip file: setup/".zip_dir());
 }
 
-controle_table(json_decode(zip_get_context($zip, "sql/from_".str_replace(".","_",CHAT_OLD_VERSION).".json"), true);
+controle_table(json_decode(zip_get_context($zip, "sql/from_".str_replace(".","_",CHAT_VERSION).".json"), true);
