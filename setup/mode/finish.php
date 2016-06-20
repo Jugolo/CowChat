@@ -46,22 +46,12 @@ function controle_columns($name, array $data){
 
    //wee add missing columns
    foreach(array_diff(array_keys($data["table"][$name]["item"]), array_keys($buffer)) as $col){
-      create_columns($name, $$col, $buffer[$col]
+      create_columns($name, $$col, $buffer[$col]);
    }
 }
 
 function create_columns($table, $name, $data){
-  $end = " ";
-  
-  if(array_key_exists("length", $data)){
-    $end .= "(".$data["length"].")";
-  }
-
-  if(array_key_exists("not_null", $data) && $data["not_null"]){
-    $end .= " NOT NULL";
-  }
-
-  Database::query("ALTER TABLE `".Database::$prefix."_".$table."` ADD `".$name."`".$end);
+  Database::query("ALTER TABLE `".Database::$prefix."_".$table."` ADD ".get_tab_create_item($data));
 }
 
 function delete_table($name){
