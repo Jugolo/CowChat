@@ -35,16 +35,14 @@ function controle_table(array $data){
      controle_columns($table, $data);
    }
 
-   foreach($data["context"] as $table => $context){
-
-   }   
+   controle_setting($data["settings"]);
 }
 
-function controle_context($table, array $data){
-  //get all information in the table soo wee can append the items (or updatet)
-  $query = Database::query("SELECT `".implode("`,`", array_keys($data))."` FROM `".$table."`");
-  while($row = $query->fetch()){
-    
+function controle_setting(array $settings){
+  //wee could use setting class but wee also need to get settings wee dont need. There for wee use it semi
+  //get all setting and cache them
+  $query = Database::query("SELECT `key`, `value` FROM ".table("setting"));
+  $cache
 }
 
 function controle_columns($name, array $data){
