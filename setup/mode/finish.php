@@ -42,7 +42,19 @@ function controle_setting(array $settings){
   //wee could use setting class but wee also need to get settings wee dont need. There for wee use it semi
   //get all setting and cache them
   $query = Database::query("SELECT `key`, `value` FROM ".table("setting"));
-  $cache
+  $cache = [];
+  while($row = $query->fetch()){
+    $cache[$row["key"]] = $row["value"];
+  }
+
+  //first wee finde all data wee need to create
+  foreach(array_diff(array_keys($settings), array_keys($cache)) as $key){
+     Setting::push($key, $settings[$key]);
+  }
+
+  foreach(array_diff(array_keys($cache), array_keys($settings)) as $key){
+     Setting::delete($key);
+  }
 }
 
 function controle_columns($name, array $data){
@@ -125,4 +137,6 @@ if(!$zip->open(zip_dir())){
   exit("fail to open zip file: setup/".zip_dir());
 }
 
-controle_table(json_decode(zip_get_context($zip, "sql/from_".str_replace(".","_",CHAT_VERSION).".json"), true);
+controle_table(json_decode(zip_get_context($zip, "sql/sql.json"), true);
+//now wee need to update all files. (In this way wee knew the files structure is okay)
+
