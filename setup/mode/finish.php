@@ -115,6 +115,6 @@ if(!file_exists(zip_dir()){
   exit("zip dir missing: setup/".zip_dir());
 }
 
-controle_table(json_decode(file_get_contents($zip, "sql/sql.json"), true));
+controle_table(json_decode(file_get_contents($zip, "setup.json"), true));
 //now wee need to update all files. (In this way wee knew the files structure is okay)
 
