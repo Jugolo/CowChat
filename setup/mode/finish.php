@@ -1,23 +1,6 @@
 <?php
 include "../index.php";
 
-function zip_dir(){
-  return "zip/temp.zip";
-}
-
-function zip_get_context(ZipArchive $zip, $name){
-   $stream = $zip->getStream($name);
-   if(!$stream){
-     return null;
-   }
-   $str = "";
-   while(!feof($stream)){
-     $str .= fread($stream, 2);
-   }
-   fclose($stream);
-   return $str;
-}
-
 function controle_table(array $data){
    $query = Database::query("SHOW TABLES");//get all table in the database
    $current = [];
@@ -132,11 +115,6 @@ if(!file_exists(zip_dir()){
   exit("zip dir missing: setup/".zip_dir());
 }
 
-$zip = new ZipArchive();
-if(!$zip->open(zip_dir())){
-  exit("fail to open zip file: setup/".zip_dir());
-}
-
-controle_table(json_decode(zip_get_context($zip, "sql/sql.json"), true);
+controle_table(json_decode(file_get_contents($zip, "sql/sql.json"), true));
 //now wee need to update all files. (In this way wee knew the files structure is okay)
 
