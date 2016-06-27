@@ -111,10 +111,10 @@ function get_tab_create_item(array $data){
 }
 
 //controle if the zip file exists
-if(!file_exists(zip_dir()){
-  exit("zip dir missing: setup/".zip_dir());
+if(!file_exists("setup/setup.json")){
+  exit("setup file missing: setup/setup.json");
 }
 
-controle_table(json_decode(file_get_contents($zip, "setup.json"), true));
+controle_table(json_decode(file_get_contents("setup/setup.json"), true));
 //now wee need to update all files. (In this way wee knew the files structure is okay)
 
