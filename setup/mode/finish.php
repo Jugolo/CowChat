@@ -80,7 +80,7 @@ function delete_table($name){
 function create_table($name, array $data){
    if(is_array($name)){
       foreach($name as $tname){
-         create_table($tname);
+         create_table($tname, $data);
       }
       return;
    }
