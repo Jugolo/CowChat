@@ -55,7 +55,26 @@
             "type"     : "varchar",
             "length"   : 255,
             "not_null" : true
+         },
+         {
+            "name"     : "changeTitle",
+            "type"     : "varchar",
+            "length"   : 255,
+            "not_null" : true
+         },
+         {
+            "name"     : "ignoreFlood",
+            "type"     : "char",
+            "length"   : 1,
+            "not_null" : true
+         },
+         {
+            "name"     : "kick",
+            "type"     : "char",
+            "length"   : 1,
+            "not_null" : true
          }
-      ]
+      ],
+      "primary_key" : "id"
   }
 }
