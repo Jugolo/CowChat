@@ -99,7 +99,12 @@ function create_table($name, array $data){
 }
 
 function get_tab_create_item(array $data){
-  $sql .= "`".$data["name"]."`";
+  $sql .= "`".$data["name"]."` ";
+  
+  if(array_key_exists("type", $data)){
+    $sql .= $data["type"];
+  }
+
   if(array_key_exists("length", $data)){
     $sql .= "(".$data["length"].")";
   }
