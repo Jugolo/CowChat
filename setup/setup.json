@@ -1,13 +1,33 @@
 {
   "need_table" : {
     "channel" : {
-      "item" : {
+      "item" : [{
         "name"     : "id",
         "type"     : "int",
         "length"   : 11,
         "not_null" : true,
         "auto"     : true
+      },
+      {
+        "name"     : "name",
+        "type"     : "varchar",
+        "length"   : 255,
+        "not_null" : true
+      },
+      {
+        "name"     : "title",
+        "type"     : "varchar",
+        "length"   : 255,
+        "not_null" : true
+      },
+      {
+        "name"     : "creater",
+        "type"     : "int",
+        "length"   : 11,
+        "not_null" : true
       }
+      ],
+      "primary_key" : "id"
     }   
   }
 }
