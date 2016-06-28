@@ -1,0 +1,13 @@
+{
+  "need_table" : {
+    "channel" : {
+      "item" : {
+        "name"     : "id",
+        "type"     : "int",
+        "length"   : 11,
+        "not_null" : true,
+        "auto"     : true
+      }
+    }   
+  }
+}
