@@ -76,6 +76,14 @@
          }
       ],
       "primary_key" : "id"
+    },
+    "channel_member" : {
+      "item" : [
+         {
+            "name"     : "id",
+            "type"     : "
+         }
+      ]
     }
   }
 }
