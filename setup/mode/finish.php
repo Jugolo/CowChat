@@ -112,6 +112,10 @@ function get_tab_create_item(array $data){
   if(array_key_exists("not_null", $data) && $data["not_null"]){
     $sql .= " NOT NULL";
   }
+
+  if(array_key_exists("auto", $data) && $data["auto"]){
+    $sql .= " AUTO_INCREMENT";
+  }
   return $sql;
 }
 
@@ -122,4 +126,3 @@ if(!file_exists("setup/setup.json")){
 
 controle_table(json_decode(file_get_contents("setup/setup.json"), true));
 //now wee need to update all files. (In this way wee knew the files structure is okay)
-
