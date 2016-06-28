@@ -28,6 +28,34 @@
       }
       ],
       "primary_key" : "id"
-    }   
+    },
+    "channel_group" : {
+      "item" : [
+         { 
+            "name"     : "id",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true,
+            "auto"     : true
+         },
+         {
+            "name"     : "name",
+            "type"     : "varchar",
+            "length"   : 255,
+            "not_null" : true
+         },
+         {
+            "name"     : "cid",
+            "type"     : "int",
+            "length"   : 255,
+            "not_null" : true
+         },
+         {
+            "name"     : "standart",
+            "type"     : "varchar",
+            "length"   : 255,
+            "not_null" : true
+         }
+      ]
   }
 }
