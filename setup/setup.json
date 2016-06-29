@@ -119,6 +119,36 @@
          }
       ],
       "primary_key" : "id"
+    },
+    "flood" : {
+      "item" : [
+         {
+            "name"     : "id",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true,
+            "auto"     : true
+         },
+         {
+            "name"     : "uid",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true
+         },
+         {
+            "name"     : "cid",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true
+         },
+         {
+            "name"     : "time",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true
+         }
+      ],
+      "primary_key" : "id"
     }
   }
 }
