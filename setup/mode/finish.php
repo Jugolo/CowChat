@@ -113,6 +113,10 @@ function get_tab_create_item(array $data){
     $sql .= " NOT NULL";
   }
 
+  if(array_key_exists("deafult", $data)){
+    $sql .= "DEFAULT '".$data["deafult"]."'";
+  }
+
   if(array_key_exists("auto", $data) && $data["auto"]){
     $sql .= " AUTO_INCREMENT";
   }
