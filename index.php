@@ -64,14 +64,14 @@ class Server{
 		
 		if(!defined("IN_SETUP") && Files::exists("setup/info.json")){
 			include "include/setup.php";
-                        new Setup();
+			new Setup();
 		}
 		
 		$json = json_decode(Files::context("include" . DIR_SEP() . "config.json"));
 		
 		if(!Database::init($json->host, $json->user, $json->pass, $json->table, $json->prefix)){
-                    throw new Exception("Could not connect to the database");
-                }
+			throw new Exception("Could not connect to the database");
+		}
 		
 		Setting::init();
 		FireWall::init();
@@ -294,7 +294,7 @@ class Server{
                                   LEFT JOIN " . table("channel_member") . " AS c ON m.cid=c.cid
                                   WHERE c.uid='" . User::current()->id() . "'
                                   AND m.id>'" . User::current()->message_id() . "'
-				                  AND (`isPriv`='N' OR `isPriv`='Y' AND `privTo`='".User::current()->id()."')");
+				                  AND (`isPriv`='N' OR `isPriv`='Y' AND `privTo`='" . User::current()->id() . "')");
 		$my = User::current();
 		while($row = $query->fetch()){
 			if(!$my->isIgnore($row["uid"])){
@@ -303,13 +303,13 @@ class Server{
 			$mid = $row["id"];
 		}
 		
-		$query = Database::query("SELECT `message` FROM ".table("user_msg")." WHERE `uid`='".User::current()->id()."'");
+		$query = Database::query("SELECT `message` FROM " . table("user_msg") . " WHERE `uid`='" . User::current()->id() . "'");
 		if($query->rows() != 0){
 			while($row = $query->fetch()){
-				echo $row["message"]."\r\n";
+				echo $row["message"] . "\r\n";
 			}
-			//delete all rows
-			Database::query("DELETE FROM ".table("user_msg")." WHERE `uid`='".User::current()->id()."'");
+			// delete all rows
+			Database::query("DELETE FROM " . table("user_msg") . " WHERE `uid`='" . User::current()->id() . "'");
 		}
 		
 		User::current()->message_id($mid == null ? Server::getLastId() : $mid);

@@ -15,18 +15,18 @@ class Setting{
         public static function push($key, $value){
                 if(!self::exists($key)){
                     Database::insert("setting", [
-                        "key"   : $key,
-                        "value" : $value
+                        "key"   => $key,
+                        "value" => $value
                     ]);
                 }else{
                     Database::query("UPDATE ".table("setting")." SET `value`=".Database::qlean($value)." WHERE `key`=".Database::qlean($key));
                 }
-                self::settings[$key] = $value;
+                self::$settings[$key] = $value;
         }
         public static function delete($key){
                 if(self::exists($key)){
                       Database::query("DELETE FROM ".table("setting")." WHERE `key`=".Database::qlean($key));
-                      unset(self::settings[$key]);
+                      unset(self::$settings[$key]);
                 }
         }
 }

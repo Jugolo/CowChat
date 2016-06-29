@@ -1,154 +1,329 @@
 {
-  "need_table" : {
-    "channel" : {
-      "item" : [{
-        "name"     : "id",
-        "type"     : "int",
-        "length"   : 11,
-        "not_null" : true,
-        "auto"     : true
-      },
-      {
-        "name"     : "name",
-        "type"     : "varchar",
-        "length"   : 255,
-        "not_null" : true
-      },
-      {
-        "name"     : "title",
-        "type"     : "varchar",
-        "length"   : 255,
-        "not_null" : true
-      },
-      {
-        "name"     : "creater",
-        "type"     : "int",
-        "length"   : 11,
-        "not_null" : true
-      }
-      ],
-      "primary_key" : "id"
-    },
-    "channel_group" : {
-      "item" : [
-         { 
-            "name"     : "id",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true,
-            "auto"     : true
-         },
-         {
-            "name"     : "name",
-            "type"     : "varchar",
-            "length"   : 255,
-            "not_null" : true
-         },
-         {
-            "name"     : "cid",
-            "type"     : "int",
-            "length"   : 255,
-            "not_null" : true
-         },
-         {
-            "name"     : "standart",
-            "type"     : "varchar",
-            "length"   : 255,
-            "not_null" : true
-         },
-         {
-            "name"     : "changeTitle",
-            "type"     : "varchar",
-            "length"   : 255,
-            "not_null" : true
-         },
-         {
-            "name"     : "ignoreFlood",
-            "type"     : "char",
-            "length"   : 1,
-            "not_null" : true
-         },
-         {
-            "name"     : "kick",
-            "type"     : "char",
-            "length"   : 1,
-            "not_null" : true
-         }
-      ],
-      "primary_key" : "id"
-    },
-    "channel_member" : {
-      "item" : [
-         {
-            "name"     : "id",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true,
-            "auto"     : true
-         },
-         {
-            "name"     : "cid",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true
-         },
-         {
-            "name"     : "uid",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true,
-         },
-         {
-            "name"     : "gid",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true
-         },
-         {
-            "name"     : "active",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true
-         },
-         {
-            "name"     : "isInaktiv",
-            "type"     : "char",
-            "length"   : 1,
-            "not_null" : true,
-            "deafult"  : "N"
-         }
-      ],
-      "primary_key" : "id"
-    },
-    "flood" : {
-      "item" : [
-         {
-            "name"     : "id",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true,
-            "auto"     : true
-         },
-         {
-            "name"     : "uid",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true
-         },
-         {
-            "name"     : "cid",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true
-         },
-         {
-            "name"     : "time",
-            "type"     : "int",
-            "length"   : 11,
-            "not_null" : true
-         }
-      ],
-      "primary_key" : "id"
-    }
-  }
+	"need_table": {
+		"channel": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "name",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "title",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "creater",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}],
+			"primary_key": "id"
+		},
+		"channel_group": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "name",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "cid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "standart",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "changeTitle",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "ignoreFlood",
+				"length": 1,
+				"type": "char",
+				"not_null": true
+			}, {
+				"name": "kick",
+				"length": 1,
+				"type": "char",
+				"not_null": true
+			}],
+			"primary_key": "id"
+		},
+		"channel_member": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "cid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "uid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "gid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "active",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "isInaktiv",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}],
+			"primary_key": "id"
+		},
+		"flood": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "uid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "cid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "time",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}],
+			"primary_key": "id"
+		},
+		"ignore": {
+			"item": [{
+				"name": "uid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "iid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}]
+		},
+		"ip_ban": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "admin_id",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "ip",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "expired",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}],
+			"primary_key": "id"
+		},
+		"message": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "cid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "uid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "message",
+				"type": "text",
+				"not_null": true
+			}, {
+				"name": "time",
+				"type": "datetime",
+				"not_null": true,
+				"default": "CURRENT_TIMESTAMP"
+			}, {
+				"name": "isPriv",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "privTo",
+				"length": 11,
+				"type": "int",
+				"not_null": false
+			}],
+			"primary_key": "id"
+		},
+		"setting": {
+			"item": [{
+				"name": "key",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "value",
+				"type": "text",
+				"not_null": true
+			}]
+		},
+		"smylie": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "tag",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "title",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "url",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}],
+			"primary_key": "id"
+		},
+		"user": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "username",
+				"length": 255,
+				"type": "varchar",
+				"not_null": false
+			}, {
+				"name": "nick",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "password",
+				"type": "text",
+				"not_null": false
+			}, {
+				"name": "hash",
+				"type": "text",
+				"not_null": true
+			}, {
+				"name": "groupId",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "message_id",
+				"length": 11,
+				"type": "int",
+				"not_null": false
+			}, {
+				"name": "type",
+				"length": 11,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "ip",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "active",
+				"length": 255,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "defenderCount",
+				"type": "float",
+				"not_null": true
+			}, {
+				"name": "countUpdatet",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "lastMessage",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}],
+			"primary_key": "id"
+		},
+		"user_msg": {
+			"item": [{
+				"name": "uid",
+				"length": 11,
+				"type": "int",
+				"not_null": true
+			}, {
+				"name": "message",
+				"type": "text",
+				"not_null": true
+			}]
+		}
+	},
+	"settings": {
+		"name": "CowScript\r\n",
+		"startGroup": "1",
+		"startChannel": "#start"
+	}
 }

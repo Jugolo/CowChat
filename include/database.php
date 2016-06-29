@@ -55,7 +55,7 @@ function table($name){
 }
 class DatabaseResult{
 	private $connection;
-	public function __construct($query){
+	public function __construct(mysqli_result $query){
 		$this->connection = $query;
 	}
 	public function rows(){
@@ -63,6 +63,9 @@ class DatabaseResult{
 	}
 	public function fetch(){
 		return $this->connection->fetch_assoc();
+	}
+	public function arrays(){
+		return $this->connection->fetch_array();
 	}
 }
 class DatabaseDeleteResult{

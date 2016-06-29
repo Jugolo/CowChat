@@ -4,7 +4,7 @@ include "../index.php";
 function controle_table(array $data){
    $query = Database::query("SHOW TABLES");//get all table in the database
    $current = [];
-   while($row = $query->fetch()){
+   while($row = $query->arrays()){
       if(strpos($row[0], Database::$prefix) === 0){
          $current[] = substr($row[0], strlen(Database::$prefix)+1);
       }
