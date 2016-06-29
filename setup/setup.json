@@ -111,7 +111,14 @@
             "not_null" : true
          },
          {
-      ]
+            "name"     : "isInaktiv",
+            "type"     : "char",
+            "length"   : 1,
+            "not_null" : true,
+            "deafult"  : "N"
+         }
+      ],
+      "primary_key" : "id"
     }
   }
 }
