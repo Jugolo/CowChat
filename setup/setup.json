@@ -81,8 +81,36 @@
       "item" : [
          {
             "name"     : "id",
-            "type"     : "
-         }
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true,
+            "auto"     : true
+         },
+         {
+            "name"     : "cid",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true
+         },
+         {
+            "name"     : "uid",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true,
+         },
+         {
+            "name"     : "gid",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true
+         },
+         {
+            "name"     : "active",
+            "type"     : "int",
+            "length"   : 11,
+            "not_null" : true
+         },
+         {
       ]
     }
   }
