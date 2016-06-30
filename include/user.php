@@ -194,7 +194,15 @@ class UserData{
 	function id(){
 		return $this->data["id"];
 	}
-	function groupId(){
+	function groupId($new = null){
+                if($new !== null){
+                   $query = Database::query("SELECT `id` FROM ".table("user_group")." WHERE `id`=".Database::qlean($new));
+                   if($query->rows() != 0){
+                      return;
+                   }
+                   Database::query("UPDATE ".table("user")." SET `groupId`=".Database::qlean($new)." WHERE `id`='".$this->id()."'");
+                   $this->data["groupId"] = $new;
+                }
 		return $this->data["groupId"];
 	}
 	function group(){
