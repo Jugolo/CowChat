@@ -1,5 +1,9 @@
 <?php
-include "../index.php";
+include "../include/database.php";
+$json = json_decode(file_get_contents("../include/config.json"));
+if(!Database::init($json->host, $json->user, $json->pass, $json->table, $json->prefix)){
+   exit("Fail to connect to database");
+}
 
 function controle_table(array $data){
    $query = Database::query("SHOW TABLES");//get all table in the database
