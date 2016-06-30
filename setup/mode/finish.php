@@ -1,5 +1,7 @@
 <?php
 include "../include/database.php";
+include "../include/setting.php";
+
 $json = json_decode(file_get_contents("../include/config.json"));
 if(!Database::init($json->host, $json->user, $json->pass, $json->table, $json->prefix)){
    exit("Fail to connect to database");
@@ -26,6 +28,7 @@ function controle_table(array $data){
 }
 
 function controle_setting(array $settings){
+   Setting::init();
   //wee could use setting class but wee also need to get settings wee dont need. There for wee use it semi
   //get all setting and cache them
   $query = Database::query("SELECT `key`, `value` FROM ".table("setting"));
