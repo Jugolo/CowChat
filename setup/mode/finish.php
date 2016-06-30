@@ -153,9 +153,13 @@ if(!file_exists("setup.json")){
 }
 
 controle_table(json_decode(file_get_contents("setup.json"), true));
-//now wee need to update all files. (In this way wee knew the files structure is okay)
-include "../include/user.php";
-User::createUser($_SESSION["username"], $_SESSION["password"], $_SESSION["email"]);
-session_destroy();
+//controle if wee got user, password and email.
+//in update there will not be need for admin and password
+if(!empty($_SESSION["username"]) && !empty($_SESSION["password"]) && !empty($_SESSION["email"])){
+  //now wee need to update all files. (In this way wee knew the files structure is okay)
+  include "../include/user.php";
+  User::createUser($_SESSION["username"], $_SESSION["password"], $_SESSION["email"]);
+  session_destroy();
+}
 header("location:../index.php?install=done&work=yes&error=no&time_done=".time());
 exit;
