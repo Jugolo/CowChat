@@ -202,6 +202,7 @@ class UserData{
                    }
                    Database::query("UPDATE ".table("user")." SET `groupId`=".Database::qlean($new)." WHERE `id`='".$this->id()."'");
                    $this->data["groupId"] = $new;
+                   $this->group = new UserGroup($new);
                 }
 		return $this->data["groupId"];
 	}
