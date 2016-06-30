@@ -1,19 +1,8 @@
 <?php
-define("CHAT_VERSION", "V0.1T1");
+define("CHAT_VERSION", "V0.1B1");
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-function ip(){
-	if(Server::is_cli()){
-		if(socket_getpeername(User::current()->socket(), $ip)){
-			if($ip == "::1")
-				$ip = "127.0.0.1";
-			return $ip;
-		}
-		return null;
-	}
-	
-	return $_SERVER['REMOTE_ADDR'] == "::1" ? "127.0.0.1" : $_SERVER["REMOTE_ADDR"];
-}
+
 class Server{
 	public static function is_cli(){
 		return php_sapi_name() == "cli";
@@ -34,6 +23,7 @@ class Server{
 		
 		AutoLoader::set();
 		include "include/firewall.php";
+		include "include/user.php";
 		
 		if(!Server::is_cli() && FireWall::isBlacklist(ip())){
 			exit("You ip is denid access to this website. Contact our admin for explaining of whay you not has access to this site");
@@ -50,7 +40,6 @@ class Server{
 		
 		include "include/messageparser.php";
 		include "include/message.php";
-		include "include/user.php";
 		include "include/channel.php";
 		include "include/systemgroup.php";
 		include "include/head.php";

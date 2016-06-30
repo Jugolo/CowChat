@@ -48,3 +48,5 @@ Temporary Items
 include/config.json
 .project
 .buildpath
+*.prefs
+.settings/org.eclipse.wst.common.project.facet.core.xml

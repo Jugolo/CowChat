@@ -20,7 +20,7 @@ function controle_table(array $data){
    delete_table(array_diff($current, array_keys($data["need_table"])));//delete the table. There for do not create table widt the prefix. Use plugin_[prefix]_[name]
 
    //run through all the table the chat is using
-   foreach($data["need_table"] as $table){
+   foreach(array_keys($data["need_table"]) as $table){
      controle_columns($table, $data);
    }
 
@@ -54,13 +54,19 @@ function controle_columns($name, array $data){
      $buffer[$row["Field"]] = $row;
    }
 
-   //wee add missing columns
-   foreach(array_diff(array_keys($data["table"][$name]["item"]), array_keys($buffer)) as $col){
-      create_columns($name, $col, $buffer[$col]);
+   $names = [];
+   
+   //wee foreach the array 
+   for($i=0;$i<count($data["need_table"][$name]["item"]);$i++){
+   	  $item = $data["need_table"][$name]["item"][$i];
+   	  if(!in_array($item["name"], array_keys($buffer))){
+   	  	  create_columns($name, $item["name"], $item);
+   	  }
+   	  $names[] = $item["name"];//cache this in a array to finde old columnes
    }
-
+   
    //wee remove columnen.
-   foreach(array_diff(array_keys($buffer), array_keys($data["table"][$name]["item"])) as $col){
+   foreach(array_diff($names, array_keys($buffer)) as $col){
       drop_column($name, $col);
    }
 }
@@ -94,11 +100,11 @@ function create_table($name, array $data){
 
    $sql = "CREATE TABLE `".Database::$prefix."_".$name."` (";
    $item = [];
-   foreach($data["table"][$name]["item"] as $i){
+   foreach($data["need_table"][$name]["item"] as $i){
       $item[] = get_tab_create_item($i);
    }
-   if(array_key_exists("primary_key", $data["table"][$name])){
-     $item[] = "PRIMARY KEY (`".$data["table"][$name]["primary_key"]."`)";
+   if(array_key_exists("primary_key", $data["need_table"][$name])){
+     $item[] = "PRIMARY KEY (`".$data["need_table"][$name]["primary_key"]."`)";
    }
    $sql .= " ".implode(",\r\n ", $item);
    $sql .= "\r\n) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
@@ -106,7 +112,7 @@ function create_table($name, array $data){
 }
 
 function get_tab_create_item(array $data){
-  $sql .= "`".$data["name"]."` ";
+  $sql = "`".$data["name"]."` ";
   
   if(array_key_exists("type", $data)){
     $sql .= $data["type"];
@@ -120,12 +126,12 @@ function get_tab_create_item(array $data){
     $sql .= " NOT NULL";
   }
 
-  if(array_key_exists("deafult", $data)){
+  if(array_key_exists("default", $data)){
     $dont_quete = [
        "CURRENT_TIMESTAMP",
     ];
 
-    $sql .= "DEFAULT ".(in_array($data["deafult"], $dont_quete) ? $data["deafult"] : "'".$data["deafult"]."'");
+    $sql .= " DEFAULT ".(in_array($data["default"], $dont_quete) ? $data["default"] : "'".$data["default"]."'");
   }
 
   if(array_key_exists("auto", $data) && $data["auto"]){
@@ -135,9 +141,14 @@ function get_tab_create_item(array $data){
 }
 
 //controle if the zip file exists
-if(!file_exists("setup/setup.json")){
+if(!file_exists("setup.json")){
   exit("setup file missing: setup/setup.json");
 }
 
-controle_table(json_decode(file_get_contents("setup/setup.json"), true));
+controle_table(json_decode(file_get_contents("setup.json"), true));
 //now wee need to update all files. (In this way wee knew the files structure is okay)
+include "../include/user.php";
+User::createUser($_SESSION["username"], $_SESSION["password"], $_SESSION["email"]);
+session_destroy();
+header("location:../index.php?install=done&work=yes&error=no&time_done=".time());
+exit;

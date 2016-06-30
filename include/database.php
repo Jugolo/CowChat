@@ -14,7 +14,7 @@ class Database{
 	public static function query($q){
 		$query = self::$connection->query($q);
 		if(self::$connection->error){
-			throw new Exception(self::$connection->error . (Server::is_cli() ? "\r\n" : "<br>") . $q);
+			throw new Exception(self::$connection->error . "\r\n" . $q);
 		}
 		if(strpos($q, "DELETE FROM") === 0){
 			if(!$query)

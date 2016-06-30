@@ -22,6 +22,18 @@ function hash_password($clean, $hash, $time){
 	};
 	return sha1($part($clean) . $part($hash) . $part($hash) . $part($time));
 }
+function ip(){
+	if(!defined("IN_SETUP") && Server::is_cli()){
+		if(socket_getpeername(User::current()->socket(), $ip)){
+			if($ip == "::1")
+				$ip = "127.0.0.1";
+				return $ip;
+		}
+		return null;
+	}
+
+	return $_SERVER['REMOTE_ADDR'] == "::1" ? "127.0.0.1" : $_SERVER["REMOTE_ADDR"];
+}
 class User{
 	private static $users = [];
 	private static $current = null;
@@ -51,7 +63,7 @@ class User{
 				"password" => hash_password($password, $hash, $time),
 				"hash" => $hash,
 				"groupId" => Setting::get("startGroup"),
-				"message_id" => Server::getLastId(),
+				"message_id" => defined("IN_SETUP") ? 0 : Server::getLastId(),
 				"type" => "u",
 				"ip" => ip(),
 				"active" => $time,
