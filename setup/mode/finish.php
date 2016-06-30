@@ -159,6 +159,7 @@ if(!empty($_SESSION["username"]) && !empty($_SESSION["password"]) && !empty($_SE
   //now wee need to update all files. (In this way wee knew the files structure is okay)
   include "../include/user.php";
   User::createUser($_SESSION["username"], $_SESSION["password"], $_SESSION["email"]);
+  User::get($_SESSION["username"])->groupId(2);
   session_destroy();
 }
 header("location:../index.php?install=done&work=yes&error=no&time_done=".time());
