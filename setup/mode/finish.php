@@ -121,7 +121,11 @@ function get_tab_create_item(array $data){
   }
 
   if(array_key_exists("deafult", $data)){
-    $sql .= "DEFAULT '".$data["deafult"]."'";
+    $dont_quete = [
+       "CURRENT_TIMESTAMP",
+    ];
+
+    $sql .= "DEFAULT ".(in_array($data["deafult"], $dont_quete) ? $data["deafult"] : '".$data["deafult"]."'");
   }
 
   if(array_key_exists("auto", $data) && $data["auto"]){
