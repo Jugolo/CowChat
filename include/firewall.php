@@ -1,4 +1,18 @@
 <?php
+/**
+ * This function remove white item in array
+ * @param array $array the array you want to remove white space
+ * @return array a array wdith no white space
+ */
+function remove_white_space(array $array){
+	$return = [];
+	foreach ($array as $value){
+		if(empty($value) || !trim($value))
+			continue;
+		$return[] = $value;
+	}
+	return $return;
+}
 // the chat is written as data container. But not the firewall
 class FireWall{
 	private static $ip = []; // contains all ip there is temporary banned.
@@ -21,7 +35,7 @@ class FireWall{
 		]);
 	}
 	public static function getInfoBan($ip){
-		$query = Database::query("SELECT `ip`,`dec` FROM " . table("ip_ban") . " WHERE `ip`=" . Database::qlean($ip));
+		$query = Database::query("SELECT `ip`,`expired` FROM " . table("ip_ban") . " WHERE `ip`=" . Database::qlean($ip));
 		if($query->rows() != 1)
 			return null;
 		return $query->fetch();
@@ -39,14 +53,14 @@ class FireWall{
 	}
 	public static function getBlacklist(){
 		if(Files::exists("include/firewall/blacklist.txt")){
-			return explode("\r\n", Files::context("include/firewall/blacklist.txt"));
+			return remove_white_space(explode("\r\n", Files::context("include/firewall/blacklist.txt")));
 		}
 		return [];
 	}
 	public static function getWhiteList(){
 		$dir = "include/firewall/whitelist.txt";
 		if(Files::exists($dir)){
-			return explode("\r\n", Files::context($dir));
+			return remove_white_space(explode("\r\n", Files::context($dir)));
 		}
 		return [];
 	}

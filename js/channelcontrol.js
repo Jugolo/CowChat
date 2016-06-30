@@ -168,7 +168,7 @@ var ChannelPage = (function() {
 		case "INAKTIV":
 			this.changeInaktivState(msg.nick(),
 					msg.message() == "YES" ? "inline-block" : "none");
-			this.appendHTML("<span style='color: "+(msg.message() == "YES" ? "red" : "green")+";'>"+language(msg.message() == "YES" ? "%s is now inaktiv" : "%s is now no longer inaktiv", msg.nick)+"</span>");
+			this.appendHTML("<span style='color: "+(msg.message() == "YES" ? "red" : "green")+";'>"+language((msg.message() == "YES" ? "%s is now inaktiv" : "%s is now no longer inaktiv"), msg.nick())+"</span>");
 			break;
 		case "FLOOD":
 			this

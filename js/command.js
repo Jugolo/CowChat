@@ -138,3 +138,19 @@ function show(command, success, error){
      }
    });
 }
+
+function unset(command, success){
+	send("UNSET: "+command, function(msg){
+		if(msg.command() == "UNSET"){
+			success(msg);
+		}
+	});
+}
+
+function delete_command(command, success){
+	send("DELETE: "+command, function(msg){
+		if(msg.command() == "DELETE"){
+			success(msg);
+		}
+	});
+}

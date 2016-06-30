@@ -316,7 +316,7 @@ span[onclick], div[onclick] {
   
   function parseUserInput(txt){
 	  if(txt.indexOf("/") == 0){
-		  var commandBody = txt.substr(txt.split(" ")[0].length);
+		  var commandBody = txt.substr(txt.split(" ")[0].length+1);
 		  switch(txt.split(" ")[0].substr(1)){
 		  case "join":
 			  var channels = commandBody.split(",");
@@ -329,10 +329,16 @@ span[onclick], div[onclick] {
 			  title(currentChannel.name, commandBody);
                   break;
                   case "nick":
-                     nick(commandBody);
+                    nick(commandBody);
                   break;
                   case "show":
                     show(commandBody, handle_show);
+                  break;
+                  case "unset":
+                	  unset(commandBody, handle_unset);
+                  break;
+                  case "delete":
+                	  delete_command(commandBody, handle_delete);
                   break;
 		  }
 	  }else{
@@ -383,21 +389,25 @@ span[onclick], div[onclick] {
   }
 
   function handle_show(msg){
-     var handler = msg.split(" ")[0];
-     var body = msg.substr(handler.length+1);
+     var handler = msg.message().split(" ")[0];
+     var body = msg.message().substr(handler.length+1);
      switch(handler){
-        case "blacklist":
-            html = language("this is the black listed ip from firewall")+":";
-            ip   = body.split(",");
-            for(var i=0;i<ip.length;i++){
-               html += "<div class='show_ip'>"+ip[i]+"</div>";
+        case "blacklisted":
+            ip   = body == "" ? [] : body.split(",");
+            if(ip.length != 0){
+            	html = language("this is the black listed ip from firewall")+":";
+                for(var i=0;i<ip.length;i++){
+                	html += "<div class='show_ip'>"+ip[i]+"</div>";
+                }
+            }else{
+            	html = "<span style='color:red'>"+language("There is no ip there is blacklisted")+"</span>";
             }
         break;
         case "whitelisted":
            html = language("this is the white listed ip from firewall (this will never be bannet)")+":";
            ip = body.split(",");
            for(var i=0;i<ip.length;i++){
-              html += "<div class='show_ip'>"+ip[i]+"</div>";
+              html += "<div class='show_ip'>+ "+ip[i]+"</div>";
            }
         break;
         case "ban":
@@ -407,10 +417,96 @@ span[onclick], div[onclick] {
               html += "<div class='ip_show'>"+ip[i]+"</div>";
            }
         break;
+        case "info":
+        	var part = body.split(",");
+        	html = language("Ip '%s' is no longer bannet in %s", part[0], part[1]);
+        break;
+        case "defender":
+        	var part = body.split(",");
+        	html = language("User`s %s defender count is %s", part[0], part[1]);
+        break;
+        case "access":
+        	var parts = body.split(",");
+        	html = language("Here is access list:");
+        	for(i=0;i<parts.length;i++){
+        		var p = parts[i].split("=");
+        		html += "<div class='show_ip'>+ "+p[0]+": "+p[1]+"</div>";
+        	}
+        break;
+        case "members":
+        	ip   = body == "" ? [] : body.split(",");
+            if(ip.length != 0){
+            	html = language("Members in the user group")+":";
+                for(var i=0;i<ip.length;i++){
+                	html += "<div class='show_ip'>"+ip[i]+"</div>";
+                }
+            }else{
+            	html = "<span style='color:red'>"+language("There is no member in the group")+"</span>";
+            }
+        break;
+        case "type":
+        	var parts = body.split(",");
+        	function getUserType(type){
+        		switch(type){
+        		case "u":
+        			return language("user");
+        		case "g":
+        			return language("geaust");
+        		case "b":
+        			return language("bot");
+        		default:
+        			return language("Unknown user type");
+        		}
+        	}
+        	html = language("The user '%s' is %s", parts[0], getUserType(parts[1]));
+        break;
+        case "channels":
+        	var parts = body.split(",");
+        	if(parts == 1){
+        		html = "<span style='color:red'>"+language("%s is not member of any channel", parts[0])+"</span>";
+        	}else{
+        		html = language("%s is member of following channels:");
+        		for(i=1;i<parts.length;i++){
+        			html += "<div class='show_ip'>+ "+parts[i]+"</div>";
+        		}
+        	}
+        break;
+        case "onlinestatus":
+        	var parts = body.split(",");
+        	html = language("%s is %s", parts[0], language(parts[1]));
+        break;
+        default:
+        	html = "<span style='color:red'>Unknown respons on 'SHOW' command: "+handler+"</span>";
+        break;
 
      }
 
      currentPage.appendHTML(html);
+  }
+  
+  function handle_unset(msg){
+	  var handler = msg.message().split(" ")[0];
+	  var body = msg.message().substr(handler.length+1);
+	  switch(handler){
+	  case "defender":
+		  html = "<span style='color:green'>"+language("The users defender count is unset to 0.5")+"</span>";
+	  break;
+	  default:
+      	html = "<span style='color:red'>Unknown respons on 'UNSET' command: "+handler+"</span>";
+      break;
+	  }
+	  currentPage.appendHTML(html);
+  }
+  
+  function handle_delete(msg){
+	     var handler = msg.message().split(" ")[0];
+	     var body = msg.message().substr(handler.length+1);
+	     switch(handler){
+	     case "ip":
+	    	 html = "<span style='color:green'>"+language("the ip '%s' is now deleted", body)+"</span>";
+	     break;
+	     }
+	     currentPage.appendHTML(html);
   }
 
   window.onerror = function (errorMsg, url, lineNumber) {

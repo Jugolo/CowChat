@@ -59,3 +59,21 @@ function allowKick($channelName, $user = null){
 	
 	return false;
 }
+function allowShowIp(){
+    return User::current()->group()->show_ip();
+}
+function allowShowDefender(){
+	return User::current()->group()->show_defender();
+}
+function allowShowUserGroup(){
+	return User::current()->group()->show_user_group();
+}
+function allowShowUser(){
+	return User::current()->group()->show_user();
+}
+function allowUnsetDefender(){
+	return User::current()->group()->unset_defender();
+}
+function allowDeleteIp(){
+	return User::current()->group()->delete_ip();
+}

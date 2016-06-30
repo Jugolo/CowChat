@@ -41,7 +41,6 @@ class Server{
 		include "include/messageparser.php";
 		include "include/message.php";
 		include "include/channel.php";
-		include "include/systemgroup.php";
 		include "include/head.php";
 		include "include/module.php";
 		include "include/database.php";
@@ -379,6 +378,14 @@ class Server{
 			case "KICK":
 				Module::load("kick");
 				kick_command($message);
+			break;
+			case "UNSET":
+				Module::load("unset");
+				unset_command($message);
+			break;
+			case "DELETE":
+			    Module::load("delete");
+			    delete_command($message);
 			break;
 			default:
 				error($message, "Unknown command");

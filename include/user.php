@@ -34,6 +34,23 @@ function ip(){
 
 	return $_SERVER['REMOTE_ADDR'] == "::1" ? "127.0.0.1" : $_SERVER["REMOTE_ADDR"];
 }
+function generate_hash(){
+	$chars = "qwertyuioplkjhgfdsazxcvbnmøåQWERTYUIOPASDFGHJKLZXCVBNMÆØÅ,.-_:;'¨^*<>½§1234567890+´!\"#¤%&/()=?`";
+	$return = "";
+	for($i = 0;$i < 99999;$i++){
+		$return .= $chars[mt_rand(0, mt_rand(0, strlen($chars) - 1))];
+	}
+
+	return sha1($return);
+}
+function get_user_group($name){
+	$query = Database::query("SELECT `id` FROM ".table("user_group")." WHERE `name`=".Database::qlean($name));
+	if($query->rows() == 0){
+		return null;
+	}
+	$row = $query->fetch();
+	return new UserGroup($row["id"]);
+}
 class User{
 	private static $users = [];
 	private static $current = null;
@@ -89,9 +106,6 @@ class User{
 	}
 	public static function get($uid){
 		if(is_numeric($uid)){
-			if(!empty(self::$users[$uid])){
-				return self::$users[$uid];
-			}
 			$field = "id";
 		}else{
 			$field = "nick";
@@ -100,6 +114,9 @@ class User{
 		$query = Database::query("SELECT * FROM " . table("user") . " WHERE `" . $field . "`=" . Database::qlean($uid));
 		if($query->rows() != 0){
 			$r = $query->fetch();
+			if(!empty(self::$users[$r["id"]])){
+				return self::$users[$r["id"]];
+			}
 			return self::$users[$r["id"]] = new UserData($r);
 		}
 		
@@ -122,13 +139,14 @@ class UserData{
 	private $ignore = [];
 	private $group = null;
 	private $_websocket = null;
+	
 	function __construct(array $data){
 		$this->data = $data;
 		$query = Database::query("SELECT `iid` FROM " . table("ignore") . " WHERE `uid`='" . $this->id() . "'");
 		while($row = $query->fetch()){
 			$this->ignore[] = $row["iid"];
 		}
-		$this->group = SystemGroup::get($this);
+		$this->group = new UserGroup($this->data["groupId"]);
 	}
 	function updateLastMessage(){
 		$this->data["lastMessage"] = time();
@@ -183,10 +201,16 @@ class UserData{
 		return $this->group;
 	}
 	function isGeaust(){
-		return $this->data["type"] == "g";
+		return $this->type() == "g";
+	}
+	function type(){
+		return $this->data["type"];
 	}
 	function active(){
 		return $this->data["active"];
+	}
+	function countUpdatet(){
+		return $this->data["countUpdatet"];
 	}
 	function send($msg){
 		// this method will send message to all channels the users is in
@@ -266,12 +290,50 @@ class UserData{
 		Database::query("DELETE FROM " . table("user") . " WHERE `id`='" . $this->id() . "'");
 	}
 }
-function generate_hash(){
-	$chars = "qwertyuioplkjhgfdsazxcvbnmøåQWERTYUIOPASDFGHJKLZXCVBNMÆØÅ,.-_:;'¨^*<>½§1234567890+´!\"#¤%&/()=?`";
-	$return = "";
-	for($i = 0;$i < 99999;$i++){
-		$return .= $chars[mt_rand(0, mt_rand(0, strlen($chars) - 1))];
+
+class UserGroup{
+	private $data;
+	
+	public function __construct($id){
+		$query = Database::query("SELECT * FROM ".table("user_group")." WHERE `id`='".$id."'");
+		if($query->rows() != 1){
+			throw new Exception("Unknown user grup for id: ".$id);
+		}
+		$this->data = $query->fetch();
 	}
 	
-	return sha1($return);
+	public function id(){
+		return $this->data["id"];
+	}
+	
+	public function show_user(){
+		return $this->data["showUser"] == "Y";
+	}
+	
+	public function show_ip(){
+		return $this->data["showIP"] == "Y";
+	}
+	
+	public function show_defender(){
+		return $this->data["showDefender"] == "Y";
+	}
+	
+	public function show_user_group(){
+		return $this->data["showUserGroup"] == "Y";
+	}
+	
+	public function unset_defender(){
+		return $this->data["unsetDefender"] == "Y";
+	}
+	
+	public function delete_ip(){
+		return $this->data["deleteIp"] == "Y";
+	}
+	
+	public function getAccessList(){
+		$data = $this->data;
+		unset($data["id"]);
+		unset($data["name"]);
+		return $data;
+	}
 }

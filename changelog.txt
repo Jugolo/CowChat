@@ -1,0 +1,6 @@
+V0.1B2
+ new:
+  Full support for the command '/show' (see the wiki page for more information)
+  Full support for the command '/unset' (see the wiki page for more information)
+ bugfix:
+  Inaktiv message and not longer inaktiv mesagge show function and not nick.
