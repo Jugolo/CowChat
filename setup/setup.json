@@ -23,7 +23,8 @@
 				"type": "int",
 				"not_null": true
 			}],
-			"primary_key": "id"
+			"primary_key": "id",
+			"on_install": []
 		},
 		"channel_group": {
 			"item": [{
@@ -63,7 +64,8 @@
 				"type": "char",
 				"not_null": true
 			}],
-			"primary_key": "id"
+			"primary_key": "id",
+			"on_install": []
 		},
 		"channel_member": {
 			"item": [{
@@ -99,7 +101,8 @@
 				"not_null": true,
 				"default": "N"
 			}],
-			"primary_key": "id"
+			"primary_key": "id",
+			"on_install": []
 		},
 		"flood": {
 			"item": [{
@@ -124,7 +127,8 @@
 				"type": "int",
 				"not_null": true
 			}],
-			"primary_key": "id"
+			"primary_key": "id",
+			"on_install": []
 		},
 		"ignore": {
 			"item": [{
@@ -137,7 +141,8 @@
 				"length": 11,
 				"type": "int",
 				"not_null": true
-			}]
+			}],
+			"on_install": []
 		},
 		"ip_ban": {
 			"item": [{
@@ -162,7 +167,8 @@
 				"type": "int",
 				"not_null": true
 			}],
-			"primary_key": "id"
+			"primary_key": "id",
+			"on_install": []
 		},
 		"message": {
 			"item": [{
@@ -202,7 +208,8 @@
 				"type": "int",
 				"not_null": false
 			}],
-			"primary_key": "id"
+			"primary_key": "id",
+			"on_install": []
 		},
 		"setting": {
 			"item": [{
@@ -214,6 +221,16 @@
 				"name": "value",
 				"type": "text",
 				"not_null": true
+			}],
+			"on_install": [{
+				"key": "name",
+				"value": "CowScript\r\n"
+			}, {
+				"key": "startGroup",
+				"value": "1"
+			}, {
+				"key": "startChannel",
+				"value": "#start"
 			}]
 		},
 		"smylie": {
@@ -239,7 +256,8 @@
 				"type": "varchar",
 				"not_null": true
 			}],
-			"primary_key": "id"
+			"primary_key": "id",
+			"on_install": []
 		},
 		"user": {
 			"item": [{
@@ -306,7 +324,78 @@
 				"type": "int",
 				"not_null": true
 			}],
-			"primary_key": "id"
+			"primary_key": "id",
+			"on_install": []
+		},
+		"user_group": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "name",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}, {
+				"name": "showUser",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "showIP",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "showDefender",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "showUserGroup",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "unsetDefender",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "deleteIp",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}],
+			"primary_key": "id",
+			"on_install": [{
+				"id": "1",
+				"name": "User",
+				"showUser": "N",
+				"showIP": "N",
+				"showDefender": "N",
+				"showUserGroup": "N",
+				"unsetDefender": "N",
+				"deleteIp": "N"
+			}, {
+				"id": "2",
+				"name": "Admin",
+				"showUser": "Y",
+				"showIP": "Y",
+				"showDefender": "Y",
+				"showUserGroup": "Y",
+				"unsetDefender": "Y",
+				"deleteIp": "Y"
+			}]
 		},
 		"user_msg": {
 			"item": [{
@@ -318,7 +407,8 @@
 				"name": "message",
 				"type": "text",
 				"not_null": true
-			}]
+			}],
+			"on_install": []
 		}
 	},
 	"settings": {

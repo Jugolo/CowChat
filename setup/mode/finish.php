@@ -109,6 +109,13 @@ function create_table($name, array $data){
    $sql .= " ".implode(",\r\n ", $item);
    $sql .= "\r\n) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
    Database::query($sql);
+   after_create_table($name, $data);
+}
+
+function after_create_table($name, array $data){
+	foreach($data["need_table"][$name]["on_install"] as $d){
+		Database::insert($name, $d);
+	}
 }
 
 function get_tab_create_item(array $data){
