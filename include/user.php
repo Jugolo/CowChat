@@ -197,7 +197,7 @@ class UserData{
 	function groupId($new = null){
                 if($new !== null){
                    $query = Database::query("SELECT `id` FROM ".table("user_group")." WHERE `id`=".Database::qlean($new));
-                   if($query->rows() != 0){
+                   if($query->rows() != 1){
                       return;
                    }
                    Database::query("UPDATE ".table("user")." SET `groupId`=".Database::qlean($new)." WHERE `id`='".$this->id()."'");
