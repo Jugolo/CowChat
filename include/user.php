@@ -315,6 +315,10 @@ class UserGroup{
 		return $this->data["id"];
 	}
 	
+	public function name(){
+		return $this->data["name"];
+	}
+	
 	public function show_user(){
 		return $this->data["showUser"] == "Y";
 	}
@@ -339,10 +343,28 @@ class UserGroup{
 		return $this->data["deleteIp"] == "Y";
 	}
 	
+	public function delete_user(){
+		return $this->data["deleteUser"] == "Y";
+	}
+	
+	public function delete_user_group(){
+		return $this->data["deleteUserGroup"] == "Y";
+	}
+	
 	public function getAccessList(){
 		$data = $this->data;
 		unset($data["id"]);
 		unset($data["name"]);
 		return $data;
+	}
+	
+	public function getMembersRow(){
+		$query = Database::query("SELECT COUNT(`id`) FROM ".table("user")." WHERE `groupId`='".$this->id()."'");
+		$row   = $query->fetch();
+		return intval($row["id"]);
+	}
+	
+	public function delete(){
+		return Database::query("DELETE FROM ".table("user_group")." WHERE `id`='".$this->id()."'")->rows() != 0;
 	}
 }

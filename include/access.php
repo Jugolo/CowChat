@@ -77,3 +77,9 @@ function allowUnsetDefender(){
 function allowDeleteIp(){
 	return User::current()->group()->delete_ip();
 }
+function allowDeleteUser(){
+	return User::current()->group()->delete_user();
+}
+function allowDeleteUserGroup(){
+	return User::current()->group()->delete_user_group();
+}

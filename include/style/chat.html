@@ -465,7 +465,7 @@ span[onclick], div[onclick] {
         	if(parts == 1){
         		html = "<span style='color:red'>"+language("%s is not member of any channel", parts[0])+"</span>";
         	}else{
-        		html = language("%s is member of following channels:");
+        		html = language("%s is member of following channels:", parts[0]);
         		for(i=1;i<parts.length;i++){
         			html += "<div class='show_ip'>+ "+parts[i]+"</div>";
         		}
@@ -504,6 +504,9 @@ span[onclick], div[onclick] {
 	     switch(handler){
 	     case "ip":
 	    	 html = "<span style='color:green'>"+language("the ip '%s' is now deleted", body)+"</span>";
+	     break;
+	     case "user":
+	    	 html = "<span style='color:green'>"+language("User %s is now deleted", body)+"</span>";
 	     break;
 	     }
 	     currentPage.appendHTML(html);
