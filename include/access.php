@@ -83,3 +83,9 @@ function allowDeleteUser(){
 function allowDeleteUserGroup(){
 	return User::current()->group()->delete_user_group();
 }
+function allowDeleteUserGroupAccess(){
+	return User::current()->group()->delete_user_group_access();
+}
+function allowCreateUserGroup(){
+	return User::current()->group()->cretaeUserGroup();
+}

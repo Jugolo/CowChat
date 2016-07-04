@@ -154,3 +154,11 @@ function delete_command(command, success){
 		}
 	});
 }
+
+function create_command(command, success){
+	send("CREATE: "+command, function(msg){
+		if(msg.command() == "CREATE"){
+			success(msg);
+		}
+	});
+}

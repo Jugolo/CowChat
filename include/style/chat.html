@@ -340,6 +340,9 @@ span[onclick], div[onclick] {
                   case "delete":
                 	  delete_command(commandBody, handle_delete);
                   break;
+                  case "create":
+                	  create_command(commandBody, handle_create);
+                  break;
 		  }
 	  }else{
 		  message(currentChannel.title(), txt);
@@ -393,6 +396,8 @@ span[onclick], div[onclick] {
      var body = msg.message().substr(handler.length+1);
      switch(handler){
         case "blacklisted":
+        	console.log(handler);
+        	console.log(body);
             ip   = body == "" ? [] : body.split(",");
             if(ip.length != 0){
             	html = language("this is the black listed ip from firewall")+":";
@@ -430,7 +435,7 @@ span[onclick], div[onclick] {
         	html = language("Here is access list:");
         	for(i=0;i<parts.length;i++){
         		var p = parts[i].split("=");
-        		html += "<div class='show_ip'>+ "+p[0]+": "+p[1]+"</div>";
+        		html += "<div class='show_ip'>+ "+p[0]+": "+(p[1] == "N" ? language("No") : language("Yes"))+"</div>";
         	}
         break;
         case "members":
@@ -508,6 +513,27 @@ span[onclick], div[onclick] {
 	     case "user":
 	    	 html = "<span style='color:green'>"+language("User %s is now deleted", body)+"</span>";
 	     break;
+	     case "UserGroup":
+	    	 var parts = body.split(" ");
+	    	 if(parts[0] == "group"){
+	    		 html = "<span style='color:green'>"+language("User grup %s is now delted", parts[1])+"</span>";
+	    	 }else if(parts[0] == "access"){
+	    		 html = "<span style='color:green'>"+language("User group '%s' has no longer assess to %s", parts[1], parts[2])+"</span>";
+	    	 }else{
+	    		 html = "<span style='color:red'>"+language("Unknown respons on delete command")+"</span>";
+	    	 }
+	     break;
+	     }
+	     currentPage.appendHTML(html);
+  }
+  
+  function handle_create(msg){
+	  var handler = msg.message().split(" ")[0];
+	     var body = msg.message().substr(handler.length+1);
+	     switch(handler){
+	     case "UserGroup":
+	    	 html = "<span style='color:green'>"+language("User group %s is now created", body)+"</span>";
+	    	 break;
 	     }
 	     currentPage.appendHTML(html);
   }

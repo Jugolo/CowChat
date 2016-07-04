@@ -351,6 +351,14 @@ class UserGroup{
 		return $this->data["deleteUserGroup"] == "Y";
 	}
 	
+	public function delete_user_group_access(){
+		return $this->data["deleteUserGroupAccess"] == "Y";
+	}
+	
+	public function cretaeUserGroup(){
+		return $this->data["createUserGroup"] == "Y";
+	}
+	
 	public function getAccessList(){
 		$data = $this->data;
 		unset($data["id"]);
@@ -359,12 +367,22 @@ class UserGroup{
 	}
 	
 	public function getMembersRow(){
-		$query = Database::query("SELECT COUNT(`id`) FROM ".table("user")." WHERE `groupId`='".$this->id()."'");
+		$query = Database::query("SELECT COUNT(`id`) as id FROM ".table("user")." WHERE `groupId`='".$this->id()."'");
 		$row   = $query->fetch();
 		return intval($row["id"]);
 	}
 	
 	public function delete(){
 		return Database::query("DELETE FROM ".table("user_group")." WHERE `id`='".$this->id()."'")->rows() != 0;
+	}
+	
+	public function hasAccess($name){
+		return !empty($this->data[$name]) && $this->data[$name] == "Y";
+	}
+	
+	public function removeAccess($name){
+		if(!$this->hasAccess($name))
+			return false;
+		return Database::query("UPDATE ".table("user_group")." SET `".$name."`='N' WHERE `id`='".$this->id()."'")->rows() == 1;
 	}
 }

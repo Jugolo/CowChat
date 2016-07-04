@@ -91,7 +91,47 @@ function delete_command(MessageParser $message){
 					error($message, "delete user group failded");
 				}
 			}elseif($command[1] == "access"){
+				if(!allowDeleteUserGroupAccess()){
+					// tell the defender to change count for the user
+					Defender::updateCount(-0.5);
+					error($message, "Access denaid");
+					return;
+				}
 				
+				if(count($command) <= 3){
+					Defender::updateCount(-0.001); // soft error no need to take count to fast for this
+					error($message, "Missing agument for /delete UserGroup access");
+					return;
+				}
+				
+				//okay let try to finde out if wee got the group
+				$query = Database::query("SELECT `id` FROM ".table("user_group")." WHERE `name`=".Database::qlean($command[2]));
+				if($query->rows() != 1){
+					Defender::updateCount(-0.001); // soft error no need to take count to fast for this
+					error($message, "Unknown user group");
+					return;
+				}
+				$row = $query->fetch();
+				$group = new UserGroup($row["id"]);
+				
+				//okay has group the access
+				if(!array_key_exists($command[3], $group->getAccessList())){
+					Defender::updateCount(-0.001);
+					error($message, "Unknown user group access");
+					return;
+				}
+				
+				if(!$group->hasAccess($command[3])){
+					Defender::updateCount(-0.001);
+					error($message, "The group dont has access");
+					return;
+				}
+				
+				if($group->removeAccess($command[3])){
+					send($message, "DELETE: UserGroup access ".$group->name()." ".$command[3]);
+				}else{
+					error($message, "Failed to delete user group access");
+				}
 			}else{
 				Defender::updateCount(-0.002);
 				error($message, "Unknown delete aguments");

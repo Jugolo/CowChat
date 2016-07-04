@@ -387,6 +387,10 @@ class Server{
 			    Module::load("delete");
 			    delete_command($message);
 			break;
+			case "CREATE":
+				Module::load("create");
+				create_command($message);
+			break;
 			default:
 				error($message, "Unknown command");
 		}
