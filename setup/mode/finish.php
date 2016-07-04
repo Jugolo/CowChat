@@ -65,8 +65,7 @@ function controle_columns($name, array $data){
    	  $names[] = $item["name"];//cache this in a array to finde old columnes
    }
    
-   //wee remove columnen.
-   foreach(array_diff($names, array_keys($buffer)) as $col){
+   foreach(array_diff(array_keys($buffer), $names) as $col){
       drop_column($name, $col);
    }
 }
@@ -76,7 +75,7 @@ function drop_column($table, $column){
 }
 
 function create_columns($table, $name, $data){
-  Database::query("ALTER TABLE `".Database::$prefix."_".$table."` ADD ".get_tab_create_item($data));
+	Database::query("ALTER TABLE `".Database::$prefix."_".$table."` ADD ".get_tab_create_item($data));
 }
 
 function delete_table($name){
@@ -162,5 +161,5 @@ if(!empty($_SESSION["username"]) && !empty($_SESSION["password"]) && !empty($_SE
   User::get($user_data["nick"])->groupId(2);
   session_destroy();
 }
-header("location:../index.php?install=done&work=yes&error=no&time_done=".time());
-exit;
+//header("location:../index.php?install=done&work=yes&error=no&time_done=".time());
+//exit;

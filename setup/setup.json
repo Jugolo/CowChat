@@ -375,6 +375,54 @@
 				"type": "char",
 				"not_null": true,
 				"default": "N"
+			}, {
+				"name": "deleteUser",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "deleteUserGroup",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "deleteUserGroupAccess",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "createUserGroup",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "appendUserGroupAccess",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "appendUserGroupUser",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "getUserGroupId",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
+			}, {
+				"name": "changeConfig",
+				"length": 1,
+				"type": "char",
+				"not_null": true,
+				"default": "N"
 			}],
 			"primary_key": "id",
 			"on_install": [{
@@ -385,7 +433,15 @@
 				"showDefender": "N",
 				"showUserGroup": "N",
 				"unsetDefender": "N",
-				"deleteIp": "N"
+				"deleteIp": "N",
+				"deleteUser": "N",
+				"deleteUserGroup": "N",
+				"deleteUserGroupAccess": "N",
+				"createUserGroup": "N",
+				"appendUserGroupAccess": "N",
+				"appendUserGroupUser": "N",
+				"getUserGroupId": "N",
+				"changeConfig": "N"
 			}, {
 				"id": "2",
 				"name": "Admin",
@@ -394,7 +450,15 @@
 				"showDefender": "Y",
 				"showUserGroup": "Y",
 				"unsetDefender": "Y",
-				"deleteIp": "Y"
+				"deleteIp": "Y",
+				"deleteUser": "Y",
+				"deleteUserGroup": "Y",
+				"deleteUserGroupAccess": "Y",
+				"createUserGroup": "Y",
+				"appendUserGroupAccess": "Y",
+				"appendUserGroupUser": "Y",
+				"getUserGroupId": "Y",
+				"changeConfig": "Y"
 			}]
 		},
 		"user_msg": {

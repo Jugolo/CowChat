@@ -343,6 +343,21 @@ span[onclick], div[onclick] {
                   case "create":
                 	  create_command(commandBody, handle_create);
                   break;
+                  case "append":
+                	  append_command(commandBody, handle_append);
+                  break;
+                  case "get":
+                	  get_command(commandBody, handle_get);
+                  break;
+                  case "config":
+                	  config_command(commandBody, function(msg){
+                		  if(msg.command() == "CONFIG"){
+                			  currentPage.appendHTML("<span style='color:green'>"+language("Config is now updatet")+"</span>");
+                		  }else{
+                			  currentPage.appendHTML("<span style='color:red'>"+language("Fail to update config")+"</span>");
+                		  }
+                	  });
+                  break;
 		  }
 	  }else{
 		  message(currentChannel.title(), txt);
@@ -396,8 +411,6 @@ span[onclick], div[onclick] {
      var body = msg.message().substr(handler.length+1);
      switch(handler){
         case "blacklisted":
-        	console.log(handler);
-        	console.log(body);
             ip   = body == "" ? [] : body.split(",");
             if(ip.length != 0){
             	html = language("this is the black listed ip from firewall")+":";
@@ -536,6 +549,38 @@ span[onclick], div[onclick] {
 	    	 break;
 	     }
 	     currentPage.appendHTML(html);
+  }
+  
+  function handle_append(msg){
+	  var handler = msg.message().split(" ")[0];
+	  var body = msg.message().substr(handler.length+1);
+	  switch(handler){
+	     case "UserGroup":
+	    	 var parts = body.split(" ");
+	    	 if(parts[0] == "access"){
+	    		 html = "<span style='color:green'>"+language("The group %s has now set the access %s", parts[2], parts[1])+"</span>";
+	    	 }else if(parts[0] == "user"){
+	    		 html = "<span style='color:green'>"+language("The user %s is now memeber of the group %s", parts[1], parts[2])+"</span>";
+	    	 }else{
+	    		 html = "<span style='color:red'>"+language("Unknown respons on append command")+"</span>";
+	    	 }
+	      break;
+	  }
+	  currentPage.appendHTML(html);
+  }
+  
+  function handle_get(msg){
+	  var handler = msg.message().split(" ")[0];
+	  var body = msg.message().substr(handler.length+1);
+	  switch(handler){
+	      case "id":
+		    var parts = body.split(" ");
+		    if(parts[0] == "UserGroup"){
+		    	html = language("User group %s has id: %s", parts[2], parts[1]);
+		    }
+		  break;
+	  }
+	  currentPage.appendHTML(html);
   }
 
   window.onerror = function (errorMsg, url, lineNumber) {

@@ -359,6 +359,22 @@ class UserGroup{
 		return $this->data["createUserGroup"] == "Y";
 	}
 	
+	public function appendUserGroupAccess(){
+		return $this->data["appendUserGroupAccess"] == "Y";
+	}
+	
+	public function appendUserGroupUser(){
+		return $this->data["appendUserGroupUser"] == "Y";
+	}
+	
+	public function getUserGroupId(){
+		return $this->data["getUserGroupId"] == "Y";
+	}
+	
+	public function changeConfig(){
+		return $this->data["changeConfig"] == "Y";
+	}
+	
 	public function getAccessList(){
 		$data = $this->data;
 		unset($data["id"]);
@@ -384,5 +400,11 @@ class UserGroup{
 		if(!$this->hasAccess($name))
 			return false;
 		return Database::query("UPDATE ".table("user_group")." SET `".$name."`='N' WHERE `id`='".$this->id()."'")->rows() == 1;
+	}
+	
+	public function appendAccess($name){
+		if($this->hasAccess($name))
+			return false;
+		return Database::query("UPDATE ".table("user_group")." SET `".$name."`='Y' WHERE `id`='".$this->id()."'")->rows() == 1;
 	}
 }

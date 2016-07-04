@@ -89,3 +89,15 @@ function allowDeleteUserGroupAccess(){
 function allowCreateUserGroup(){
 	return User::current()->group()->cretaeUserGroup();
 }
+function allowAppendUserGroupAccess(){
+	return User::current()->group()->appendUserGroupAccess();
+}
+function allowAppendUSerGroupUser(){
+	return User::current()->group()->appendUserGroupUser();
+}
+function allowGetUserGroupId(){
+	return User::current()->group()->getUserGroupId();
+}
+function allowChangeConfig(){
+	return User::current()->group()->changeConfig();
+}

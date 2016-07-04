@@ -1,5 +1,5 @@
 <?php
-define("CHAT_VERSION", "V0.1B1");
+define("CHAT_VERSION", "V0.1B2");
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
@@ -390,6 +390,18 @@ class Server{
 			case "CREATE":
 				Module::load("create");
 				create_command($message);
+			break;
+			case "APPEND":
+				Module::load("append");
+				append_command($message);
+		    break;
+			case "GET":
+				Module::load("get");
+				get_command($message);
+			break;
+			case "CONFIG":
+				Module::load("config");
+				config_command($message);
 			break;
 			default:
 				error($message, "Unknown command");

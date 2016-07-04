@@ -162,3 +162,23 @@ function create_command(command, success){
 		}
 	});
 }
+
+function append_command(command, success){
+	send("APPEND: "+command, function(msg){
+		if(msg.command() == "APPEND"){
+			success(msg);
+		}
+	});
+}
+
+function get_command(command, success){
+	send("GET: "+command, function(msg){
+		if(msg.command() == "GET"){
+			success(msg);
+		}
+	});
+}
+
+function config_command(command, success){
+	send("CONFIG: "+command, success);
+}
