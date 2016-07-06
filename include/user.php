@@ -22,9 +22,9 @@ function hash_password($clean, $hash, $time){
 	};
 	return sha1($part($clean) . $part($hash) . $part($hash) . $part($time));
 }
-function ip(){
+function ip($ws = null){
 	if(!defined("IN_SETUP") && Server::is_cli()){
-		if(socket_getpeername(User::current()->socket(), $ip)){
+		if(socket_getpeername(($ws !== null ? $ws : User::current()->websocket()), $ip)){
 			if($ip == "::1")
 				$ip = "127.0.0.1";
 				return $ip;
@@ -91,6 +91,11 @@ class User{
 		$data["id"] = Database::insert("user", $data);
 		return $data;
 	}
+	/**
+	 * Get UserData object for the current user
+	 * @param UserData $current push current user to cache
+	 * @return UserData current user data object
+	 */
 	public static function current(UserData $current = null){
 		if($current != null){
 			$current->updateCount();

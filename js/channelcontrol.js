@@ -185,7 +185,15 @@ var ChannelPage = (function() {
 				this.onClose(true);
 			}
 			this.leave(msg.message());
-			break;
+	    break;
+		case "LEAVE":
+			if(msg.nick() == myNick){
+				//the user has leave the channel (both at him self or for the system kick him out (inaktiv...)
+				this.onClose(true);
+			}else{
+				this.appendHTML(language("%s leave the channel"), msg.nick());
+			}
+		break;
 		}
 	};
 

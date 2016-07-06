@@ -5,7 +5,7 @@ class Setup{
 
   public function __construct(){
     if(Server::is_cli()){
-      exit("You can not start the chat server when the setup dir is online.\r\nPlease delte it or rename it (wee not recommend to rename)");
+      Console::writeLine("A setup dir is exists. Please delete it so other not can use it!");
     }
 
     $this->data = json_decode(Files::context("setup/info.json"), true);

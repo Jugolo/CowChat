@@ -60,10 +60,14 @@ function prefix() {
 }
 
 function post(url, data, callback) {
-	return ajax(url, data, callback);
+	ajax(url, data, callback);
 }
 
 function get(url) {
+	if(sendType != "AJAX"){
+		return false;
+	}
+	
 	if (senderTimer != null) {
 		clearTimeout(senderTimer);
 	}
@@ -123,6 +127,8 @@ function send(msg, callback) {
 
 	if (sendType == "AJAX") {
 		sendBuffer.send(msg);
+	}else{
+		ws.send(msg);
 	}
 }
 

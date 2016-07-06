@@ -9,4 +9,7 @@ class Console{
 	public static function readLine(){
 		return rtrim(fgets(STDIN));
 	}
+	public static function title($title){
+		cli_set_process_title($title);
+	}
 }

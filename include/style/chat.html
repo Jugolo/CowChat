@@ -259,15 +259,39 @@ span[onclick], div[onclick] {
   var sendType = '{{sendType}}';
   var myNick = '{{nick}}';
   var old = alert;
+  var ws;
   alert = function(){
 	  old(language.apply(this, arguments));
   }
   
   function onload(){
+    if(sendType == "WebSocket"){
+		init_websocket();
+	}else{
+		begin();
+	}
+  }
+  
+  function begin(){
     {%for name in channel%}
 	  appendChannel('{{name}}');
 	{%endfor%}
-	get("?ajax=true");
+  }
+  
+  function init_websocket(){
+	  //hack. to find out what the user is wee need to send cookie so wee do it this way
+	  ws = new WebSocket("ws://{{wHost}}:{{wPort}}/?"+document.cookie);
+	  ws.onopen = function(){
+		  begin();
+	  };
+	  
+	  ws.onerror = function(evt){
+		  window.onerror.call(window, evt.evt, document.location.toString(), 2);
+	  };
+	  
+	  ws.onmessage = function(evt){
+		console.log("Message from server");  
+	  };
   }
   
   function okp(evt, obj){

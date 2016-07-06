@@ -41,7 +41,11 @@ function send_channel(ChannelData $channel, UserData $user, $message){
 	]);
 	
 	if(Server::is_cli()){
-		WebSocket::send($channel, $message);
+		//wee got all members in channel
+		foreach($channel->getMembers() as $member){
+			$mask = mask($message);
+			socket_write($member->getUser()->websocket(), $mask, strlen($mask));
+		}
 	}
 	return true;
 }

@@ -202,6 +202,16 @@ class ChannelData{
 					$this->send("LEAVE " . $this->name() . ": " . $sendMessage, $user);
 				}
 			}
+			
+			if(Server::is_cli()){
+				$isOnline = $user->websocket() != null;
+			}else{
+				$isOnline = $user->countUpdatet() > time()-300;
+			}
+				
+			if($isOnline){
+				send_user($user, $user->nick()."@LEAVE " . $this->name() . ": " . ($sendMessage ? $sendMessage : "Unknown whey"));
+			}
 		}
 	}
 	function isMember(UserData $user){
@@ -239,7 +249,7 @@ class ChannelData{
 				$member->markInaktiv();
 			}elseif($member->writeTime() <= time() - (60 * 15)){
 				// the user need to be delteded form the channel :)
-				$this->leave($member->getUser(), "(" . $member->writeTime() . "|" . (time() - (60 * 15)) . ")Inaktiv to long time now");
+				$this->leave($member->getUser(), "Inaktiv to long time now");
 			}
 		}
 	}

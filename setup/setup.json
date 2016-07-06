@@ -476,7 +476,7 @@
 		}
 	},
 	"settings": {
-		"name": "CowScript\r\n",
+		"name": "CowScript",
 		"startGroup": "1",
 		"startChannel": "#start"
 	}

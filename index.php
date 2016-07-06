@@ -1,9 +1,12 @@
 <?php
-define("CHAT_VERSION", "V0.1B2");
+define("CHAT_VERSION", "V0.1");
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 class Server{
+	
+	private $clients = [];
+	
 	public static function is_cli(){
 		return php_sapi_name() == "cli";
 	}
@@ -36,6 +39,10 @@ class Server{
 			header("Cache-Control: no-store, no-cache, must-revalidate");
 			header("Cache-Control: post-check=0, pre-check=0", false);
 			header("Pragma: no-cache");
+		}else{
+			exit("WebSocket should work in V0.1 but fails do it not will work in V0.1!\r\nPlease go to our github and make a pull request to get it work");
+			include "include/console.php";
+			$this->updateTitle();
 		}
 		
 		include "include/messageparser.php";
@@ -69,7 +76,6 @@ class Server{
 			if(FireWall::isBan()){
 				if(get("ajax")){
 					exit("LOGIN: REQUID");
-					exit();
 				}
 				$data = FireWall::getInfoBan(ip());
 				exit("You are banet to: " . date("H:i:s d-m-Y", $data["expired"]));
@@ -95,12 +101,12 @@ class Server{
 				}
 			}
 		}else{
-			include "include/console.php";
 			Channel::init();
 			$this->init_websocket();
 		}
 	}
 	private function init_websocket(){
+		include "include/websocket.php";
 		Console::writeLine("Welcommen to CowChat version: " . CHAT_VERSION);
 		Console::writeLine("Wee need to set up host and port");
 		Console::write("Host: ");
@@ -137,41 +143,47 @@ class Server{
 			exit();
 		}
 		Console::writeLine("success");
-		Console::writeLine("Begin to listen after connections: ");
+		Console::write("Begin to listen after connections: ");
 		if(socket_listen($master, 20) === false){
 			Console::writeLine("failed");
 			exit("Fail to listen socket");
 		}
 		Console::writeLine("success");
 		
-		$this->add_socket_client($master);
-		Console::writeLine("Server is startet. Wee listen now after active connections");
-		$connections = [];
+		$this->clients[] = $master;
+		Console::writeLine("Server is startet.");
+		Console::writeLine("Create a file to tell the client it is a webscoket connection");
+		Console::writeLine("When server close please delete '[root]include/websocket.json' to allow Ajax call");
+		Files::create("include/websocket.json", json_encode([
+				'host' => $host,
+				'port' => $port
+		]));
+		Console::writeLine("Wee listen now after active connections");
 		while(true){
 			$write = $ex = null;
-			
+			$connections = $this->clients;
 			@socket_select($connections, $write, $ex, null);
 			
-			foreach($read as $socket){
+			foreach($connections as $socket){
 				if($socket == $master){
 					$client = socket_accept($socket);
 					if($client < 0){
 						Console::writeLine("failed to accept a connection");
 					}else{
 						if($this->handle_new_connect($client)){
-							$connections[] = $socket;
+							$this->clients[] = $client;
 						}
 					}
 					continue;
 				}
 				
-				$recv = @socket_recv($socket, $buf, 1024, 0);
+				$recv = @socket_recv($socket, $buf, 2048,0);
 				if($recv === false || $recv == 0){
 					$this->remove_client($socket);
 					continue;
 				}
 				
-				$message = $konto->unmask($buf);
+				$message = unmask($buf);
 				if(!$message){
 					continue;
 				}
@@ -180,16 +192,21 @@ class Server{
 			}
 		}
 	}
+	private function remove_client($socket){
+		Console::writeLine("A client disconnected");
+		array_splice($this->clients, array_search($socket, $this->clients), 1);
+		$this->updateTitle();
+	}
 	private function handle_new_connect($new){
-		$user = $this->add_socket_client($new);
-		
 		$head = array();
 		// handshake :)
-		$lines = explode("\r\n", $user->read());
+		$lines = explode("\r\n", socket_read($new, 1024));
 		for($i = 0;$i < count($lines);$i++){
 			$line = trim($lines[$i]);
 			if(preg_match('/\A(\S+): (.*)\z/', $line, $matches)){
 				$head[$matches[1]] = $matches[2];
+			}else if(strpos($line, "GET") === 0){
+				$head["Cookie"] = $this->getTokenWS($line);
 			}
 		}
 		
@@ -202,21 +219,23 @@ class Server{
 		setSocketCookie($head["Cookie"]);
 		
 		// to accsess websocket connection wee need to be login,
-		if(!$this->login()){
+		if(!$this->login($new)){
 			// the user has not login yet close the connection now
 			socket_close($new);
 			Console::writeLine("User open a connection without has login yet.");
 			return false;
 		}
+		Console::writeLine("Client login");
+		User::current()->websocket($new);
 		
 		if(Firewall::isBlacklist(ip()) || Firewall::isBan()){
+			User::current()->websocket(null);
+			Console::writeLine("Client is blacklisted");
 			// this socket connection is bannet. Wee close it and return false
 			socket_close($new);
 			return false;
 		}
-		
-		User::current()->websocket($new); // save the websocket so wee can use it in this program
-		
+		Console::writeLine("Client is not blacklisted");
 		$key = $head['Sec-WebSocket-Key'];
 		$hkey = base64_encode(sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true));
 		
@@ -226,53 +245,30 @@ class Server{
 		$uhead[] = "Upgrade: websocket";
 		$uhead[] = "Connection: Upgrade";
 		$uhead[] = "Sec-WebSocket-Accept: " . $hkey;
+		$uhead[] = "Server-dec: WevSocket for CowChat. Search goolt";
 		
 		$handshake = implode("\r\n", $uhead) . "\r\n\r\n";
-		// exit($handshake);
 		
-		if(socket_write($new, $handshake, strlen($handshake)) === false){
-			exit("Handshake fail");
-		}
-		echo "New client connected to server\r\n";
-		return true;
-	}
-	private function remove_client($socket){
-		$i = array_search($socket, $this->client);
-		if(empty($i)){
+		if(socket_write($new, $handshake) === false){
+			User::current()->websocket(null);
+			Console::writeLine("Send handshake to client failed");
 			return false;
 		}
-		$this->clientObj[$i]->disconnect();
-		$this->clientObj = $this->reset_array_sort($this->clientObj, $i);
-		$this->client = $this->reset_array_sort($this->client, $i);
-		echo "Client disconetet\r\n";
-		
+		echo "New client connected to server\r\n";
+		$this->updateTitle();
 		return true;
 	}
-	private function reset_array_sort($array, $removeId = null){
-		$cache = $array;
-		$array = array();
-		for($i = 0;$i < count($cache);$i++){
-			if($removeId !== null && $i == $removeId){
-				continue;
-			}
-			$array[] = $cache[$i];
-		}
-		
-		return $array;
+	
+	private function getTokenWS($str){
+		return urldecode(substr($str, 6, strpos(" ", $str)-4));
 	}
+	
 	private function add_socket_client($client){
-		$this->client[] = $client;
-		$this->clientObj[] = $obj = new socket_user_client($client, $this->database);
-		return $obj;
+		$this->clients[] = $client;
 	}
-	private function get_client($socket){
-		foreach($this->clientObj as $c){
-			if($c->socket == $socket){
-				return $c;
-			}
-		}
-		
-		return false;
+	
+	private function updateTitle(){
+		Console::title("CowScript ".CHAT_VERSION." Online user: ".count($this->clients));
 	}
 	
 	// message sektion
@@ -311,6 +307,9 @@ class Server{
 				$this->handlePost($msg);
 			return;
 		}elseif(is_string($message)){
+			if(Server::is_cli()){
+				Console::writeLine($message);
+			}
 			$message = new MessageParser($message);
 		}elseif(!($message instanceof MessageParser)){
 			trigger_error("\$message is not a instanceof MessageParser");
@@ -424,9 +423,16 @@ class Server{
 	}
 	private function showChat(){
 		$data = [
-				'sendType' => 'AJAX',
+				'sendType' => (Files::exists("include/websocket.json") ? "WebSocket" : "AJAX"),
 				'nick' => User::current()->nick()
 		];
+		
+		if($data["sendType"] == "WebSocket"){
+			$webs = json_decode(Files::context("include/websocket.json"), true);
+			$data["wHost"] = $webs["host"];
+			$data["wPort"] = $webs["port"];
+			unseT($webs);
+		}
 		
 		$data["channel"] = [];
 		foreach(Channel::getUserChannel(User::current()) as $channel){
@@ -507,7 +513,7 @@ class Server{
 				"error" => $e
 		)));
 	}
-	private function login(){
+	private function login($ws = null){
 		if(cookie("token_chat")){
 			$part = explode(",", cookie("token_chat"));
 			if(count($part) != 2){
@@ -526,7 +532,7 @@ class Server{
 			
 			// control if the hash value is the same and the ip is the same
 			$data = $query->fetch();
-			if($data["hash"] != $part[1] || ip() != $data["ip"]){
+			if($data["hash"] != $part[1] || ip($ws) != $data["ip"]){
 				cookieDestroy("token_chat");
 				return false;
 			}

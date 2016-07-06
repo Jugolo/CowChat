@@ -9,6 +9,11 @@ class Files{
 	public static function isFile($name){
 		return is_file(getDir() . $name);
 	}
+	public static function create($name, $context){
+		$fopen = fopen(getDir().$name, "w+");
+		fwrite($fopen, $context, strlen($context));
+		fclose($fopen);
+	}
 }
 class Dirs{
 	public static function isDir($name){

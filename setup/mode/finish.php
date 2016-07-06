@@ -161,5 +161,5 @@ if(!empty($_SESSION["username"]) && !empty($_SESSION["password"]) && !empty($_SE
   User::get($user_data["nick"])->groupId(2);
   session_destroy();
 }
-//header("location:../index.php?install=done&work=yes&error=no&time_done=".time());
-//exit;
+header("location:../index.php?install=done&work=yes&error=no&time_done=".time());
+exit;
