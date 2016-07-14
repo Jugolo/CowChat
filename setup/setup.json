@@ -1,5 +1,23 @@
 {
 	"need_table": {
+		"authentication": {
+			"item": [{
+				"name": "id",
+				"length": 11,
+				"type": "int",
+				"not_null": true,
+				"auto": true
+			}, {
+				"name": "namespace",
+				"length": 255,
+				"type": "varchar",
+				"not_null": true
+			}],
+			"primary_key": "id",
+			"on_install": [{
+				"namespace": "inc\\driver\\authentication\\cowchat\\"
+			}]
+		},
 		"channel": {
 			"item": [{
 				"name": "id",
@@ -284,6 +302,11 @@
 				"name": "hash",
 				"type": "text",
 				"not_null": true
+			}, {
+			    "name": "auth_method",
+			    "type": "int",
+			    "length": 11,
+			    "not_null": true
 			}, {
 				"name": "groupId",
 				"length": 11,

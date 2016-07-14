@@ -1,15 +1,17 @@
 <?php
-// this is a php file to handle js language file
-// set header to js http://www.php-js.com/documentation
 header('Content-Type: application/javascript');
 header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-// define no context
-define("NO_CONTEXT", true);
-include '../index.php';
+
+include "../inc/autoloader.php";
+AutoLoader::set_path(dirname(__FILE__, 2));
+AutoLoader::set();
+
+use inc\user\User;
+use inc\language\Language;
 
 if(User::current() == null){
 	echo "alert('" . Language::get("You need to be login to get context for this file") . "');";
