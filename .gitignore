@@ -48,3 +48,4 @@ Temporary Items
 include/config.json
 .project
 .buildpath
+*.test

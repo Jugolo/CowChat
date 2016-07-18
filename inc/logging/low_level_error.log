@@ -1,8 +1,15 @@
----------------14:07:2016---------------
-[23:45:51]----new low level exception----
+---------------17:07:2016---------------
+[01:04:02]----new low level exception----
 Status : not catch
-In file: C:\xampp\htdocs\chat\inc\setting.php
-In line: 26
-Message: Unknown settign key: github_appname
-Extra  : No extra data is given
+In file: C:\xampp\htdocs\chat\inc\http\connector.php
+In line: 45
+Message: Could not connect to the web server
+Extra  : https://api.github.com/user
+--------------------------------
+[01:59:25]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\http\connector.php
+In line: 45
+Message: Could not connect to the web server
+Extra  : https://api.github.com/user
 --------------------------------

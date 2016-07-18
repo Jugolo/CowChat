@@ -3,6 +3,7 @@ namespace inc\authentication\driver;
 
 use inc\interfaces\authentication\AuthenticationDriverInterface;
 use inc\error\HeigLevelError;
+use inc\head\Head;
 
 class AuthenticationDriver{
 	/**
@@ -11,7 +12,7 @@ class AuthenticationDriver{
 	 * @return bool true if the driver exists else false
 	 */
 	public static function exists(string $name) : bool{
-		return file_exists("inc/driver/authentication/".$name.".php");
+		return file_exists("inc/driver/authentication/".$name."/".$name.".php");
 	}
 	
 	/**
@@ -24,7 +25,15 @@ class AuthenticationDriver{
 			throw new HeigLevelError("Unknown authentication driver", "The driver to request: ".$name);
 		}
 		
-		$class = "inc\\driver\\authentication\\".$name."\\AuthenticationDriver";
+		$class = "inc\\driver\\authentication\\".$name."\\".$name."\\AuthenticationDriver";
 		return new $class();
+	}
+	
+	public static function login() : bool{
+		if(!Head::cookie("login_driver") || !self::exists(Head::cookie("login_driver"))){
+			return false;
+		}
+		
+		return self::getDriver(Head::cookie("login_driver"))->login();
 	}
 }

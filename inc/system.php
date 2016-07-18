@@ -23,6 +23,7 @@ use inc\error\LowLevelError;
 use inc\driver\dir\DriverDir;
 use inc\authentication\driver\AuthenticationDriver;
 use inc\interfaces\authentication\AuthenticationDriverInterface;
+use inc\tempelate\tempelate\Tempelate;
 
 class System{
 	private $clients = [];
@@ -331,19 +332,21 @@ class System{
 		}
 	}
 	private function userInit(){
-		if(Authentication::login()){
+		if(!Head::cookie("login_driver") && Head::get("auth_method")){
+			if(!AuthenticationDriver::exists(Head::get("auth_method"))){
+				Html::error(sprintf(Language::get("Could not finde the %s driver"), Head::get("auth_method")));
+			}else{
+				Head::make_cookie("login_driver", Head::get("auth_method"));
+			}
+		}
+		
+		if(AuthenticationDriver::login()){
 			return true;
 		}else{
 			if(!System::is_cli() && Head::get("ajax")){
 				exit("LOGIN: REQUID");
 			}
-			if(!Head::cookie("login_driver") && Head::get("auth_method")){
-				if(!AuthenticationDriver::exists(Head::get("auth_method"))){
-					Html::error(sprintf(Language::get("Could not finde the %s driver"), Head::get("auth_method")));
-				}else{
-					Head::make_cookie("login_driver", Head::get("auth_method"));
-				}
-			}
+			
 			if(Head::cookie("login_driver")){
 				$auth = AuthenticationDriver::getDriver(Head::cookie("login_driver"));
 				if($auth->enabled()){
@@ -362,7 +365,7 @@ class System{
 		try{
 			$data["drivers"] = [];
 			foreach(new DriverDir("authentication") as $driver){
-				if($driver->isFile()){
+				if(!$driver->isFile()){
 					$auth = AuthenticationDriver::getDriver($driver->getItemName());
 					if($auth->enabled()){
 						$data["drivers"][] = $auth;
@@ -427,6 +430,9 @@ class System{
 		if(defined("NO_CONTEXT")){
 			return;
 		}
+		
+		$tempelate = new Tempelate(["dir" => "inc/style/"]);
+		exit($tempelate->exec($name));
 		
 		$loader = new \Twig_Loader_Filesystem("inc/style");
 		$twig = new \Twig_Environment($loader);

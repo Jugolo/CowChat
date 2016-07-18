@@ -23,10 +23,6 @@ class AutoLoader{
 		));
 	}
 	private static function load($class){
-		if(strpos($class, "Twig") === 0){
-			self::LoadTwig($class);
-			return;
-		}
 		if(strpos($class, "\\") === false){
 			return;
 		}
@@ -41,13 +37,6 @@ class AutoLoader{
 		if(!in_array($path, self::$buffer)){
 			self::$buffer[] = $path;
 			include $path;
-		}
-	}
-	
-	private static function LoadTwig($name){
-		$dir = "inc/twig/".str_replace("_", "/", substr(explode("\\", $name)[0], 5)).".php";
-		if(inc\file\Files::exists($dir)){
-			self::loadOnce($dir);
 		}
 	}
 }

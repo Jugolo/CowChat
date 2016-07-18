@@ -1,0 +1,51 @@
+---------------16:07:2016---------------
+[12:40:36]HTTP/1.1 200 OK
+
+[12:40:36]Server: GitHub.com
+
+[12:40:36]Date: Sat, 16 Jul 2016 10:39:56 GMT
+
+[12:40:36]Content-Type: application/json; charset=utf-8
+
+[12:40:36]Transfer-Encoding: chunked
+
+[12:40:36]Status: 200 OK
+
+[12:40:36]Cache-Control: no-cache
+
+[12:40:36]Vary: X-PJAX
+
+[12:40:36]X-UA-Compatible: IE=Edge,chrome=1
+
+[12:40:36]X-Request-Id: 722f78eae1fcc2d5bd49a706cd4008f7
+
+[12:40:36]X-Runtime: 0.007937
+
+[12:40:36]Content-Security-Policy: default-src 'none'; base-uri 'self'; block-all-mixed-content; child-src render.githubusercontent.com; connect-src 'self' uploads.github.com status.github.com api.github.com www.google-analytics.com github-cloud.s3.amazonaws.com wss://live.github.com; font-src assets-cdn.github.com; form-action 'self' github.com gist.github.com; frame-ancestors 'none'; frame-src render.githubusercontent.com; img-src 'self' data: assets-cdn.github.com identicons.github.com www.google-analytics.com collector.githubapp.com *.gravatar.com *.wp.com *.githubusercontent.com; media-src 'none'; object-src assets-cdn.github.com; plugin-types application/x-shockwave-flash; script-src assets-cdn.github.com; style-src 'unsafe-inline' assets-cdn.github.com
+
+[12:40:36]Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
+
+[12:40:36]Public-Key-Pins: max-age=5184000; pin-sha256="WoiWRyIOVNa9ihaBciRSC7XHjliYS9VwUGOIud4PB18="; pin-sha256="RRM1dGqnDFsCJXBTHky16vi1obOlCgFFn/yOhI/y+ho="; pin-sha256="k2v657xBsOVe1PQRwOsHsw3bsGT2VzIqz5K+59sNQws="; pin-sha256="K87oWBWM9UZfyddvDfoxL+8lpNyoUB2ptGtn0fv6G2Q="; pin-sha256="IQBnNBEiFuhj+8x6X8XLgh01V9Ic5/V3IRQLNFFc7v4="; pin-sha256="iie1VXtL7HzAMF+/PVPR9xzT80kQxdZeJ+zduCB3uj0="; pin-sha256="LvRiGEjRqfzurezaWuj8Wie2gyHMrW5Q06LspMnox7A="; includeSubDomains
+
+[12:40:36]X-Content-Type-Options: nosniff
+
+[12:40:36]X-Frame-Options: deny
+
+[12:40:36]X-XSS-Protection: 1; mode=block
+
+[12:40:36]Vary: Accept-Encoding
+
+[12:40:36]X-Served-By: 7cc969f65c7ec8d9db2fa57dcc51d323
+
+[12:40:36]X-GitHub-Request-Id: 4DD5BE2C:31DA:1D32E48:578A0EFC
+
+[12:40:36]
+
+[12:40:36]ab
+
+[12:40:36]{"error":"bad_verification_code","error_description":"The code passed is incorrect or expired.","error_uri":"https://developer.github.com/v3/oauth/#bad-verification-code"}
+
+[12:40:36]0
+
+[12:40:36]
+

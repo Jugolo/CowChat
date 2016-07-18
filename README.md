@@ -21,9 +21,6 @@ if wee cange and add every think i can think of will relate at the chat never wo
 * new: commands: "/show plugin" to show all plugin. "/show plugin enabled" to show all plugin there is enabled. "/show plugin disabled" show plugin there is not enabled. "/plugin [name] [enable/deable]" to enable or debale plugin.
 * change: only support php version 7 or heigher.
 * new: a better config handling. When a admin visit the chat there will in left menu where a option "Configuration" when click on this there will be a popup width all config. 
-* redesign login page.
-* if more end one auth driver is available the login page would show options for login drivers. 
-* auth driver can disable geaust login, login or/and create acount.
 
 # PHP version 
 the first version of chat has no requirement for php version but the ajax part of the chat need to be very fast to load.
