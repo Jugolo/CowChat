@@ -1,0 +1,43 @@
+---------------18:07:2016---------------
+[22:47:11]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\system.php
+In line: 387
+Message: Call to undefined method inc\user\User::current()
+--------------------------------
+[22:53:16]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\show.php(14) : eval()'d code
+In line: 1
+Message: Call to undefined method inc\tempelate\show\Show::database()
+--------------------------------
+[23:08:49]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\language.php
+In line: 54
+Message: Using $this when not in object context
+--------------------------------
+[23:32:30]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\user\helper.php
+In line: 42
+Message: Return value of inc\user\helper\UserHelper::apppend_user() must be an instance of inc\user\data\UserData, array returned
+--------------------------------
+[23:38:25]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\parser.php
+In line: 35
+Message: Call to undefined method inc\tempelate\parser\StringParser::next()
+--------------------------------
+[23:39:21]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\show.php(14) : eval()'d code
+In line: 1
+Message: syntax error, unexpected '$this' (T_VARIABLE), expecting ',' or ')'
+--------------------------------

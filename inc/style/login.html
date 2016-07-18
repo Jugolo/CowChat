@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{language("Welcommen to %s chat", setting("name"))}}</title>
+<style>
+body {
+	
+}
+
+.th, .td {
+	float: left;
+}
+
+.unset {
+	clear: both;
+}
+
+#title {
+	background-color: #0033cc;
+	text-align: center;
+	margin: 0px;
+	border-bottom: 1px solid black;
+}
+
+.menu_button {
+	margin: 0;
+	padding: 0;
+	background-color: #0066ff;
+	border: 0px;
+	border-left: 1px solid black;
+}
+
+.noborder {
+	border: 0px;
+}
+
+#container {
+	border: 1px solid black;
+	width: 250px;
+	margin: auto auto;
+}
+
+.th {
+	width: 40%;
+	margin-top: 4px;
+}
+
+.td {
+	width: 60%;
+	margin-top: 4px;
+}
+
+.td input {
+	width: 96%;
+}
+
+#submit {
+	width: 100%;
+	background-color: #0066ff;
+	border: none;
+}
+</style>
+<script>
+   function onload(){
+   {%if error%}
+    {%for i in error%}
+	 alert("{{i}}");
+	{%endfor%}
+   {%endif%}
+   setInputContainerSize();
+   set("login");
+   }
+   
+   function setInputContainerSize(){
+	  //wee need to calculate bottoms size :)
+	  var b = document.getElementsByClassName("menu_button");
+	  var size = document.getElementsByClassName("input_container")[0].offsetWidth / b.length;
+      for(i=0;i<b.length;i++){
+	    b[i].style.width = size+"px";
+      }
+   }
+   
+   var HandlerClass = (function(){
+      function HandlerClass(name, title){
+	     this.name = name;
+		 this.title = title;
+		 this.uses = [];
+		 this.hides = [];
+	  }
+	  
+	  HandlerClass.prototype.use = function(u){
+	    this.uses.push(u);
+	  };
+	  
+	  HandlerClass.prototype.hide = function(h){
+	    this.hides.push(h);
+	  };
+	  
+	  HandlerClass.prototype.focus = function(){
+	     //hide elements
+		 for(var i=0;i<this.hides.length;i++){
+		   document.getElementById(this.hides[i]).style.display = "none";
+		 }
+		 
+		 for(i=0;i<this.uses.length;i++){
+		   document.getElementById(this.uses[i]).style.display = "block";
+		 }
+		 
+		 document.getElementById("title").innerHTML = this.title;
+		 document.getElementById("submit").value = this.title;
+	  };
+	  
+	  HandlerClass.prototype.submit = function(){
+	    //control the inputs is not empty (this is also makes in servers but here can user see it faster!)
+		for(var i=0;i<this.uses.length;i++){
+		  if(document.getElementById(this.uses[i]).getElementsByTagName("input")[0].value.trim() == ''){
+		    //@todo append a prober error message instanse of alert
+			alert("{{language('Not all inputs are fill')}}");
+		    return false;
+		  }
+		}
+		return true;
+	  };
+	  
+	  return HandlerClass;
+   })();
+   
+   var Handlers = [];
+   var currentHandler = null;
+   
+   var login = new HandlerClass("login", "{{language('Login')}}");
+   var geaust = new HandlerClass("geaust", "{{language('Geaust')}}");
+   var create = new HandlerClass("rigristere", "{{language('Rigristre')}}");
+   
+   //wee tell what input the diffrence handler should remove
+   login.hide("email_container");
+   login.use("username_container");
+   login.use("password_container");
+   
+   geaust.hide("email_container");
+   geaust.hide("password_container");
+   geaust.use("username_container");
+   
+   create.use("username_container");
+   create.use("password_container");
+   create.use("email_container");
+   
+   Handlers.push(login);
+   Handlers.push(geaust);
+   Handlers.push(create);
+   
+   function set(name){
+      for(var i=0;i<Handlers.length;i++){
+	    if(Handlers[i].name == name){
+		   currentHandler = Handlers[i];
+		   Handlers[i].focus();
+		   return;
+		}
+	  }
+	  
+	  alert("Unknown handler: "+name);
+   }
+   
+   function formSubmit(){
+     if(currentHandler != null && !currentHandler.submit()){
+	   return false;
+	 }
+   }
+   
+   </script>
+</head>
+<body onload="onload()">
+	<div id="container">
+		<h3 id='title'></h3>
+		<div id='menu'>
+			<button class='menu_button noborder' onclick='set("login");'>{{language("Login")}}</button>
+			<button class='menu_button' onclick='set("rigristere");'>{{language("Rigristre")}}</button>
+			<button class='menu_button' onclick='set("geaust");'>{{language("Geaust")}}</button>
+		</div>
+		<div id='inputs'>
+			<form action='?login=true' method='POST'
+				onsubmit='return formSubmit()'>
+				<div class='input_container' id='username_container'>
+					<div class='th'>
+						<label for='username'>{{language("Username")}}</label>
+					</div>
+					<div class='td'>
+						<input name='username' id='username'>
+					</div>
+					<div class='unset'></div>
+				</div>
+				<div class='input_container' id='password_container'>
+					<div class='th'>
+						<label for='password'>{{language("Password")}}</label>
+					</div>
+					<div class='td'>
+						<input type='password' name='password' id='password'>
+					</div>
+					<div class='unset'></div>
+				</div>
+				<div class='input_container' id='email_container'>
+					<div class='th'>
+						<label for='email'>{{language("Email")}}</label>
+					</div>
+					<div class='td'>
+						<input type="email" name="email" id="email">
+					</div>
+					<div class='unset'></div>
+				</div>
+				<div class='input_container submit'>
+					<input type='submit' id='submit' value=''>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

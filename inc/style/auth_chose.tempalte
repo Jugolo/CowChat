@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title><@--LANGUAGE |Welcommen to %s chat| SETTING_NAME--@></title>
+<style>
+body {
+	font: 14px/32px Georgia, serif;
+}
+
+#container {
+	box-shadow: 0px 10px 16px 0px rgba(0, 0, 0, 0.2), 0px 6px 20px 0px
+		rgba(0, 0, 0, 0.19) !important;
+	width: 300px;
+	height: 300px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -150px 0 0 -150px;
+	border-radius: 10px 10px 0 0;
+}
+
+#title {
+	text-align: center;
+	background-color: #737373;
+	border-radius: 10px 10px 0 0;
+	font-weight: bolder;
+	font-size: 16px;
+}
+
+a{
+  color:black;
+  Text-decoration: none;
+  text-align:center;
+  background-color:#f2f2f2;
+  cursor:pointer;
+  width:300px;
+  margin:0px;
+  padding:0px;
+  display:block;
+  border-top:1px solid black;
+  font-weight:bolder;
+  font-size:20px;
+}
+
+.error{
+  color:red;
+  font-weight: bolder;
+  text-align:center;
+}
+</style>
+<script>
+	function tile_error(dom) {
+		dom.parentNode.className += " error";
+	}
+</script>
+</head>
+<body>
+    <@--IF exists('error')--@>
+    <div class='error'>
+     <@--FOR error AS e--@>
+       <div><@--ECHO e--@>
+     <@--end--@>
+    </div>
+    <@--end--@>
+	<div id='container'>
+		<div id="title"><@--LANGUAGE |Select you auth option|--@></div>
+		<div id='placeholder'>
+		    <@--FOR drivers AS driver--@>
+				<a href='?auth_method=<@--ECHO driver.getName()--@>' title="<@--LANGUAGE |Chose %s| driver.getName())--@>"><@--ECHO driver.title()--@></a>
+			<@--end--@>
+		</div>
+	</div>
+</body>
+</html>

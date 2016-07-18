@@ -1,0 +1,8 @@
+---------------18:07:2016---------------
+[23:31:43]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
+In line: 59
+Message: table chat_user_login has no column named hashs
+Extra  : INSERT INTO `chat_user_login` (`username`,`password`,`hashs`,`email`,`authentication_driver`,`created`,`activated`,`ip`) VALUES ('Jugolo',NULL,'github:7426601','support@jugolo.dk','github','1468877503','Y','127.0.0.1')
+--------------------------------

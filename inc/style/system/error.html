@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Error: {{error.getMessage()}}</title>
+</head>
+<body>
+	Sorry the system rendt in error when try to offer you the servic.
+	<br> The only info i can give you is
+	<br>
+	<table>
+		<tr>
+			<th>Message</th>
+			<td>{{error.getMessage()}}</td>
+		</tr>
+		<tr>
+			<th>File</th>
+			<td>{{error.getFile()}}</td>
+		</tr>
+		<tr>
+			<th>Line</th>
+			<td>{{error.getLine()}}</td>
+		</tr>
+	</table>
+	<br> Please try again after 5 min. Wee will fix this error as soon
+	wee can
+</body>
+</html>

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#topMenu {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	height: 25px;
+}
+
+#leftMenu {
+	position: absolute;
+	top: 25px;
+	left: 0px;
+	bottom: 50px;
+	width: 150px;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+#chat {
+	border: 1px solid black;
+	position: absolute;
+	top: 25px;
+	left: 150px;
+	right: 150px;
+	bottom: 50px;
+	overflow: auto;
+}
+
+#rightMenu {
+	position: absolute;
+	top: 25px;
+	right: 0px;
+	bottom: 50px;
+	width: 150px;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+#buttom {
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	height: 50px;
+}
+
+h2 {
+	text-align: center;
+	border-bottom: 1px solid black;
+	margin: 0px;
+	background-color: #0033cc;
+}
+
+#leftMenu div {
+	text-align: center;
+	border-bottom: 1px solid black;
+	font-size: 20px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.o1 {
+	background-color: #0000FF;
+}
+
+.o2 {
+	background-color: #0000FF;
+}
+
+.tab {
+	float: left;
+	margin-right: 1px;
+	height: 25px;
+}
+
+.leftWing {
+	width: 15px;
+	height: 25px;
+	border-left: 1px solid black;
+	border-radius: 20px 0 0 0;
+	float: left;
+}
+
+.rightWing {
+	width: 15px;
+	height: 25px;
+	border-right: 1px solid black;
+	border-radius: 0 20px 0 0;
+	float: left;
+}
+
+.tab_title {
+	height: 25px;
+	width: auto;
+	float: left;
+	cursor: pointer;
+	text-align: center;
+	font-weight: bold;
+}
+
+.tab_close {
+	float: left;
+	height: 25px;
+	cursor: pointer;
+	width: 20px;
+	background-image: url('img/close.png');
+	background-size: 50% 50%;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#text_buttom {
+	position: absolute;
+	top: 0px;
+	left: 150px;
+	right: 150px;
+	bottom: 0px;
+	background-color: #999999;
+	padding: 0px;
+}
+
+#send_buttom {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	width: 150px;
+}
+
+#smylie_buttom {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	width: 150px;
+}
+
+#sButton {
+	width: 100%;
+	height: 100%;
+}
+
+textarea {
+	width: 100%;
+	height: 100%;
+	border: none;
+	resize: none;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	box-sizing: border-box;
+}
+
+.smylie_but {
+	width: 25px;
+	height: 25px;
+	border-radius: 10px;
+}
+
+#smylie_buttom {
+	margin-left: 5px;
+	margin-top: 5px;
+	border-radius: 10px;
+	border: 1px solid black;
+	width: 25px;
+	height: 25px;
+}
+
+#smylie {
+	cursor: pointer;
+}
+
+#smylie_list div {
+	cursor: pointer;
+}
+
+#smylie_list {
+	z-index: 2;
+}
+
+.message {
+	border-bottom: 1px solid black;
+}
+
+.item_1 {
+	background-color: #00bfff;
+}
+
+.item_0 {
+	background-color: #0000FF;
+}
+
+.user {
+	border-bottom: 1px solid black;
+	text-align: center;
+}
+
+.user h3 {
+	margin: 0;
+	padding: 0;
+	background-color: #0000FF;
+	cursor: pointer;
+}
+
+.user_menu {
+	display: none;
+	background-color: #00bfff;
+}
+
+.inaktiv {
+	display: none;
+}
+
+.u {
+	text-decoration: underline;
+}
+
+.strong {
+	font-weight: bold;
+}
+
+.error {
+	color: red;
+	font-weight: bold;
+}
+
+a {
+	color: black;
+	text-decoration: none;
+}
+
+.menu_show {
+	display: block;
+}
+
+.menu_hide {
+	display: none;
+}
+
+.inlineNick {
+	cursor: pointer;
+}
+
+span[onclick], div[onclick] {
+	cursor: pointer;
+}
+</style>
+<script src='js/send.js'></script>
+<script src='js/command.js'></script>
+<script src='js/channelcontrol.js'></script>
+<script src='js/page.js'></script>
+<script src='js/user.js'></script>
+<script src='js/language.php'></script>
+<script src='js/phpjs.js'></script>
+<script>
+  var sendType = '{{sendType}}';
+  var myNick = '{{nick}}';
+  var old = alert;
+  var ws;
+  alert = function(){
+	  old(language.apply(this, arguments));
+  }
+  
+  function onload(){
+    if(sendType == "WebSocket"){
+		init_websocket();
+	}else{
+		begin();
+	}
+  }
+  
+  function begin(){
+    {%for name in channel%}
+	  appendChannel('{{name}}');
+	{%endfor%}
+  }
+  
+  function init_websocket(){
+	  //hack. to find out what the user is wee need to send cookie so wee do it this way
+	  ws = new WebSocket("ws://{{wHost}}:{{wPort}}/?"+document.cookie);
+	  ws.onopen = function(){
+		  begin();
+	  };
+	  
+	  ws.onerror = function(evt){
+		  window.onerror.call(window, evt.evt, document.location.toString(), 2);
+	  };
+	  
+	  ws.onmessage = function(evt){
+		console.log("Message from server");  
+	  };
+  }
+  
+  function okp(evt, obj){
+	  if(evt.keyCode == 13 && !evt.shiftKey){
+		  if(currentChannel != null){ //wee allow line break becuse wee replace it whit [br] there is convertet to \r\n of the resive client
+			  evt.preventDefault();
+		      parseUserInput(obj.value);
+	          obj.value = "";
+	      }else{
+		    
+	      }
+	  }
+  }
+  
+  function pushMessage(){
+	  var msg = document.getElementById("msg_input");
+	  if(msg.value.trim() != ""){
+		  parseUserInput(msg.value);
+	  }
+	  
+	  msg.value = "";
+  }
+  
+  function insert_nick(nick){
+	  atCursor("@"+nick);
+  }
+  
+  function atCursor(str){
+	  var texteare = document.getElementById("msg_input");
+	  texteare.focus();
+	  if(document.selection){//ie
+	      sel = document.selection.createRange();
+	      sel.text = str;
+	  }else if(texteare.selectionStart || texteare.selectionStart == '0'){
+		  var startPos = texteare.selectionStart;
+	        var endPos = texteare.selectionEnd;
+	        texteare.value = texteare.value.substring(0, startPos)
+	            + str
+	            + texteare.value.substring(endPos, texteare.value.length);
+	        texteare.selectionStart = endPos+str.length;
+	        texteare.selectionEnd   = endPos+str.length;
+	  }else{
+		  texteare.value += str;
+	  }
+  }
+  
+  function parseUserInput(txt){
+	  if(txt.indexOf("/") == 0){
+		  var commandBody = txt.substr(txt.split(" ")[0].length+1);
+		  switch(txt.split(" ")[0].substr(1)){
+		  case "join":
+			  var channels = commandBody.split(",");
+			  for(var id in channels){
+				  console.log(channels[id].trim());
+				  join(channels[id].trim());
+			  }
+			  break;
+		  case "title":
+			  title(currentChannel.name, commandBody);
+                  break;
+                  case "nick":
+                    nick(commandBody);
+                  break;
+                  case "show":
+                    show(commandBody, handle_show);
+                  break;
+                  case "unset":
+                	  unset(commandBody, handle_unset);
+                  break;
+                  case "delete":
+                	  delete_command(commandBody, handle_delete);
+                  break;
+                  case "create":
+                	  create_command(commandBody, handle_create);
+                  break;
+                  case "append":
+                	  append_command(commandBody, handle_append);
+                  break;
+                  case "get":
+                	  get_command(commandBody, handle_get);
+                  break;
+                  case "config":
+                	  config_command(commandBody, function(msg){
+                		  if(msg.command() == "CONFIG"){
+                			  currentPage.appendHTML("<span style='color:green'>"+language("Config is now updatet")+"</span>");
+                		  }else{
+                			  currentPage.appendHTML("<span style='color:red'>"+language("Fail to update config")+"</span>");
+                		  }
+                	  });
+                  break;
+		  }
+	  }else{
+		  message(currentChannel.title(), txt);
+	  }
+	  
+	  sendBuffer.flush();
+  }
+  
+  function fane_show(obj){
+	  //hide all menus first
+	  var menus = document.getElementsByClassName("user_menu");
+	  for(var i=0;i<menus.length;i++){
+		  menus[i].style.display = "none";
+	  }
+	  
+	  obj.parentNode.getElementsByClassName("user_menu")[0].style.display = "block";
+  }
+  
+  function hide_menu(){
+	  var dom = document.getElementsByClassName("menu_show");
+	  for(var i=0;i<dom.length;i++){
+		//dom[i].className = dom[i].className.replace("menu_show", "menu_hide");
+	  }
+  }
+  
+  function show_smylie(){
+	  var dom = document.getElementById("smylie_list");
+	  dom.className = dom.className.replace("menu_hide", "menu_show");
+  }
+  
+  function changeTitle(){
+	  //has wee currentChannel
+	  if(currentChannel != null){
+		  //controle if the user can change title
+		  if(currentChannel.users[myNick].allowChangeTitle()){
+			  var popup = prompt(language("Write the new tite for channel: %s", currentChannel.title()));
+			  if(popup != null){
+			     title(currentChannel.title(), popup);
+			     sendBuffer.flush();
+			  }
+		  }else{
+			  alert("You can not change title in %s", currentChannel.title());
+		  }
+	  }else{
+		  alert("Unknown channel");
+	  }
+  }
+
+  function handle_show(msg){
+     var handler = msg.message().split(" ")[0];
+     var body = msg.message().substr(handler.length+1);
+     switch(handler){
+        case "blacklisted":
+            ip   = body == "" ? [] : body.split(",");
+            if(ip.length != 0){
+            	html = language("this is the black listed ip from firewall")+":";
+                for(var i=0;i<ip.length;i++){
+                	html += "<div class='show_ip'>"+ip[i]+"</div>";
+                }
+            }else{
+            	html = "<span style='color:red'>"+language("There is no ip there is blacklisted")+"</span>";
+            }
+        break;
+        case "whitelisted":
+           html = language("this is the white listed ip from firewall (this will never be bannet)")+":";
+           ip = body.split(",");
+           for(var i=0;i<ip.length;i++){
+              html += "<div class='show_ip'>+ "+ip[i]+"</div>";
+           }
+        break;
+        case "ban":
+           html = language("here is ip there is bannet")+":";
+           ip = body.split(",");
+           for(var i=0;i<ip.length;i++){
+              html += "<div class='ip_show'>"+ip[i]+"</div>";
+           }
+        break;
+        case "info":
+        	var part = body.split(",");
+        	html = language("Ip '%s' is no longer bannet in %s", part[0], part[1]);
+        break;
+        case "defender":
+        	var part = body.split(",");
+        	html = language("User`s %s defender count is %s", part[0], part[1]);
+        break;
+        case "access":
+        	var parts = body.split(",");
+        	html = language("Here is access list:");
+        	for(i=0;i<parts.length;i++){
+        		var p = parts[i].split("=");
+        		html += "<div class='show_ip'>+ "+p[0]+": "+(p[1] == "N" ? language("No") : language("Yes"))+"</div>";
+        	}
+        break;
+        case "members":
+        	ip   = body == "" ? [] : body.split(",");
+            if(ip.length != 0){
+            	html = language("Members in the user group")+":";
+                for(var i=0;i<ip.length;i++){
+                	html += "<div class='show_ip'>"+ip[i]+"</div>";
+                }
+            }else{
+            	html = "<span style='color:red'>"+language("There is no member in the group")+"</span>";
+            }
+        break;
+        case "type":
+        	var parts = body.split(",");
+        	function getUserType(type){
+        		switch(type){
+        		case "u":
+        			return language("user");
+        		case "g":
+        			return language("geaust");
+        		case "b":
+        			return language("bot");
+        		default:
+        			return language("Unknown user type");
+        		}
+        	}
+        	html = language("The user '%s' is %s", parts[0], getUserType(parts[1]));
+        break;
+        case "channels":
+        	var parts = body.split(",");
+        	if(parts == 1){
+        		html = "<span style='color:red'>"+language("%s is not member of any channel", parts[0])+"</span>";
+        	}else{
+        		html = language("%s is member of following channels:", parts[0]);
+        		for(i=1;i<parts.length;i++){
+        			html += "<div class='show_ip'>+ "+parts[i]+"</div>";
+        		}
+        	}
+        break;
+        case "onlinestatus":
+        	var parts = body.split(",");
+        	html = language("%s is %s", parts[0], language(parts[1]));
+        break;
+        default:
+        	html = "<span style='color:red'>Unknown respons on 'SHOW' command: "+handler+"</span>";
+        break;
+
+     }
+
+     currentPage.appendHTML(html);
+  }
+  
+  function handle_unset(msg){
+	  var handler = msg.message().split(" ")[0];
+	  var body = msg.message().substr(handler.length+1);
+	  switch(handler){
+	  case "defender":
+		  html = "<span style='color:green'>"+language("The users defender count is unset to 0.5")+"</span>";
+	  break;
+	  default:
+      	html = "<span style='color:red'>Unknown respons on 'UNSET' command: "+handler+"</span>";
+      break;
+	  }
+	  currentPage.appendHTML(html);
+  }
+  
+  function handle_delete(msg){
+	     var handler = msg.message().split(" ")[0];
+	     var body = msg.message().substr(handler.length+1);
+	     switch(handler){
+	     case "ip":
+	    	 html = "<span style='color:green'>"+language("the ip '%s' is now deleted", body)+"</span>";
+	     break;
+	     case "user":
+	    	 html = "<span style='color:green'>"+language("User %s is now deleted", body)+"</span>";
+	     break;
+	     case "UserGroup":
+	    	 var parts = body.split(" ");
+	    	 if(parts[0] == "group"){
+	    		 html = "<span style='color:green'>"+language("User grup %s is now delted", parts[1])+"</span>";
+	    	 }else if(parts[0] == "access"){
+	    		 html = "<span style='color:green'>"+language("User group '%s' has no longer assess to %s", parts[1], parts[2])+"</span>";
+	    	 }else{
+	    		 html = "<span style='color:red'>"+language("Unknown respons on delete command")+"</span>";
+	    	 }
+	     break;
+	     }
+	     currentPage.appendHTML(html);
+  }
+  
+  function handle_create(msg){
+	  var handler = msg.message().split(" ")[0];
+	     var body = msg.message().substr(handler.length+1);
+	     switch(handler){
+	     case "UserGroup":
+	    	 html = "<span style='color:green'>"+language("User group %s is now created", body)+"</span>";
+	    	 break;
+	     }
+	     currentPage.appendHTML(html);
+  }
+  
+  function handle_append(msg){
+	  var handler = msg.message().split(" ")[0];
+	  var body = msg.message().substr(handler.length+1);
+	  switch(handler){
+	     case "UserGroup":
+	    	 var parts = body.split(" ");
+	    	 if(parts[0] == "access"){
+	    		 html = "<span style='color:green'>"+language("The group %s has now set the access %s", parts[2], parts[1])+"</span>";
+	    	 }else if(parts[0] == "user"){
+	    		 html = "<span style='color:green'>"+language("The user %s is now memeber of the group %s", parts[1], parts[2])+"</span>";
+	    	 }else{
+	    		 html = "<span style='color:red'>"+language("Unknown respons on append command")+"</span>";
+	    	 }
+	      break;
+	  }
+	  currentPage.appendHTML(html);
+  }
+  
+  function handle_get(msg){
+	  var handler = msg.message().split(" ")[0];
+	  var body = msg.message().substr(handler.length+1);
+	  switch(handler){
+	      case "id":
+		    var parts = body.split(" ");
+		    if(parts[0] == "UserGroup"){
+		    	html = language("User group %s has id: %s", parts[2], parts[1]);
+		    }
+		  break;
+	  }
+	  currentPage.appendHTML(html);
+  }
+
+  window.onerror = function (errorMsg, url, lineNumber) {
+     alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
+  }
+</script>
+<title>{{language("Chat %s", setting("name"))}}</title>
+</head>
+<body onload='onload();' onclick='hide_menu();'>
+	<div id='topMenu'>
+		<div style='clear: both;'></div>
+	</div>
+	<div id='rightMenu'>
+		<h2>{{language("Online user")}}</h2>
+		<div id="online"></div>
+	</div>
+	<div id='chat'></div>
+	<div id='leftMenu'>
+		<h2>{{language('Options')}}</h2>
+		<div id='leftMenuItem'></div>
+	</div>
+	<div id='buttom'>
+		{%if smylie%}
+		<div id='smylie_buttom'>
+			<div id='smylie_list' class='menu_hide'>
+				{%for i in smylie%}
+				<div>
+					<img class='smylie_but' src='{{i["url"]}}' title="{{i["
+						title"]}}" alt="{{i["tag"]}}"> {{i["title"]}}
+				</div>
+				{%endfor%}
+			</div>
+			<div id='smylie' onclick='show_smylie()'>
+				<img class='smylie_but' src='{{smylie[0]["url"]}}'
+					title="{{smylie[0][" title"]}}" alt="{{smylie[0]["tag"]}}">
+			</div>
+		</div>
+		{%endif%}
+		<div id='text_buttom'>
+			<textarea id='msg_input' onkeydown='okp(event, this);'></textarea>
+		</div>
+		<div id='send_buttom'>
+			<button id='sButton' onclick='pushMessage();'>{{language("Send")}}</button>
+		</div>
+		<div style='clear: both;'></div>
+	</div>
+</body>
+</html>
