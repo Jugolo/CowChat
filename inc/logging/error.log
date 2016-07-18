@@ -1,8 +1,0 @@
----------------18:07:2016---------------
-[10:03:57]----new Error----
-It is importent you find this error and get it fix!!!!
-Status : not catch
-In file: C:\xampp\htdocs\chat\inc\tempelate\driver.php
-In line: 39
-Message: Class 'inc\driver\tempelate\if\TempelateDriver' not found
---------------------------------
