@@ -1,5 +1,3 @@
 eclipse.preferences.version=1
-include_path=0;/chat
+include_path=0;/old
 org.eclipse.php.core.phpDoc=false
-phpVersion=php7.0
-useShortTags=false
