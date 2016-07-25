@@ -1,0 +1,8 @@
+---------------25:07:2016---------------
+[16:14:57]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\javascript\start.php
+In line: 21
+Message: Return value of inc\javascript\start\JavascriptCompressor::append() must be of the type boolean, none returned
+--------------------------------

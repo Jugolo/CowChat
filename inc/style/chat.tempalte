@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <@--JAVASCRIPT inc/style/javascript/system.js--@> 
+ </head>
+ <body onload='onload'>
+ 
+ </body>
+</html>

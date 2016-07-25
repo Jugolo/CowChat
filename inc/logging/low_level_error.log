@@ -1,0 +1,36 @@
+---------------25:07:2016---------------
+[16:00:25]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\javascript\start.php
+In line: 28
+Message: Could not finde the javascript file
+Extra  : inc/style/javascript/system.js
+--------------------------------
+[16:11:15]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\javascript\start.php
+In line: 27
+Message: Could not finde the javascript file
+Extra  : inc/style/javascript/command.js
+--------------------------------
+[16:22:36]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
+In line: 59
+Message: no such table: chat_events
+Extra  : SELECT `namespace`, `name`, `caller` FROM `chat_events` WHERE `type`='plugin' AND (`caller`='event' OR `caller`='trigger')
+--------------------------------
+[16:36:19]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
+In line: 59
+Message: no such column: type
+Extra  : SELECT `namespace`, `name`, `caller` FROM `chat_events` WHERE `type`='plugin' AND (`caller`='event' OR `caller`='trigger')
+--------------------------------
+[16:36:37]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
+In line: 59
+Message: no such column: type
+Extra  : SELECT `namespace`, `name`, `caller` FROM `chat_events` WHERE `type`='plugin' AND (`caller`='event' OR `caller`='trigger')
+--------------------------------

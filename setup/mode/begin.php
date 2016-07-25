@@ -24,7 +24,7 @@ if(controle([
 		$_SESSION["username"] = $_POST["username"];
 		$_SESSION["password"] = $_POST["password"];
 		$_SESSION["email"]    = $_POST["email"];
-		$fopen = fopen("../include/config.json", "w+");
+		$fopen = fopen("../inc/config.json", "w+");
 		fwrite($fopen, json_encode([
 				"host" => $_POST["db_host"],
 				"user" => $_POST["db_user"],

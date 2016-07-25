@@ -1,0 +1,17 @@
+---------------25:07:2016---------------
+[15:31:31]----new heigh level exception----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\tempelate.php
+In line: 46
+Message: Unknown file: 
+Extra  : inc/style/chat.tempalte
+--------------------------------
+[15:51:48]----new heigh level exception----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\render.php
+In line: 101
+Message: Unknown prefix
+Extra  : javascript
+--------------------------------
