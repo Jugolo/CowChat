@@ -7,6 +7,7 @@ use inc\error\HeigLevelError;
 use inc\tempelate\render\Render;
 use inc\tempelate\show\Show;
 use inc\tempelate\database\TempelateDatabase;
+use inc\temp\Temp;
 
 class Tempelate{
 	private $options = [];
@@ -14,7 +15,9 @@ class Tempelate{
 	
 	public function __construct(array $option){
 		$this->options = array_merge([
-				"no_prefix" => false
+				"no_prefix" => false,
+				"cache"     => false,
+				"in_js"     => false,
 		], $option);
 		
 		if(array_key_exists("dir", $this->options)){
@@ -41,26 +44,60 @@ class Tempelate{
 	}
 	
 	public function exec(string $file){
-		$file = $this->get_file_name($file);
-		if(!Files::exists($file)){
-			throw new HeigLevelError("Unknown file: ", $file);
+		if(!$this->options["cache"]){
+			$this->show($file);
+		}else{
+			$files = $this->get_cache_name($file);
+			if(!Temp::exists($files[0], "tempelate") || !Temp::exists($files[1], "tempelate")){
+				$this->show($file);
+			}else{
+				//wee get the time cache was last change or created
+				if($this->isCacheFreach(Temp::changeTime($files[1], "tempelate"), json_decode(Temp::get($files[0], "tempelate"), true))){
+					new Show(Temp::get($files[1], "tempelate"), $this->db);
+				}else{
+					$this->show($file);
+				}
+			}
 		}
-		
-		$render = new Render(Files::context($file), $this);
-		$render->render();
-		//exit($render->getContext());
-		new Show($render->getContext(), $this->db);
 	}
 	
-	public function getCompiledSource(string $file) : string{
+	private function isCacheFreach(int $time, array $list){
+		foreach($list as $file){
+			if($time < filemtime($file)){
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	private function show(string $file){
+		Render::reseat();
+		$cache = $this->get_cache_name($file);
 		$file = $this->get_file_name($file);
 		if(!Files::exists($file)){
 			throw new HeigLevelError("Unknown file: ", $file);
 		}
+		$context = Render::render($file, $this->options);
+		if($this->options["cache"]){
+			//build information file
+			Temp::create($cache[0], json_encode(Render::getFilesList()) ,"tempelate");
+			Temp::create($cache[1], $context, "tempelate");
+		}
+		new Show($context, $this->db);
+		Render::reseat();
+	}
+	
+	private function get_cache_name(string $file) : array{
+		$dir = "";
+		if(array_key_exists("dir", $this->options) && Dirs::isDir($this->options["dir"])){
+			$dir = $this->options["dir"];
+		}
 		
-		$render = new Render(Files::context($file), $this);
-		$render->render();
-		return $render->getContext();
+		return [
+				$dir.$file.".info",
+				$dir.$file.".soruce"
+		];
 	}
 	
 	private function get_file_name(string $file) : string{

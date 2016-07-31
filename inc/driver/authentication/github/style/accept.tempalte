@@ -12,6 +12,5 @@
  </div>
  <a class='accept_buttom yes' href='?create=yes'><@--LANGUAGE |Yes create one|--@></a>
  <a class='accept_buttom no'  href='?create=no'><@--LANGUAGE |No do not create one|--@></a>
- <div 
 </div>
 <@--INCLUDE temp.bottom--@>

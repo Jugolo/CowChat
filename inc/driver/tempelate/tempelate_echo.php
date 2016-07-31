@@ -9,7 +9,7 @@ class TempelateDriver implements TempelateInterface{
 		return true;
 	}
 	
-	public function render(string $context, Render $render) : string{
-		return "echo \$this->type->control_string(".$render->parseString($context).");";
+	public function render(string $context, array $options) : string{
+		return "echo \$this->type->control_string(".Render::parseString($context).");";
 	}
 }

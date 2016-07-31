@@ -1,0 +1,24 @@
+<@--SET title language("Login to %s", SETTING_name)--@>
+<@--INCLUDE temp.head--@>
+<form method='post' action='?method=login'>
+ <div class='login_container'>
+  <div class='login_key'>
+   <label for='username'><@--LANGUAGE |Username|--@>:</label>
+  </div>
+  <div class='login_value'>
+   <input type='text' id='username' name='username'>
+  </div>
+ </div>
+ <div class='login_container'>
+  <div class='login_key'>
+   <label for='password'><@--LANGUAGE |Password|--@>:</label>
+  </div>
+  <div class='login_value'>
+   <input type='password' name='password' id='password'>
+  </div>
+ </div>
+ <div id='submit'>
+   <input type='submit' value='<@--LANGUAGE |Login|--@>'>
+ </div>
+</form>
+<@--INCLUDE temp.bottom--@>

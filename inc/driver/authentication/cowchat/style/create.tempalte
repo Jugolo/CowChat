@@ -1,0 +1,40 @@
+<@--SET title language("Create a new account")--@>
+<@--INCLUDE temp.head--@>
+<form method='post' action='?method=create'>
+ <div class='login_container'>
+  <div class='login_key'>
+   <label for='username'><@--LANGUAGE |Username|--@>:</label>
+  </div>
+  <div class='login_value'>
+   <input type='text' name='username' id='username'>
+  </div>
+ </div>
+ <div class='login_container'>
+  <div class='login_key'>
+   <label for='password'><@--LANGUAGE |Password|--@>:</label>
+  </div>
+  <div class='login_value'>
+   <input type='password' name='password' id='password'>
+  </div>
+ </div>
+ <div class='login_container'>
+  <div class='login_key'>
+   <label for='password_repeat'><@--LANGUAGE |Repeat password|--@>:</label>
+  </div>
+  <div class='login_value'>
+   <input type='password' name='repeat_password' id='password_repeat'>
+  </div>
+ </div>
+ <div class='login_container'>
+  <div class='login_key'>
+   <label for='email'><@--LANGUAGE |Email|--@>:</label>
+  </div>
+  <div class='login_value'>
+   <input type='email' name='email' id='email'>
+  </div>
+ </div>
+ <div id='submit'>
+  <input type='submit' value='<@--ECHO title--@>'>
+ </div>
+</div>
+<@--INCLUDE temp.bottom--@>

@@ -2,25 +2,29 @@
 namespace inc\user\data;
 
 class UserData{
-	private $data = [];
-	private $id;
-	private $username;
+	private $buffer;
 	
-	public function __construct(string $username, int $id, array $data){
-		$this->data = $data;
-		$this->id   = $id;
-		$this->username = $username;
+	public function __construct(array $data){
+		$this->buffer = $data;
 	}
 	
-	public function getUsername() : string{
-		return $this->username;
+	public function getUserId(){
+		return $this->buffer["id"];
 	}
 	
-	public function getNick() : string{
-		return $this->data["nick"];
+	public function getUsername(){
+		return $this->buffer["username"];
 	}
 	
-	public function getId() : int{
-		return $this->id;
+	public function getEmail(){
+		return $this->buffer["email"];
+	}
+	
+	public function getNick(){
+		return $this->buffer["nick"];
+	}
+	
+	public function getLastId(){
+		return $this->buffer["last_id"];
 	}
 }

@@ -37,9 +37,19 @@ class AuthenticationDriver{
 		return self::getDriver(Head::cookie("login_driver"));
 	}
 	
+	public static function autologin(){
+		if(!Head::cookie("login_driver") || !self::exists(Head::cookie("login_driver"))){
+		   header("location:index.php");
+			exit;
+		}
+		
+		return self::getDriver(Head::cookie("login_driver"))->auto_login();
+	}
+	
 	public static function login() : bool{
 		if(!Head::cookie("login_driver") || !self::exists(Head::cookie("login_driver"))){
-			return false;
+			header("location:index.php");
+			exit;
 		}
 		
 		return self::getDriver(Head::cookie("login_driver"))->login();

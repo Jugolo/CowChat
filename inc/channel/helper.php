@@ -9,7 +9,7 @@ use inc\user\User;
 
 class ChannelHelper{
 	public static function getUsersChannel(UserData $user): array{
-		$query = Database::getInstance()->query("SELECT `cid` FROM " . table("channel_member") . " WHERE `uid`='" . $user->getId() . "'");
+		$query = Database::getInstance()->query("SELECT `cid` FROM " . table("channel_member") . " WHERE `uid`='" . $user->getUserId() . "'");
 		$buffer = [];
 		while($row = $query->fetch()){
 			$buffer[] = new Channel($row["cid"]);
@@ -17,7 +17,7 @@ class ChannelHelper{
 		$query->free();
 		return $buffer;
 	}
-	public static function getChannel(string $name): Channel{
+	public static function getChannel(string $name, UserData $user): Channel{
 		$query = ($database = Database::getInstance())->query("SELECT `id` FROM " . table("channel") . " WHERE `name`=" . $database->clean($name));
 		$row = $query->fetch();
 		$query->free();
@@ -25,7 +25,7 @@ class ChannelHelper{
 			$channel = new Channel(Database::insert("channel", [
 					"name" => $name,
 					"title" => $name,
-					"creater" => User::getStack()->current()->getId(),
+					"creater" => $user->getUserId(),
 					"start_group" => 0
 			]));
 			
@@ -36,10 +36,10 @@ class ChannelHelper{
 		}
 	}
 	public static function isMember(Channel $channel, UserData $user): bool{
-		$query = Database::getInstance()->query("SELECT `cid` FROM " . table("channel_member") . " WHERE `cid`='" . $channel->getId() . "' AND `uid`='" . $user->getId() . "'");
+		$query = Database::getInstance()->query("SELECT `cid` FROM " . table("channel_member") . " WHERE `cid`='" . $channel->getId() . "' AND `uid`='" . $user->getUserId() . "'");
 		$row = $query->fetch();
 		$query->free();
-		return $row !== null;
+		return is_array($row);
 	}
 	private static function createUserGroups(Channel $channel){
 		$access = [

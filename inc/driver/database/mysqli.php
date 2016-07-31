@@ -9,6 +9,7 @@ use inc\interfaces\database_query\DatabaseQuery;
 use inc\interfaces\database_result\DatabaseResult;
 use inc\error\LowLevelError;
 use inc\error\HeigLevelError;
+use inc\shoutdown\ShoutDown;
 
 /**
  * Class to handle connection to mysql
@@ -36,10 +37,14 @@ class DatabaseDriver implements DatabaseQuery{
 	 *        	the database to select
 	 */
 	public function __construct(string $host, string $user, string $password, string $database){
-		$this->database = @new \mysqli($host, $user, $password, $database);
+		$this->database = $mysqli = @new \mysqli($host, $user, $password, $database);
 		if($this->database->connect_errno){
 			throw new HeigLevelError("Could not connect to the database", $this->database->connect_error);
 		}
+		
+		ShoutDown::append(function() use($mysqli){
+			$mysqli->close();
+		});
 	}
 	
 	/**

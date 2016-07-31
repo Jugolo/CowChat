@@ -9,8 +9,8 @@ class TempelateDriver implements TempelateInterface{
 		return true;
 	}
 	
-	public function render(string $context, Render $render) : string{
-		$bool = $render->parseString($context);
+	public function render(string $context, array $options) : string{
+		$bool = Render::parseString($context);
 		return "if(".$bool."){";
 	}
 }

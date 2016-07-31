@@ -11,6 +11,7 @@ class Show{
 	public function __construct(string $show, TempelateDatabase $database){
 		$this->database = $database;
 		$this->type     = new Type();
+		//exit($show);
 		eval(' ?>'.$show.'<?php ');
 	}
 }

@@ -6,16 +6,6 @@ class AutoLoader{
 	 */
 	private static $buffer = [];
 	
-	public static function set_path($part) : bool{
-		if(!defined("CHAT_PATH")){
-			define("CHAT_PATH", $part);
-			set_include_path(CHAT_PATH);
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
 	public static function set(){
 		spl_autoload_register(array(
 				__CLASS__,

@@ -1,9 +1,292 @@
 <!DOCTYPE html>
 <html>
  <head>
- <@--JAVASCRIPT inc/style/javascript/system.js--@> 
+ <@--JAVASCRIPT inc/style/javascript/system.js--@>
+ <style>
+ body {
+	font: 14px/32px Georgia, serif;
+}
+  #top{
+    position: absolute;
+    top:0px;
+    left: 0px;
+    right: 0px;
+    height:40px;
+    border-bottom:1px solid black;
+  }
+  
+  #setting_fane{
+    position: absolute;
+    right:0px;
+    top:0px;
+    border-left:1px solid #d9d9d9;
+  }
+  
+  #setting_fane, #setting_but{
+    height:40px;
+    width:40px;
+  }
+  
+  #setting_but img, #setting_context img{
+    height:20px;
+    width:20px;
+    margin:10px;
+  }
+  
+  #setting_context img{
+    cursor:pointer;
+    margin-right:0px;
+    overflow:hidden;
+  }
+  
+  #setting_but.open{
+     border-right:1px solid black;
+  }
+  
+  #setting_but{
+    cursor:pointer;
+    float:left;
+  }
+  
+  #setting_context{
+      float:left;
+      width:0px;
+      white-space: nowrap;
+      overflow:hidden;
+  }
+  
+  #channel_fane{
+      position: absolute;
+      top:0px;
+      left:0px;
+      right:40px;
+      bottom:0px;
+  }
+  
+  #left{
+    position: absolute;
+    top:40px;
+    left: 0px;
+    right: 200px;
+    bottom: 0px;
+    border-right:1px solid black;
+  }
+  
+  #right{
+    position: absolute;
+    top:40px;
+    right:200px;
+    bottom: 0px;
+    width:200px;
+  }
+  
+  #context{
+    position: absolute;
+    top:40px;
+    left:0px;
+    right: 200px;
+    bottom: 100px;
+  }
+  #bottom{
+    position: absolute;
+    left:0px;
+    right:200px;
+    bottom:0px;
+    height:100px;
+    border-top:1px solid black;
+  }
+  
+  #toolbox{
+    height:70px;
+    background-color:blue;
+  }
+  
+  #toolbox img{
+    height:40px;
+    width:40px;
+  }
+  
+  .bottom_box{
+  }
+  #msg_write{
+    resize:none;
+    width:99%;
+    box-sizing: border-box;
+    margin:0;
+    height:30px;
+    border-top:0px;
+    border-right:0px;
+  }
+  .clear{
+    clear:both;
+  }
+  
+  #popup_head{
+    position: absolute;
+    top:0px;
+    left:0px;
+    right:0px;
+    height:32px;
+    border-bottom:1px solid rgba(0, 0, 0, 0.19);
+  }
+  
+  #popup{
+    box-shadow: 0px 10px 16px 0px rgba(0, 0, 0, 0.2), 0px 6px 20px 0px
+		rgba(0, 0, 0, 0.19) !important;
+	position: absolute;
+	width:300px;
+	height:300px;
+	margin: -150px 0 0 -150px;
+	left: 50%;
+	top: 50%;
+	border-radius: 10px 10px 0 0;
+	display:none;
+  }
+  
+  #popup_title, #popup_controler{
+   position: absolute;
+   top:0px;
+   bottom:0px;
+   height:31px;
+  }
+  
+  #popup_title{
+    left:0px;
+    right:21px;
+    text-align:center;
+  }
+  
+  #popup_controler{
+    right:0px;
+    width:31px;
+  }
+  
+  #popup_close{
+     margin:8px;
+     cursor:pointer;
+  }
+  
+  #popup_context{
+    position: absolute;
+    top:32px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+  }
+  
+  input{
+    box-sizing: border-box;
+  }
+  
+  label{
+    cursor:pointer;
+  }
+  
+  .channel_tab{
+    float:left;
+    border-left:1px solid black;
+    border-right:1px solid black;
+    height:40px;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .channel_tab ul{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-left:11px;
+    margin-right:11px;
+    margin-top: 3px;
+  }
+  
+  .tab_close{
+    margin-left:4px;
+  }
+  
+  .channel_tab li{
+    display:inline-block;
+    cursor:pointer;
+  }
+  
+  #channel_fane{
+    	overflow:hidden;
+    	white-space: nowrap;
+  }
+ </style>
+ <script>
+  var userdata = {
+    "username" : '<@--ECHO username--@>',
+    "email"    : '<@--ECHO email--@>',
+    "nick"     : '<@--ECHO nick--@>',
+  }
+  
+  function show_error(msg){}
+  function onload(){
+   <@--IF exists("error")--@>
+    <@--FOR error AS e--@>
+     show_error("<@--ECHO e--@>");
+    <@--end--@>
+   <@--end--@>
+   var system = new System();
+  }
+ </script>
  </head>
- <body onload='onload'>
+ <body onload='onload()'>
+ <div id='top'>
+   <div id='channel_fane'>
+   </div>
+   <div id='setting_fane'>
+    <div>
+    <div id='setting_but' class='close'>
+     <img id="setting_but_img" src='<@--IMAGE img/icon/setting.png--@>'>
+    </div>
+    <div id='setting_context'>
+        <img src='<@--IMAGE img/icon/profile.png--@>' title='<@--LANGUAGE |Change you profile|--@>' onclick='Profile.show();'>
+        <img src='<@--IMAGE img/icon/logout.png--@>' title='<@--LANGUAGE |Logout|--@>' onclick='Profile.logout();'>
+        <img src='<@--IMAGE img/icon/copy.png--@>' title='<@--LANGUAGE |Copyright|--@>' onclick='location.href="copy.txt"'>
+    </div>
+    <div class='clear'></div>
+    </div>
+   </div>
+ </div>
+ <div id='left'>
  
+ </div>
+ <div id='right'>
+   
+ </div>
+ <div id='context'>
+ 
+ </div>
+ <div id='bottom'>
+  <div style='height:30px'>
+    <textarea id='msg_write'></textarea>
+  </div>
+  <div id='toolbox'>
+  <@--IF exists("smylie")--@>
+  <div>
+    <div id='#smylie_head' onclick='Context.trigger(this)'>
+       <@--SET sh smylie[0]--@>
+       <img src="<@--ECHO sh["url"]--@>">
+    </div>
+    <div for='#smylie_head'>
+    <@--FOR smylie AS smy--@>
+     <div><img src='<@--ECHO smy["url"]--@>' title='<@--ECHO smy["title"]--@>'></div>
+    <@--end--@>
+    </div>
+  </div>
+  <@--end--@>
+  </div>
+ </div>
+ 
+ <div id='popup'>
+   <div id='popup_head'>
+     <div id='popup_title'></div>
+     <div id='popup_controler'>
+       <span id='popup_close' onclick='Popup.close()'>X</span>
+     </div>
+   </div>
+   <div id='popup_context'></div>
+ </div>
  </body>
 </html>

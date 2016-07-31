@@ -14,16 +14,16 @@ class UserHelper{
 				WHERE (u.username=".($nick = $database->clean($nick))." OR d.nick=".$nick.")";
 		
 		if($data != null){
-			$sql .= " AND `id`<>'".$data->id()."'";
+			$sql .= " AND `id`<>'".$data->getId()."'";
 		}
 		return $database->query($sql)->fetch()["id"] != 0;
 	}
 	
 	public function email_taken(string $email) : bool{
-		return Database::getInstance()->query("SELECT `email` FROM ".table("user_login")." WHERE `email`=".Database::getInstance()->clean($email))->fetch() !== null;
+		return is_array(Database::getInstance()->query("SELECT `email` FROM ".table("user_login")." WHERE `email`=".Database::getInstance()->clean($email))->fetch());
 	}
 	
-	public function apppend_user(int $id, string $nick, string $type) : array{
+	public function apppend_user(int $id, string $nick) : array{
 		//defender insert
 		Database::insert("user_defender", [
 				"uid"     => $id,
@@ -35,7 +35,6 @@ class UserHelper{
 				"uid"        => $id,
 				"groupId"    => Setting::get("startGroup"),
 				"message_id" => System::getLastId(),
-				"type"       => $type,
 				"nick"       => $nick
 		]));
 		

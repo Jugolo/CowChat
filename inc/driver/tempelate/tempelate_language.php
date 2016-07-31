@@ -10,12 +10,12 @@ class TempelateDriver implements TempelateInterface{
 		return true;
 	}
 	
-	public function render(string $context, Render $render) : string{
+	public function render(string $context, array $options) : string{
 		if(preg_match("/^\|(.*?)\| ?(.*?)$/", $context, $preg)){
 			$arg = [];
 			foreach(explode(",", $preg[2]) as $key){
 				if($key != ""){
-					$arg[] = $render->parseString($key);
+					$arg[] = Render::parseString($key);
 				}
 			}
 			

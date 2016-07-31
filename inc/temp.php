@@ -3,6 +3,7 @@ namespace inc\temp;
 
 use inc\file\Files;
 use inc\error\HeigLevelError;
+use inc\file\Dirs;
 
 class Temp{
 	public static function exists(string $name, string $prefix = ""){
@@ -23,6 +24,10 @@ class Temp{
 	
 	public static function remove(string $name, string $prefix = "") : bool{
 		return Files::remove(self::getTempName($name, $prefix));
+	}
+	
+	public static function changeTime(string $name, string $prefix = "") : int{
+		return Files::changeTime(self::getTempName($name, $prefix));
 	}
 	
 	private static function getTempName(string $name, string $prefix){

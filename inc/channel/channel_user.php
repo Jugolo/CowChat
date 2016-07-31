@@ -21,7 +21,7 @@ class ChannelUser{
 		
 		Database::insert("channel_member", [
 				"cid" => $channel->getId(),
-				"uid" => $user->getId(),
+				"uid" => $user->getUserId(),
 				"gid" => $channel->getStandartGroupId(),
 				"active" => time()
 		]);

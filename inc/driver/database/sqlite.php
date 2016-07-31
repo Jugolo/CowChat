@@ -6,6 +6,7 @@ use inc\interfaces\database_result\DatabaseResult;
 use inc\error\LowLevelError;
 use inc\data\columns_data\ColumnsData;
 use inc\file\Dirs;
+use inc\shoutdown\ShoutDown;
 
 class DatabaseDriver implements DatabaseQuery{
 	/**
@@ -15,7 +16,15 @@ class DatabaseDriver implements DatabaseQuery{
 	private $sqlite;
 	
 	public function __construct(string $host, string $user, string $password, string $database){
-		$this->sqlite = new \SQLite3(Dirs::getDir().$database);
+		$this->sqlite = $sqlite = new \SQLite3(Dirs::getDir().$database);
+		
+		$this->sqlite->createFunction("NOW", function($e){
+			return date("y-M-d H:m:s");
+		}, 0);
+		
+		ShoutDown::append(function() use($sqlite){
+			$sqlite->close();
+		});
 	}
 	
 	public function query(string $query) : DatabaseResult{

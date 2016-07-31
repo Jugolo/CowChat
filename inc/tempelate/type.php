@@ -6,7 +6,7 @@ use inc\error\HeigLevelError;
 class Type{
 	public function control_array($data){
 		if(!is_array($data)){
-			throw new HeigLevelError("Convert error. could convert '".gettype($data)."' to array");
+			throw new HeigLevelError("Convert error. could convert '".gettype($data)."' to array", (is_object($data) ? get_class($data) : gettype($data)));
 		}
 		
 		return $data;

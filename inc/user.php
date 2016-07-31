@@ -4,10 +4,8 @@ namespace inc\user;
 
 use inc\user\helper\UserHelper;
 use inc\error\HeigLevelError;
-use inc\user\stack\UserStack;
 
 class User{
-	private static $stack;
 	private static $has_init = false;
 	/**
 	 * Get the helper to user handling
@@ -17,17 +15,12 @@ class User{
 		return new UserHelper();
 	}
 	
-	public static function getStack() : UserStack{
-		return self::$stack;
-	}
-	
 	public static function init(){
 		if(self::$has_init){
 			throw new HeigLevelError("Class User is init allready");
 		}
 		
 		self::$has_init = true;
-		self::$stack = new UserStack();
 	}
 }
 

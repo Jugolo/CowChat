@@ -1,0 +1,17 @@
+ADD Welcommen to %s chat=>Velkommen til %s chat
+ADD Select you auth option=>Vægle din login method
+ADD Chose %s=>Vægle %s
+ADD Accept to create a account=>Godkend for at oprette en konto
+ADD Hallo %s=>Hej %s
+ADD You has no account yet. Allow us to create one for you?=>Du har endnu ikke en konto. Vil du have os til at lave en for dig?
+ADD Yes create one=>Ja opret en konto.
+ADD No do not create one=>Nej lad være med at oprette en konto
+ADD %s is taken=>Bruger navnet '%s' er taget
+ADD You need to fill a new nick to use you github account=>Du skal udfylde en ny brugernavn for at bruge din GitHub konto
+ADD You new nick=>Din nye brugernavn
+ADD Try you new nick=>Afprøv brugernavnet
+ADD Login to %s=>Login til %s
+ADD Could not finde the %s driver=>Kunne ikke finde %s driver
+ADD Username=>Brugernavn
+
+ADD Update you profile=>Opdater din profil

@@ -1,0 +1,16 @@
+<@--SET title language("Accept to create a account")--@>
+<@--INCLUDE temp.head--@>
+<div id='container'>
+ <div id='title'>
+  <@--ECHO title--@>
+ </div>
+ <div style='height: 120px; background-image: url("<@--ECHO picture--@>");background-repeat: no-repeat;background-size:100% 100%;'></div>
+ <div style='height: 120px;'>
+ <span style='text-align:center;font-weight: bolder;'><@--LANGUAGE |Hallo %s| given_name--@></span><br>
+ <br>
+ <@--LANGUAGE |You has no account yet. Allow us to create one for you?|--@>
+ </div>
+ <a class='accept_buttom yes' href='?create=yes&amp;token=<@--ECHO token--@>'><@--LANGUAGE |Yes create one|--@></a>
+ <a class='accept_buttom no'  href='?create=no&amp;token=<@--ECHO token--@>'><@--LANGUAGE |No do not create one|--@></a>
+</div>
+<@--INCLUDE temp.bottom--@>

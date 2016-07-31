@@ -11,6 +11,19 @@ class TempelateDatabase{
 		$this->variabels[$name] = $value;
 	}
 	
+	public function controled_array_get($array, $key){
+		$array = $this->controled_get($array);
+		if(!is_array($array)){
+			throw new HeigLevelError("Coult not convert ".gettype($array)." to array");
+		}
+		
+		if(!array_key_exists($key, $array)){
+			throw new HeigLevelError("Unknown key to array");
+		}
+		
+		return $array[$key];
+	}
+	
 	public function controled_get(string $name){
 		if(strpos($name, "SETTING_") === 0){
 			$name = strtolower(substr($name, 8));
@@ -51,5 +64,11 @@ class TempelateDatabase{
 	
 	public function exists(string $name){
 		return array_key_exists($name, $this->variabels);
+	}
+	
+	public function show_items(){
+		echo "<pre>";
+		print_r($this->variabels);
+		exit("</pre>");
 	}
 }

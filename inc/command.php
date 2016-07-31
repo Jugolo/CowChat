@@ -25,6 +25,6 @@ class Command{
 	}
 	
 	static function join(Channel $channel, UserData $data){
-		$channel->send("JOIN ".$channel->getName().": ".$data->getUsername());
+		$channel->send($data, "JOIN ".$channel->getName().": ".$data->getUsername());
 	}
 }

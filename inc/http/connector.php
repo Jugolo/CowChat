@@ -6,7 +6,7 @@ use inc\error\LowLevelError;
 use inc\http\container\HttpContainer;
 use inc\error\HeigLevelError;
 
-class Connector{
+class HttpRequest{
 	private $data = [
 			"post" => [],
 			"header" => [

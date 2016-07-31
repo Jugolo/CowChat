@@ -14,6 +14,9 @@ class Files{
 	public static function isFile($name){
 		return is_file(Dirs::getDir() . $name);
 	}
+	public static function changeTime($name){
+		return filemtime(Dirs::getDir().$name);
+	}
 	public static function remove(string $name) : bool{
 		if(self::exists($name)){
 			return unlink(Dirs::getDir().$name);
@@ -30,6 +33,9 @@ class Files{
 class Dirs{
 	public static function isDir($name){
 		return is_dir(self::getDir() . $name);
+	}
+	public static function openDir($name){
+		return opendir(self::getDir().$name);
 	}
 	public static function getDir(){
 		$sep = DIR_SEP();

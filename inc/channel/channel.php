@@ -5,6 +5,7 @@ use inc\database\Database;
 use inc\error\HeigLevelError;
 use inc\system\System;
 use inc\user\User;
+use inc\user\data\UserData;
 
 class Channel{
 	private $data;
@@ -34,13 +35,13 @@ class Channel{
 		$this->update("start_group", $id);
 	}
 	
-	public function send(string $message){
+	public function send(UserData $user, string $message){
 		if(System::is_cli()){
 			
 		}
 		Database::insert("message", [
 				"cid"     => $this->getId(),
-				"uid"     => User::getStack()->current()->getId(),
+				"uid"     => $user->getUserId(),
 				"message" => $message,
 				"time"    => ["NOW()"]
 		]);

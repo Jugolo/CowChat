@@ -32,33 +32,13 @@ class System{
 	public static function is_cli(){
 		return php_sapi_name() == "cli";
 	}
+	public static function is_ajax(){
+		return Head::get("ajax");
+	}
 	public static function getLastId(){
 		return Database::getInstance()->query("SELECT `id` FROM " . table("message") . " ORDER BY `id` DESC")->fetch()["id"] ?: 0;
 	}
 	function inilize(){
-		Debug::debug("Start system");
-		if(!System::is_cli() && FireWall::isBlacklist(ip())){
-			exit("You ip is denid access to this website. Contact our admin for explaining of whay you not has access to this site");
-		}
-		
-		// send header if this is a ajax server
-		if(!System::is_cli()){
-			header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
-			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-			header("Cache-Control: no-store, no-cache, must-revalidate");
-			header("Cache-Control: post-check=0, pre-check=0", false);
-			header("Pragma: no-cache");
-		}else{
-			exit("WebSocket should work in V0.1 but fails do it not will work in V0.1!\r\nPlease go to our github and make a pull request to get it work");
-			$this->updateTitle();
-		}
-		
-		if(!defined("IN_SETUP") && Files::exists("setup/info.json")){
-			new \inc\setup\Setup();
-		}
-		
-		Setting::init();
-		FireWall::init();
 		if(!System::is_cli()){
 			// wee has controled that the user is not in black list. Now wee see if the user has a temporary ban
 			if(FireWall::isBan()){
@@ -70,7 +50,11 @@ class System{
 			}
 			
 			if($this->userInit()){
-				if(Head::get("ajax")){
+				if(Head::get("profile")){
+					$this->update_profile();
+				}elseif(Head::get("language")){
+					Language::show_page();
+				}elseif(Head::get("ajax")){
 					// if there is post available handle the post
 					if(Head::post("message")){
 						$this->handlePost(explode("\r\n", Head::post("message")));
@@ -86,6 +70,25 @@ class System{
 			$this->init_websocket();
 		}
 		Debug::debug("System closed");
+	}
+	private function update_profile(){
+		$user = User::getStack()->current();
+		if(Head::post("username") && Head::post("username") != $user->getUsername()){
+			if(User::helpers()->nick_taken(Head::post("username"), $user)){
+				echo Language::get_sprintf("ERROR: Username '%s' is allready taken", Head::post("username"))."\r\n";
+			}else{
+				$user->setUsername(Head::post("username"));
+			}
+		}
+		
+		if(Head::post("password") && Head::post("repeat_password")){
+			//controle if the two passwos is equels
+			if(Head::post("password") != Head::post("repeat_password")){
+				echo Language::get("The two password is not equels")."\r\n";
+			}else{
+				AuthenticationDriver::getCurrentDriver()->new_password(Head::post("password"));
+			}
+		}
 	}
 	private function init_websocket(){
 		include "include/websocket.php";
@@ -370,7 +373,7 @@ class System{
 				}
 			}
 		}catch(LowLevelError $error){
-			$data["error"] = Language::get("Could not find auth driver");
+			Html::error(Language::get("Could not find auth driver"));
 		}
 		
 		$this->page("auth_chose", $data);
@@ -382,7 +385,9 @@ class System{
 		$user = User::getStack()->current();
 		$data = [
 				'sendType' => (Files::exists("include/websocket.json") ? "WebSocket" : "AJAX"),
-				'nick' => User::getStack()->current()->getNick()
+				'nick'     => User::getStack()->current()->getNick(),
+				'username' => User::getStack()->current()->getUsername(),
+				'email'    => User::getStack()->current()->getEmail(),
 		];
 		
 		if($data["sendType"] == "WebSocket"){
@@ -421,7 +426,7 @@ class System{
 		
 		$this->page("chat", $data);
 	}
-	private function page($name, $data){
+	private function page($name, array $data){
 		Language::load($name);
 		
 		if(defined("NO_CONTEXT")){
@@ -431,30 +436,8 @@ class System{
 		$tempelate = new Tempelate([
 				"dir" => "inc/style/"
 		]);
+		Html::set_agument($tempelate);
 		$tempelate->add_var_array($data);
 		exit($tempelate->exec($name));
-		
-		$loader = new \Twig_Loader_Filesystem("inc/style");
-		$twig = new \Twig_Environment($loader);
-		$twig->addFunction(new \Twig_SimpleFunction('language', function (){
-			$arg = func_get_args();
-			if(func_num_args() == 0){
-				throw new Exception("Language function take a lest 1 agument");
-			}
-			
-			$arg[0] = Language::get($arg[0]);
-			
-			return call_user_func_array("sprintf", $arg);
-		}));
-		
-		$twig->addFunction(new \Twig_SimpleFunction("setting", function ($name){
-			if(!Setting::exists($name)){
-				throw new Exception("Unknown setting name '" . $name . "'");
-			}
-			
-			return Setting::get($name);
-		}));
-		
-		echo $twig->render($name . ".html", array_merge($data, Html::getAguments()));
 	}
 }

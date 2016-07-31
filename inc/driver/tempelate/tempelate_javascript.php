@@ -6,10 +6,13 @@ use inc\tempelate\render\Render;
 
 class TempelateDriver implements TempelateInterface{
 	public function allow_php_tag() : bool{
-		return true;
+		return false;
 	}
 	
-	public function render(string $context, Render $render) : string{
-		return "inc\\javascript\\start\\JavascriptCompressor::append('".$context."');\r\necho '<script>'.inc\\javascript\\start\\JavascriptCompressor::getContext().'</script>';";
+	public function render(string $context, array $options) : string{
+		$options["in_js"] = true;
+		Render::push("<script>");
+		Render::render($context, $options);
+		return "</script>";
 	}
 }

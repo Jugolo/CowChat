@@ -10,9 +10,9 @@ class TempelateDriver implements TempelateInterface{
 		return true;
 	}
 	
-	public function render(string $context, Render $render) : string{
+	public function render(string $context, array $options) : string{
 		$parts = explode(" ", $context);
-		$return = "foreach(\$this->type->control_array(".$render->parseString($parts[0]).") AS";
+		$return = "foreach(\$this->type->control_array(".Render::parseString($parts[0]).") AS";
 		if($parts[1] != "AS"){
 			throw new HeigLevelError("After array in foreach there must be a 'AS'", $parts[1]);
 		}

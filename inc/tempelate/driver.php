@@ -2,9 +2,9 @@
 
 namespace inc\tempelate\driver;
 
-use inc\driver\dir\DriverDir;
 use inc\error\HeigLevelError;
 use inc\interfaces\tempelate\TempelateInterface;
+use inc\file\Dirs;
 
 class TempelateDriver{
 	public static function getInstance(){
@@ -20,10 +20,13 @@ class TempelateDriver{
 	
 	public function __construct(){
 		$this->drivers = [];
-		foreach(new DriverDir("tempelate") as $driver){
-			if($driver->isFile()){
-				$this->drivers[$driver->getItemName()] = [
-						"name"   => "inc\\driver\\tempelate\\" . $driver->getItemName()."\\TempelateDriver",
+		$dir = Dirs::openDir("inc/driver/tempelate");
+		while($name = readdir($dir)){
+			$item = "inc/driver/tempelate/".$name;
+			if(is_file($item)){
+				$clean = pathinfo($item, PATHINFO_FILENAME);
+				$this->drivers[$clean] = [
+						"name"   => str_replace("/", "\\", "inc/driver/tempelate/".$clean)."\\TempelateDriver",
 						"object" => null
 				];
 			}

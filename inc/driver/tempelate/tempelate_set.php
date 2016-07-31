@@ -10,12 +10,12 @@ class TempelateDriver implements TempelateInterface{
 		return true;
 	}
 	
-	public function render(string $context, Render $render) : string{
+	public function render(string $context, array $options) : string{
 		$pointer = strpos($context, " ");
 		if($pointer === false){
 			throw new HeigLevelError("SET syntrack is not followed");
 		}
 		
-		return "\$this->database->put('".substr($context, 0, $pointer)."', ".$render->parseString(substr($context, $pointer+1)).");";
+		return "\$this->database->put('".substr($context, 0, $pointer)."', ".Render::parseString(substr($context, $pointer+1)).");";
 	}
 }

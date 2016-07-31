@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title><?php echo sprintf(call_user_func_array(['inc\language\Language', 'get'], ['Welcommen to %s chat']), $this->database->controled_get("SETTING_NAME")); ?></title>
+<style>
+body {
+	font: 14px/32px Georgia, serif;
+}
+
+#container {
+	box-shadow: 0px 10px 16px 0px rgba(0, 0, 0, 0.2), 0px 6px 20px 0px
+		rgba(0, 0, 0, 0.19) !important;
+	width: 300px;
+	height: 300px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -150px 0 0 -150px;
+	border-radius: 10px 10px 0 0;
+}
+
+#title {
+	text-align: center;
+	background-color: #737373;
+	border-radius: 10px 10px 0 0;
+	font-weight: bolder;
+	font-size: 16px;
+}
+
+a{
+  color:black;
+  Text-decoration: none;
+  text-align:center;
+  background-color:#f2f2f2;
+  cursor:pointer;
+  width:300px;
+  margin:0px;
+  padding:0px;
+  display:block;
+  border-top:1px solid black;
+  font-weight:bolder;
+  font-size:20px;
+}
+
+.error{
+  color:red;
+  font-weight: bolder;
+  text-align:center;
+}
+</style>
+<script>
+	function tile_error(dom) {
+		dom.parentNode.className += " error";
+	}
+</script>
+</head>
+<body>
+    <?php if(call_user_func_array($this->database->controled_callable('exists'), ['error'])){ ?>
+    <div class='error'>
+     <?php foreach($this->type->control_array($this->database->controled_get("error")) AS $e){
+$this->database->put('e', $e); ?>
+       <div><?php echo $this->type->control_string($this->database->controled_get("e")); ?></div>
+     <?php } ?>
+    </div>
+    <?php } ?>
+	<div id='container'>
+		<div id="title"><?php echo sprintf(call_user_func_array(['inc\language\Language', 'get'], ['Select you auth option'])); ?></div>
+		<div id='placeholder'>
+		    <?php foreach($this->type->control_array($this->database->controled_get("drivers")) AS $driver){
+$this->database->put('driver', $driver); ?>
+		        <?php $this->database->put('cone', $this->database->controled_array_get('driver', 0)); ?>
+		        <?php $this->database->put('ctwo', $this->database->controled_array_get('driver', 1)); ?>
+				<a href='?auth_method=<?php echo $this->type->control_string($this->database->controled_get("cone")); ?>' title="<?php echo sprintf(call_user_func_array(['inc\language\Language', 'get'], ['Chose %s']), call_user_func_array([$this->database->controled_object('ctwo'), 'title'], [])); ?>"><?php echo $this->type->control_string(call_user_func_array([$this->database->controled_object('ctwo'), 'title'], [])); ?></a>
+			<?php } ?>
+		</div>
+	</div>
+</body>
+</html>

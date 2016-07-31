@@ -1,8 +1,177 @@
----------------25:07:2016---------------
-[16:14:57]----new Error----
+---------------28:07:2016---------------
+[22:44:03]----new Error----
 It is importent you find this error and get it fix!!!!
 Status : not catch
-In file: C:\xampp\htdocs\chat\inc\javascript\start.php
+In file: C:\xampp\htdocs\chat\inc\tempelate\show.php(14) : eval()'d code
+In line: 77
+Message: syntax error, unexpected end of file
+--------------------------------
+[23:01:23]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\authentication\auth_drivers.php
+In line: 32
+Message: syntax error, unexpected '(', expecting ';' or '{'
+--------------------------------
+[23:02:36]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\show.php(14) : eval()'d code
+In line: 72
+Message: Call to undefined method inc\tempelate\database\TempelateDatabase::controled_array_get()
+--------------------------------
+[23:27:47]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\temp.php
 In line: 21
-Message: Return value of inc\javascript\start\JavascriptCompressor::append() must be of the type boolean, none returned
+Message: Argument 1 passed to inc\temp\Temp::create() must be of the type string, null given, called in C:\xampp\htdocs\chat\inc\tempelate\tempelate.php on line 77
+--------------------------------
+[23:39:41]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\tempelate.php
+In line: 63
+Message: Argument 2 passed to inc\tempelate\tempelate\Tempelate::isCacheFreach() must be of the type array, null given, called in C:\xampp\htdocs\chat\inc\tempelate\tempelate.php on line 54
+--------------------------------
+---------------31:07:2016---------------
+[09:23:16]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\user\data.php
+In line: 7
+Message: Argument 1 passed to inc\user\data\UserData::__construct() must be of the type array, string given, called in C:\xampp\htdocs\chat\inc\user\stack.php on line 14
+--------------------------------
+[09:23:46]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\user.php
+In line: 30
+Message: Class 'inc\user\stack\UserStack' not found
+--------------------------------
+[09:24:17]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\user.php
+In line: 24
+Message: Class 'inc\user\UserStack' not found
+--------------------------------
+[09:24:40]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\authentication\cowchat\cowchat.php
+In line: 46
+Message: Call to undefined method inc\user\User::getStack()
+--------------------------------
+[09:24:55]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\func.php
+In line: 37
+Message: Return value of auto_login() must be of the type boolean, object returned
+--------------------------------
+[09:25:10]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\func.php
+In line: 37
+Message: Return value of auto_login() must be of the type boolean, object returned
+--------------------------------
+[09:25:41]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\index.php
+In line: 41
+Message: Call to undefined method inc\user\User::getStack()
+--------------------------------
+[10:28:00]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\channel\helper.php
+In line: 12
+Message: Call to undefined method inc\user\data\UserData::getId()
+--------------------------------
+[10:28:43]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\channel\helper.php
+In line: 12
+Message: Call to undefined method inc\user\data\UserData::getId()
+--------------------------------
+[10:29:18]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\channel\helper.php
+In line: 12
+Message: Call to undefined method inc\user\data\UserData::getId()
+--------------------------------
+[10:44:49]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\channel\helper.php
+In line: 12
+Message: Call to undefined method inc\user\data\UserData::getId()
+--------------------------------
+[10:45:33]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\channel\helper.php
+In line: 20
+Message: Argument 2 passed to inc\channel\helper\ChannelHelper::getChannel() must be an instance of inc\user\data\UserData, null given, called in C:\xampp\htdocs\chat\index.php on line 67
+--------------------------------
+[13:43:23]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\channel\helper.php
+In line: 20
+Message: Argument 2 passed to inc\channel\helper\ChannelHelper::getChannel() must be an instance of inc\user\data\UserData, null given, called in C:\xampp\htdocs\chat\index.php on line 67
+--------------------------------
+[13:44:14]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\channel\channel.php
+In line: 37
+Message: Argument 1 passed to inc\channel\channel\Channel::send() must be an instance of inc\channel\channel\UserData, instance of inc\user\data\UserData given, called in C:\xampp\htdocs\chat\inc\command.php on line 28
+--------------------------------
+[13:51:12]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\show.php(14) : eval()'d code
+In line: 4
+Message: Class 'inc\javascript\start\JavascriptCompressor' not found
+--------------------------------
+[13:51:42]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\render.php
+In line: 161
+Message: Argument 3 passed to inc\tempelate\render\Render::render_block() must be of the type array, null given, called in C:\xampp\htdocs\chat\inc\tempelate\render.php on line 53
+--------------------------------
+[13:52:00]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\tempelate\show.php(14) : eval()'d code
+In line: 29
+Message: syntax error, unexpected '<', expecting end of file
+--------------------------------
+[15:22:33]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\func.php
+In line: 38
+Message: Return value of auto_login() must be an instance of inc\user\data\UserData, boolean returned
+--------------------------------
+[15:29:42]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\func.php
+In line: 42
+Message: Return value of login() must be an instance of inc\user\data\UserData, boolean returned
+--------------------------------
+[15:38:53]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\authentication\cowchat\cowchat.php
+In line: 133
+Message: Return value of inc\driver\authentication\cowchat\cowchat\AuthenticationDriver::do_login() must be of the type boolean, object returned
 --------------------------------

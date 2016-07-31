@@ -90,3 +90,4 @@ function remove_white_space(array $array){
 	}
 	return $return;
 }
+FireWall::init();

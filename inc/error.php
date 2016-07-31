@@ -2,6 +2,7 @@
 namespace inc\error;
 
 use inc\logging\Logging;
+use inc\exception\LoginUserFailed\LoginUserFailed;
 
 /**
  * Class to tell the system at there happens a error but it not a heigh or medium error
@@ -76,6 +77,8 @@ class HeigLevelError extends \Exception{
 
 class ErrorHandler{
 	public static function set(){
+		error_reporting(E_ALL);
+		ini_set('display_errors', '1');
 		//try catch exception
 		set_exception_handler(array(__CLASS__, "exception_catch"));
 	}
@@ -96,6 +99,9 @@ class ErrorHandler{
 		}else if($exception instanceof \Twig_Error_Loader || $exception instanceof \Twig_Error_Syntax){
 			Logging::getInstance("twig_error")->push("It is importent you find this error and get it fix!!!!\r\nStatus : not catch\r\nIn file: ".$exception->getFile()."\r\nIn line: ".$exception->getLine()."\r\nMessage: ".$exception->getMessage()."\r\n---------------------------------");
 			exit("Twig error happens. Please look in log file to see details");
+		}else if($exception instanceof LoginUserFailed){
+			header("location:index.php");
+			exit;
 		}else{
 			exit(get_class($exception));
 		}

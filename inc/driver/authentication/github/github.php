@@ -7,7 +7,7 @@ use inc\user\data\UserData;
 use inc\setting\Setting;
 use inc\head\Head;
 use inc\error\HeigLevelError;
-use inc\http\connector\Connector;
+use inc\http\connector\HttpRequest;
 use inc\http\container\HttpContainer;
 use inc\html\Html;
 use inc\language\Language;
@@ -15,11 +15,12 @@ use inc\logging\Logging;
 use inc\user\User;
 use inc\database\Database;
 use inc\tempelate\tempelate\Tempelate;
+use inc\exception\LoginUserFailed\LoginUserFailed;
 
 class AuthenticationDriver implements AuthenticationDriverInterface{
-	function login(): bool{
+	function login(): UserData{
 		$log = Logging::getInstance("login_" . str_replace(".", "_", ip()), "inc/driver/authentication/github/log/");
-		if(!Head::cookie("token") && !Head::get("code")){
+		if(Head::get("code")){
 			$log->push("Send user to github to allow us to get information");
 			Head::make_cookie("state", hash('sha256', microtime(TRUE) . rand() . $_SERVER['REMOTE_ADDR']));
 			header("location: https://github.com/login/oauth/authorize?" . http_build_query([
@@ -32,7 +33,7 @@ class AuthenticationDriver implements AuthenticationDriverInterface{
 		}else if(Head::get("code")){
 			if(!Head::get("state") || Head::cookie("state") != Head::get("state")){
 				Head::cookieDestroy("state");
-				return false;
+				throw new LoginUserFailed();
 			}
 			$http = $this->request("https://github.com/login/oauth/access_token", [
 					'client_id' => Setting::get("github_id"),
@@ -47,30 +48,33 @@ class AuthenticationDriver implements AuthenticationDriverInterface{
 			if(!empty($token["error"])){
 				// wee know this would result in login page so let us give a error message
 				Html::error(Language::get("Could not get userdata from github"));
-				return false;
+				throw new LoginUserFailed();
 			}
 			if($token == ""){
 				throw new HeigLevelError("Could not resive user data from user");
 			}
 			$log->push("Get new token: " . $token["access_token"]);
 			Head::make_cookie("token", $token["access_token"]);
-			//send user so code and so on it not in the $_GET
+			// send user so code and so on it not in the $_GET
 			header("location: index.php");
-			exit;
+			exit();
 		}
 		
+		return $this->auto_login();
+	}
+	public function logout(){
+		Head::cookieDestroy("token");
+		Head::cookieDestroy("state");
+	}
+	public function auto_login(): UserData{
 		if(Head::cookie("token") !== null){
 			$user = $this->request("https://api.github.com/user");
 			$json = json_decode($user->context(), true);
 			if(!empty($json["message"]) && $json["message"] === "Bad credentials"){
-				//remove token and send user to "index.php"
-				Head::cookieDestroy("token");
-				Head::cookieDestroy("state");
-				header("location:index.php");
-				exit;
+				throw new LoginUserFailed();
 			}
 			$database = Database::getInstance();
-			$query = $database->query("SELECT * FROM " . table("user_login") . " WHERE `hash`=" . $database->clean("github:" . $json["id"]));
+			$query = $database->query("SELECT * FROM " . table("user_login") . " WHERE `extra`=" . $database->clean("github:" . $json["id"]));
 			$row = $query->fetch();
 			$query->free();
 			if($row == null){
@@ -98,34 +102,45 @@ class AuthenticationDriver implements AuthenticationDriverInterface{
 						$tempelate->exec("accept");
 					}else{
 						if(Head::get("create") === "yes" || $create){
-							$uid = Database::insert("user_login", ($data = [
+							$data = [
 									"username" => $json["login"],
 									"password" => null,
-									"hash" => "github:" . $json["id"],
+									"hash" => null,
 									"email" => $json["email"],
 									"authentication_driver" => "github",
 									"created" => time(),
 									"activated" => "Y",
-									"ip" => ip()
-							]));
-							User::helpers()->apppend_user($uid, $json["login"], "u");
-							User::getStack()->push($json["login"]);
-							return true;
+									"ip" => ip(),
+									"extra" => "github:" . $json["id"],
+									"type" => 'u'
+							];
+							$data["id"] = Database::insert("user_login", $data);
+							User::helpers()->apppend_user($uid, $json["login"]);
+							return new UserData($data);
+						}elseif(Head::get("create") === "no"){
+							Head::cookieDestroy("token");
+							Head::cookieDestroy("state");
+							Head::cookieDestroy("login_driver");
+							header("location:index.php");
+							exit();
 						}
 					}
 				}else{
-					$tempelate = new Tempelate(["dir" => "inc/driver/authentication/github/style/"]);
+					$tempelate = new Tempelate([
+							"dir" => "inc/driver/authentication/github/style/"
+					]);
 					Html::set_agument($tempelate);
 					$tempelate->add_var("nick", $json["login"]);
 					$tempelate->exec("nick_taken");
 				}
 			}else{
-				User::getStack()->push($row["username"]);
-				return true;
+				return new UserData($row["username"]);
 			}
 		}
-		
-		return false;
+		throw new LoginUserFailed();
+	}
+	public function new_password(string $password): bool{
+		throw new HeigLevelError(Language::get("GitHub dont need a password!"));
 	}
 	public function getName(): string{
 		return "github";
@@ -137,7 +152,7 @@ class AuthenticationDriver implements AuthenticationDriverInterface{
 		return Setting::get("github_id") !== "null" && Setting::get("github_secret") !== "null" && Setting::get("github_appname") !== "null";
 	}
 	private function request(string $url, array $post = []): HttpContainer{
-		$http = new Connector($url);
+		$http = new HttpRequest($url);
 		
 		if(count($post) != 0){
 			$http->multi_post($post);

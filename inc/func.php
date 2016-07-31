@@ -2,6 +2,8 @@
 
 use inc\database\Database;
 use inc\system\System;
+use inc\authentication\driver\AuthenticationDriver;
+use inc\user\data\UserData;
 
 
 function ip($ws = null){
@@ -30,4 +32,12 @@ function nick_taken($nick, UserData $user = null){
 	}
 	
 	return $database->query($sql)->fetch()["id"] != 0;
+}
+
+function auto_login() : UserData{
+	return AuthenticationDriver::autologin();
+}
+
+function login() : UserData{
+	return AuthenticationDriver::login();
 }

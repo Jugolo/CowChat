@@ -1,36 +1,43 @@
----------------25:07:2016---------------
-[16:00:25]----new low level exception----
-Status : not catch
-In file: C:\xampp\htdocs\chat\inc\javascript\start.php
-In line: 28
-Message: Could not finde the javascript file
-Extra  : inc/style/javascript/system.js
---------------------------------
-[16:11:15]----new low level exception----
-Status : not catch
-In file: C:\xampp\htdocs\chat\inc\javascript\start.php
-In line: 27
-Message: Could not finde the javascript file
-Extra  : inc/style/javascript/command.js
---------------------------------
-[16:22:36]----new low level exception----
+---------------30:07:2016---------------
+[14:53:39]----new low level exception----
 Status : not catch
 In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
-In line: 59
-Message: no such table: chat_events
-Extra  : SELECT `namespace`, `name`, `caller` FROM `chat_events` WHERE `type`='plugin' AND (`caller`='event' OR `caller`='trigger')
+In line: 63
+Message: near "next_updatet": syntax error
+Extra  : UPDATE `chat_cronwork` SET `last_updatet`='1469883219' next_updatet=next_updatet+68400 WHERE `id`='1'
 --------------------------------
-[16:36:19]----new low level exception----
+[14:54:13]----new low level exception----
 Status : not catch
 In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
-In line: 59
-Message: no such column: type
-Extra  : SELECT `namespace`, `name`, `caller` FROM `chat_events` WHERE `type`='plugin' AND (`caller`='event' OR `caller`='trigger')
+In line: 63
+Message: near "`next_updatet`": syntax error
+Extra  : UPDATE `chat_cronwork` SET `last_updatet`='1469883253' `next_updatet`=`next_updatet`+68400 WHERE `id`='1'
 --------------------------------
-[16:36:37]----new low level exception----
+[14:55:43]----new low level exception----
 Status : not catch
 In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
-In line: 59
-Message: no such column: type
-Extra  : SELECT `namespace`, `name`, `caller` FROM `chat_events` WHERE `type`='plugin' AND (`caller`='event' OR `caller`='trigger')
+In line: 63
+Message: near "`next_updatet`": syntax error
+Extra  : UPDATE `chat_cronwork` SET `last_updatet`='1469883343' `next_updatet`=(`next_updatet`+68400) WHERE `id`='1'
+--------------------------------
+[14:56:34]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
+In line: 63
+Message: near "next_updatet": syntax error
+Extra  : UPDATE `chat_cronwork` SET `last_updatet`='1469883394' next_updatet=(next_updatet+68400) WHERE `id`='1'
+--------------------------------
+[14:57:45]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
+In line: 63
+Message: near "`next_updatet`": syntax error
+Extra  : UPDATE `chat_cronwork` SET `last_updatet`='1469883465' `next_updatet`='1.0E+23' WHERE `id`='1'
+--------------------------------
+[14:58:10]----new low level exception----
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\database\sqlite.php
+In line: 63
+Message: near "`next_updatet`": syntax error
+Extra  : UPDATE `chat_cronwork` SET `last_updatet`='1469883490' `next_updatet`='1469951890' WHERE `id`='1'
 --------------------------------
