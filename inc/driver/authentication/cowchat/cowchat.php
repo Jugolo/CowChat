@@ -135,14 +135,13 @@ class AuthenticationDriver implements AuthenticationDriverInterface{
 				}
 			}
 		}
-		
 		$tempelate = new Tempelate([
 				"dir"   => "inc/driver/authentication/cowchat/style",
 				"cache" => true
 		]);
 		Html::set_agument($tempelate);
 		$tempelate->exec("login");
-		throw new LoginUserFailed();
+		exit;
 	}
 	private function createLoginCookie(int $id, string $hash){
 		Head::make_cookie("oauth", ($id + 123456789) . "@" . $hash);

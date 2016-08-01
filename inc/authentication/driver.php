@@ -4,6 +4,7 @@ namespace inc\authentication\driver;
 use inc\interfaces\authentication\AuthenticationDriverInterface;
 use inc\error\HeigLevelError;
 use inc\head\Head;
+use inc\user\data\UserData;
 
 class AuthenticationDriver{
 	/**
@@ -37,21 +38,27 @@ class AuthenticationDriver{
 		return self::getDriver(Head::cookie("login_driver"));
 	}
 	
+	/**
+	 * Controle if the user is login. if not return null
+	 * @return UserData|null
+	 */
 	public static function autologin(){
 		if(!Head::cookie("login_driver") || !self::exists(Head::cookie("login_driver"))){
-		   header("location:index.php");
-			exit;
+		   return null;
 		}
 		
-		return self::getDriver(Head::cookie("login_driver"))->auto_login();
+		try{
+			return self::getDriver(Head::cookie("login_driver"))->auto_login();
+		}catch(\inc\exception\LoginUserFailed\LoginUserFailed $e){
+			return null;
+		}
 	}
 	
-	public static function login() : bool{
+	public static function login() : UserData{
 		if(!Head::cookie("login_driver") || !self::exists(Head::cookie("login_driver"))){
 			header("location:index.php");
 			exit;
 		}
-		
 		return self::getDriver(Head::cookie("login_driver"))->login();
 	}
 }

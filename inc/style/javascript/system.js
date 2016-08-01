@@ -8,6 +8,7 @@
 <@--INCLUDE javascript.ajax--@>
 <@--INCLUDE javascript.plugin--@>
 <@--INCLUDE javascript.context--@>
+<@--INCLUDE javascript.smylie--@>
 
 class System{
 	
@@ -18,6 +19,7 @@ class System{
 		this.channelControler.append("<@--ECHO channel--@>");
 		<@--end--@>
 		Setting.init();
+		Context.listener();
 	}
 	
 	getChannelControler(){

@@ -541,6 +541,13 @@ class Plugin{
 
 Plugin.init();
 class Context{
+	static listener(){
+		window.onclick = function(event) {
+			 if(!event.target.matches('.wait_close')) {
+				 
+			 }
+		}
+	}
 	static trigger(obj){
 		if(obj.id === ""){
 			console.log("A context menu button should has a id");
@@ -553,25 +560,18 @@ class Context{
 			console.log("It can be seen");
 		}else{
 			dom.style.display = "block";
-			//find out if the menu should go up or down (wee alwey trying to show it down)
+			dom.style.zIndex = 2;
+			dom.style.removeProperty("bottom");
+			dom.style.removeProperty("top");
+			dom.className += " wait_close";
+			// find out if the menu should go up or down (wee alwey trying to
+			// show it down)
 			var rect = dom.getBoundingClientRect();
-			console.log(rect.bottom);
-			console.log(document.documentElement.clientHeight);
-			//wee calculate the bottom point of the list
-			if((rect.bottom+20) > document.documentElement.clientHeight){
-				console.log("Up");
-				//push the posision to the top and up
-				console.log("offsetTop: "+obj.offsetTop);
-				console.log("bottom: "+dom.style.bottom);
-				dom.style.bottom = (obj.offsetTop + 10)+"px";
-				dom.style.left   = obj.getBoundingClientRect().left+"px";
-			}else{
-				console.log("Down");
-				console.log((obj.offsetBottom + 10)+"px");
-				dom.style.top = (obj.offsetBottom + 10)+"px";
-				dom.style.left = obj.getBoundingClientRect().left+"px";
-			}
-			
+			var button = obj.getBoundingClientRect();
+			console.log(button.bottom);
+			console.log(button);
+			dom.style.top = ((button.bottom - button.height - rect.height))+"px";
+			dom.style.left   = button.left+"px";
 			dom.style.border = "1px solid black";
 			dom.style.position = "absolute";
 			dom.style.width = "auto";
@@ -582,6 +582,9 @@ class Context{
 	static isVisbele(dom){
 		return window.getComputedStyle(dom, null).getPropertyValue('display') === "block";
 	}
+}
+function init_smylielistner(){
+	
 }
 
 class System{
@@ -594,6 +597,7 @@ $this->database->put('channel', $channel); ?>
 		this.channelControler.append("<?php echo $this->type->control_string($this->database->controled_get("channel")); ?>");
 		<?php } ?>
 		Setting.init();
+		Context.listener();
 	}
 	
 	getChannelControler(){
@@ -690,30 +694,26 @@ $this->database->put('channel', $channel); ?>
     left:0px;
     right:200px;
     bottom:0px;
-    height:100px;
+    height:70px;
     border-top:1px solid black;
   }
   
   #toolbox{
-    height:70px;
-    background-color:blue;
+    height:20px;
   }
   
   #toolbox img{
-    height:40px;
-    width:40px;
-  }
-  
-  .bottom_box{
+    height:20px;
+    width:20px;
+    cursor:pointer;
   }
   #msg_write{
     resize:none;
     width:99%;
     box-sizing: border-box;
     margin:0;
-    height:30px;
-    border-top:0px;
-    border-right:0px;
+    height:48px;
+    border-bottom:0;
   }
   .clear{
     clear:both;
@@ -810,6 +810,31 @@ $this->database->put('channel', $channel); ?>
     	overflow:hidden;
     	white-space: nowrap;
   }
+  
+  #smy_list{
+    background-color:white;
+  }
+  
+  .smy_icon{
+    width:40px;
+    height:40px;
+    cursor:pointer;
+  }
+  .smy_icon:hover{
+    width:55px;
+    height:55px;
+  }
+  #smy_list{
+    display:none;
+  }
+  
+  #textarea_container{
+    height:50px;
+    position: absolute;
+    left:0px;
+    right:0px;
+    bottom:0px;
+  }
  </style>
  <script>
   var userdata = {
@@ -858,24 +883,18 @@ $this->database->put('e', $e); ?>
  
  </div>
  <div id='bottom'>
-  <div style='height:30px'>
-    <textarea id='msg_write'></textarea>
-  </div>
   <div id='toolbox'>
   <?php if(call_user_func_array($this->database->controled_callable('exists'), ['smylie'])){ ?>
   <div>
-    <div id='#smylie_head' onclick='Context.trigger(this)'>
+    <div id='#smylie_head' style='height:20px;width:20px;' onclick='Context.trigger(this)'>
        <?php $this->database->put('sh', $this->database->controled_array_get('smylie', 0)); ?>
        <img src="<?php echo $this->type->control_string($this->database->controled_array_get('sh', 'url')); ?>">
     </div>
-    <div for='#smylie_head'>
-    <?php foreach($this->type->control_array($this->database->controled_get("smylie")) AS $smy){
-$this->database->put('smy', $smy); ?>
-     <div><img src='<?php echo $this->type->control_string($this->database->controled_array_get('smy', 'url')); ?>' title='<?php echo $this->type->control_string($this->database->controled_array_get('smy', 'title')); ?>'></div>
-    <?php } ?>
-    </div>
   </div>
   <?php } ?>
+  </div>
+  <div id='textarea_container'>
+    <textarea id='msg_write'></textarea>
   </div>
  </div>
  
@@ -888,5 +907,13 @@ $this->database->put('smy', $smy); ?>
    </div>
    <div id='popup_context'></div>
  </div>
+ <?php if(call_user_func_array($this->database->controled_callable('exists'), ['smylie'])){ ?>
+ <div for='#smylie_head' id='smy_list'>
+    <?php foreach($this->type->control_array($this->database->controled_get("smylie")) AS $smy){
+$this->database->put('smy', $smy); ?>
+     <div><img class='smy_icon' src='<?php echo $this->type->control_string($this->database->controled_array_get('smy', 'url')); ?>' title='<?php echo $this->type->control_string($this->database->controled_array_get('smy', 'title')); ?>'></div>
+    <?php } ?>
+ </div>
+ <?php } ?>
  </body>
 </html>

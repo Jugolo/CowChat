@@ -1,4 +1,11 @@
 class Context{
+	static listener(){
+		window.onclick = function(event) {
+			 if(!event.target.matches('.wait_close')) {
+				 
+			 }
+		}
+	}
 	static trigger(obj){
 		if(obj.id === ""){
 			console.log("A context menu button should has a id");
@@ -11,25 +18,18 @@ class Context{
 			console.log("It can be seen");
 		}else{
 			dom.style.display = "block";
-			//find out if the menu should go up or down (wee alwey trying to show it down)
+			dom.style.zIndex = 2;
+			dom.style.removeProperty("bottom");
+			dom.style.removeProperty("top");
+			dom.className += " wait_close";
+			// find out if the menu should go up or down (wee alwey trying to
+			// show it down)
 			var rect = dom.getBoundingClientRect();
-			console.log(rect.bottom);
-			console.log(document.documentElement.clientHeight);
-			//wee calculate the bottom point of the list
-			if((rect.bottom+20) > document.documentElement.clientHeight){
-				console.log("Up");
-				//push the posision to the top and up
-				console.log("offsetTop: "+obj.offsetTop);
-				console.log("bottom: "+dom.style.bottom);
-				dom.style.bottom = (obj.offsetTop + 10)+"px";
-				dom.style.left   = obj.getBoundingClientRect().left+"px";
-			}else{
-				console.log("Down");
-				console.log((obj.offsetBottom + 10)+"px");
-				dom.style.top = (obj.offsetBottom + 10)+"px";
-				dom.style.left = obj.getBoundingClientRect().left+"px";
-			}
-			
+			var button = obj.getBoundingClientRect();
+			console.log(button.bottom);
+			console.log(button);
+			dom.style.top = ((button.bottom - button.height - rect.height))+"px";
+			dom.style.left   = button.left+"px";
 			dom.style.border = "1px solid black";
 			dom.style.position = "absolute";
 			dom.style.width = "auto";

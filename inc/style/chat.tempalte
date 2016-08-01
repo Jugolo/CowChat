@@ -92,30 +92,26 @@
     left:0px;
     right:200px;
     bottom:0px;
-    height:100px;
+    height:70px;
     border-top:1px solid black;
   }
   
   #toolbox{
-    height:70px;
-    background-color:blue;
+    height:20px;
   }
   
   #toolbox img{
-    height:40px;
-    width:40px;
-  }
-  
-  .bottom_box{
+    height:20px;
+    width:20px;
+    cursor:pointer;
   }
   #msg_write{
     resize:none;
     width:99%;
     box-sizing: border-box;
     margin:0;
-    height:30px;
-    border-top:0px;
-    border-right:0px;
+    height:48px;
+    border-bottom:0;
   }
   .clear{
     clear:both;
@@ -212,6 +208,31 @@
     	overflow:hidden;
     	white-space: nowrap;
   }
+  
+  #smy_list{
+    background-color:white;
+  }
+  
+  .smy_icon{
+    width:40px;
+    height:40px;
+    cursor:pointer;
+  }
+  .smy_icon:hover{
+    width:55px;
+    height:55px;
+  }
+  #smy_list{
+    display:none;
+  }
+  
+  #textarea_container{
+    height:50px;
+    position: absolute;
+    left:0px;
+    right:0px;
+    bottom:0px;
+  }
  </style>
  <script>
   var userdata = {
@@ -259,23 +280,18 @@
  
  </div>
  <div id='bottom'>
-  <div style='height:30px'>
-    <textarea id='msg_write'></textarea>
-  </div>
   <div id='toolbox'>
   <@--IF exists("smylie")--@>
   <div>
-    <div id='#smylie_head' onclick='Context.trigger(this)'>
+    <div id='#smylie_head' style='height:20px;width:20px;' onclick='Context.trigger(this)'>
        <@--SET sh smylie[0]--@>
        <img src="<@--ECHO sh["url"]--@>">
     </div>
-    <div for='#smylie_head'>
-    <@--FOR smylie AS smy--@>
-     <div><img src='<@--ECHO smy["url"]--@>' title='<@--ECHO smy["title"]--@>'></div>
-    <@--end--@>
-    </div>
   </div>
   <@--end--@>
+  </div>
+  <div id='textarea_container'>
+    <textarea id='msg_write'></textarea>
   </div>
  </div>
  
@@ -288,5 +304,12 @@
    </div>
    <div id='popup_context'></div>
  </div>
+ <@--IF exists("smylie")--@>
+ <div for='#smylie_head' id='smy_list'>
+    <@--FOR smylie AS smy--@>
+     <div><img class='smy_icon' src='<@--ECHO smy["url"]--@>' title='<@--ECHO smy["title"]--@>'></div>
+    <@--end--@>
+ </div>
+ <@--end--@>
  </body>
 </html>

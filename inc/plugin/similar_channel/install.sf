@@ -1,0 +1,2 @@
+append "event" "inc\plugin\similar_channel\event.php" "system.start";
+append "event" "inc\plugin\similar_channel\event.php" "system.message.receive";
