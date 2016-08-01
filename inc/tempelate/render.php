@@ -80,8 +80,8 @@ class Render{
 		return $context;
 	}
 	
-	private static function includes(string $dir, array $option){
-		$end = $option["in_js"] ? ".js" : ".inc";
+	public static function getUrl(string $dir, array $option){
+		$end = $option["in_js"] ? ".js" : ($option["in_css"] ? ".css" : ".inc");
 		$clean = explode(".", $dir);
 		if(array_key_exists("dir", $option)){
 			$dir = $option["dir"];
@@ -98,13 +98,15 @@ class Render{
 					$dir .= $clean[$i]."/";
 				}
 			}
-			
-			//let us trim the dir to avoid error
-			//$dir = substr($dir, strlen($option["dir"]));
+				
+			return Dirs::getDir().$dir;
 		}else{
-			$dir = Dirs::getDir().explode("/", $clean).".inc";
+			return Dirs::getDir().explode("/", $clean).".inc";
 		}
-		self::render(Dirs::getDir().$dir, $option);
+	}
+	
+	private static function includes(string $dir, array $option){
+		self::render(self::getUrl($dir, $option), $option);
 	}
 	
 	private static function next(array $data, StringParser $s){

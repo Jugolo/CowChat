@@ -13,3 +13,17 @@ In file: C:\xampp\htdocs\chat\inc\func.php
 In line: 69
 Message: Class 'Tempelate' not found
 --------------------------------
+[19:14:50]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\tempelate\tempelate_css.php
+In line: 16
+Message: Class 'inc\tempelate\css\parser\CssParser' not found
+--------------------------------
+[21:07:23]----new Error----
+It is importent you find this error and get it fix!!!!
+Status : not catch
+In file: C:\xampp\htdocs\chat\inc\driver\tempelate\css\parser.php
+In line: 20
+Message: Using $this when not in object context
+--------------------------------

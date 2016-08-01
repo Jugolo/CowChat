@@ -18,6 +18,7 @@ class Tempelate{
 				"no_prefix" => false,
 				"cache"     => false,
 				"in_js"     => false,
+				"in_css"    => false,
 		], $option);
 		
 		if(array_key_exists("dir", $this->options)){

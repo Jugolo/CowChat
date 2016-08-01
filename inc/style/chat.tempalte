@@ -2,6 +2,7 @@
 <html>
  <head>
  <@--JAVASCRIPT inc/style/javascript/system.js--@>
+ <@--CSS css.main--@>
  <style>
  body {
 	font: 14px/32px Georgia, serif;
