@@ -36,4 +36,8 @@ $conf["cache_avatar"] = false;//should the server cache the user avatar.
 
 $conf["updateFrame"] = 5000;//how often should javascript make a request
 
+$conf["serverAdmin"] = [//the server admin. it is there id in the user table!!
+  1
+];
+
 return $conf;
