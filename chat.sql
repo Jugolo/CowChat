@@ -52,6 +52,3 @@ CREATE TABLE IF NOT EXISTS `%prefix%chat_smylie` (
 ) ENGINE=MyISAM;
 
 INSERT INTO `%prefix%chat_name` (`id`,`name`,`isPriv`,`title`) VALUES('1','Bot','".No."','Channel to connect system and user togeter');
-INSERT INTO `%prefix%chat_smylie` (`tag`, `url`) VALUES 
-(':)', './img/smylie/happy.png'),
-(':(', './img/smylie/sad.png');
