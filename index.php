@@ -392,10 +392,7 @@ class Server{
         }
 
     	if($post->isCommand()){
-		if(!$this->plugin->command($post->getCommand(), $user, $post)){//append in version 1.1
-			$this->error($post, "unknownCommand");
-		}
-    		//$this->handleCommand($user, $post);
+		$this->handleCommand($user, $post);
     	}else{
             if($this->hasUserMode($post->id(), $user->id(), "o") || $this->is_flood($post->id())){
                 $this->handleMessage($user, $post);
@@ -557,7 +554,9 @@ class Server{
                 bot_self($data->id(), "/online ".$this->getOnline($data->id()));
             break;
             default:
-                $this->error($data, "unkownCommand");
+		if(!$this->plugin->command($data->getCommand(), $user, $data)){
+                   $this->error($data, "unkownCommand");
+		}
             break;
     	}
     }
