@@ -954,6 +954,7 @@ class Server{
       include 'lib/answer.php';
       include 'lib/user.php';
       include 'lib/postdata.php';
+      include 'lib/log.php';//new in V1.1
 
       if(!file_exists("./lib/config.php")){
           $this->missing_config();
@@ -1227,6 +1228,7 @@ class Server{
         NOW(),
         '".No."'
       )");
+	system_log("New user is created: ".$username);//new in V1.1
     }
 
     private function getUserObject(string $nick) : User{
