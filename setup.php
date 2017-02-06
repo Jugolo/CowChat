@@ -23,6 +23,10 @@ function okay(string $msg){
   echo "<div style='color: green'>".$msg."</div>\r\n";
 }
 
+function error(string $msg){
+  echo "<div style='color: red'>".$msg."</div>\r\n";
+}
+
 okay("Connected to MySQL");
 $file = file_get_contents("./chat.sql");
 $file = str_replace("%prefix%", $data["db"]["prefix"], $file);
@@ -39,4 +43,10 @@ if($mysql->multi_query($file)){
 }else{
  exit("MySQL error: ".$mysql->error);
 }
+if(!@mkdir("./lib/log/")){
+  error("Failed to create dir './lib/log/'");
+}else{
+  okay("Created './lib/log/'");
+}
+
 okay("Chat installed. Please remove ./setup.php and ./lib/config-test.txt");
