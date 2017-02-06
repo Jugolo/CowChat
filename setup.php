@@ -49,4 +49,10 @@ if(!@mkdir("./lib/log/")){
   okay("Created './lib/log/'");
 }
 
+if(!@mkdir("./lib/plugin/")){
+  error("Failed to create './lib/plugin'");
+}else{
+  okay("Created './lib/plugin'");
+}
+
 okay("Chat installed. Please remove ./setup.php and ./lib/config-test.txt");
