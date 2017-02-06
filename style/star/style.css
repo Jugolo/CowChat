@@ -1,0 +1,112 @@
+@import '../import.css';
+
+html{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#left-container{
+  box-shadow: 10px 10px 38px 12px rgba(0,0,0,0.3);
+}
+
+#left-container div{
+ margin: 2px;
+ background-color:#296dff;
+}
+
+#left-container div h3, #login-left table caption, #login-right table caption{
+  margin:0px;
+  padding0px;
+  text-align: center;
+  font-style: oblique;
+  color: white;
+}
+
+#left-container div div{
+  text-align: center;
+  color: #53ff00;
+  font-weight: bold;
+}
+
+#main-container{
+  box-shadow: 10px 10px 38px 12px rgba(0,0,0,0.3);
+}
+
+#login-left table caption, #login-right table caption{
+ background-color:#296dff;
+}
+
+.unread{
+  color:red;
+}
+
+.inaktiv{
+ font-style: oblique;
+}
+
+.bot-nick{
+  color: yellow;
+}
+
+.line{
+  height:20px;
+  border-bottom:1px dotted grey;
+  background-color: #0080ff;
+}
+
+.line span{
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.line:nth-child(2n) {
+  background-color: #00bfff;
+}
+
+.user-item .nick{
+  text-align: center;
+}
+
+.op{
+  color: red;
+}
+
+.voice:not(.op){
+  color: blue;
+}
+
+.user-item{
+  border-bottom:1px dotted gray;
+  text-align:center;
+}
+
+.user-item span{
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.user-list-avatar{
+  height:20px;
+  width:20px;
+  background-size:100% 100%;
+}
+
+.menu div{
+  text-align: center;
+  background-color: #0080ff;
+  border-top:1px dotted grey;
+}
+
+.menu div:nth-child(2n) {
+  background-color: #00bfff;
+}
+
+.message-avatar{
+  height: 20px;
+  width: 20px;
+  background-size:100% 100%;
+}
+
+.smylie{
+  height: 20px;
+  width: 20px;
+}
