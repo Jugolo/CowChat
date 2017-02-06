@@ -7,11 +7,10 @@ function system_log($message){
   $size = fstat($fopen)["size"];
   $dateString = "-----[".date("d/m-Y")."]-----";
   if($size != 0){
-    $message = "\r\n".$message;
     if(strpos(fread($fopen, $size), $dateString) === false){
       fwrite($fopen, "\r\n".$dateString);
     }
   }
-  fwrite($fopen, $message);
+  fwrite($fopen, ($size == 0 ? "" : "\r\n")."[".date("s:i:H")."]".$message);
   fclose($fopen);
 }
