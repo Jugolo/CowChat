@@ -29,8 +29,9 @@ class Plugin{
   
   public function command(string $name, User $user, PostData $post){
     if(empty($this->plugin["command"][$name]))
-      return;
+      return false;
     $this->evulate($this->plugin["trigger"][$name][0], [$user, $post]);
+    return true;
   }
   
   private function evulate(array $data, array $arg){
