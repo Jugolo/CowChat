@@ -27,9 +27,15 @@ class Plugin{
     }
   }
   
+  public function command(string $name, User $user, PostData $post){
+    if(empty($this->plugin["command"][$name]))
+      return;
+    $this->evulate($this->plugin["trigger"][$name][0], [$user, $post]);
+  }
+  
   private function evulate(array $data, array $arg){
      if(empty($this->obj[$data["dir"]])){
-       include "./lib/plugin/.$data["dir"];
+       include "./lib/plugin/".$data["dir"];
        $class = $data["dir"]."_Plugin";
        $this->obj[$data["dir"]] = new $class($this->db);
      }
