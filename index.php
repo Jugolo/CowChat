@@ -1228,7 +1228,7 @@ class Server{
         NOW(),
         '".No."'
       )");
-	system_log("New user is created: ".$username);
+	system_log("New user is created: ".$username);//new in V1.1
     }
 
     private function getUserObject(string $nick) : User{
