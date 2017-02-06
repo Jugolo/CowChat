@@ -13,6 +13,7 @@ class Server{
      private $ajax             = false;
      private $basepart         = null;
      private $database         = null;
+     private $plugin           = null;//append in version 1.1
      
     function __construct($websocket = false){
         $this->ajax = (!empty($_GET["_ajax"]));
@@ -27,6 +28,7 @@ class Server{
 	$this->loadVariabel();
         
         $this->sessionInit();
+	$this->plugin->trigger("server.start", [time()]);//added in version 1.1
         $user = $this->login();
 
         if($user == null){
@@ -390,7 +392,10 @@ class Server{
         }
 
     	if($post->isCommand()){
-    		$this->handleCommand($user, $post);
+		if(!$this->plugin->command($post->getCommand(), $user, $post)){//append in version 1.1
+			$this->error($post, "unknownCommand");
+		}
+    		//$this->handleCommand($user, $post);
     	}else{
             if($this->hasUserMode($post->id(), $user->id(), "o") || $this->is_flood($post->id())){
                 $this->handleMessage($user, $post);
@@ -505,6 +510,9 @@ class Server{
     }
     
     private function handleCommand(User $user, PostData $data){
+	    if(!$this->command($data->getCommand(), $user, $data)){
+		    
+	    }
     	switch($data->getCommand()){
             case "avatar":
                 $this->on_avatar($user, $data);
@@ -955,6 +963,7 @@ class Server{
       include 'lib/user.php';
       include 'lib/postdata.php';
       include 'lib/log.php';//new in V1.1
+      include 'lib/plugin.php';//append ind V1.1
 
       if(!file_exists("./lib/config.php")){
           $this->missing_config();
@@ -971,6 +980,7 @@ class Server{
       define("DB_PREFIX", $data["db"]["prefix"]);
       unset($data["db"]);
       $this->config = $data;
+      $this->plugin = new Plugin($this->database);//new in version 1.1
     }
 
     private function missing_config(){
