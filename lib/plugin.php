@@ -102,7 +102,7 @@ class Plugin{
     }
     $cName = $name."_Plugin";
     $obj = new $cName($this->db);
-    foreach($events as $event){
+    foreach($obj->events() as $event){
       $this->db->query("INSERT INTO `".DB_PREFIX."chat_plugin` (
         `type`,
         `name`,
