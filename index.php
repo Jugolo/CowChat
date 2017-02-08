@@ -6,7 +6,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 class Server{
-     protected $config;
      private $variabel         = array();
      private $lang             = array();
      private $langCache        = array();
@@ -49,8 +48,8 @@ class Server{
         $this->init_lastIndex();
 		
 	//ajax only ;) if it is not ajax it will not work!
-	if($this->getVariabel("isPost")){
-        	$this->handlePost($user, $this->post("message"), $this->get("channel") ? $this->get("channel") : "Bot");
+	if(Request::get("isPost")){
+        	$this->handlePost($user, $this->post("message"), Request::get("channel") ? Request::get("channel") : "Bot");
         }
         $this->showMessage($user);
 
@@ -72,7 +71,7 @@ class Server{
 
     private function rawJs(User $user) : string{
       $js = "var myNick = '".$user->nick()."';\r\n";
-      $js .= "var updateFrame = ".(int)$this->getConfig("updateFrame").";\r\n";
+      $js .= "var updateFrame = ".(int)Config::get("updateFrame").";\r\n";
       $query = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_smylie`");
       while($row = $query->get()){
         $js .= "smylie.push({
@@ -94,7 +93,7 @@ class Server{
         $count++;
       }
       if($count == 0){
-        $js .= "send('Bot', '/join ".$this->getConfig("startChannel")."');";
+        $js .= "send('Bot', '/join ".Config::get("startChannel")."');";
       }
       $js .= "});";
       return $js;
@@ -104,7 +103,7 @@ class Server{
       if($this->session("li")){
         unset($_SESSION["li"]);
       }
-      if($this->get("logout") && $this->get("sess_id") == session_id()){
+      if(Request::get("logout") && Request::get("sess_id") == session_id()){
         unset($_SESSION["uid"]);
         header("location:#");
         exit;
@@ -119,7 +118,7 @@ class Server{
           "js/user.js",
           "js/command.js",
           "js/bbcode.js",
-          "js/lang/".$this->config["locale"].".js",
+          "js/lang/".Config::get("locale").".js",
         ],
         "raw_js" => $this->rawJs($user)
       ]);
@@ -156,7 +155,7 @@ class Server{
     }
 	 
      private function init_lang(){
-         $this->setLang($this->getConfig("locale"));
+         $this->setLang(Config::get("locale"));
      }
 
      function setLang($name){
@@ -203,9 +202,9 @@ class Server{
         LEFT JOIN `".DB_PREFIX."chat_name` AS cn ON cn.id=cm.cid
         WHERE cm.cid != '1'
         AND LOCATE('b', cm.mode) = 0
-        AND (cm.lastActiv < DATE_SUB(now(), INTERVAL ".(int)$this->config["inaktiv"]." MINUTE)
+        AND (cm.lastActiv < DATE_SUB(now(), INTERVAL ".(int)Config::get("inaktiv")." MINUTE)
             AND cm.isInaktiv='".No."'
-            OR cm.lastActiv < DATE_SUB(now(), INTERVAL ".(int)$this->config["leave"]." MINUTE)
+            OR cm.lastActiv < DATE_SUB(now(), INTERVAL ".(int)Config::get("leave")." MINUTE)
         )");
 
         if($this->database->isError){
@@ -329,11 +328,11 @@ class Server{
     }
 
     private function remove_bad_words($word){
-        if($this->config['bad_words_enabled'] != '1'){
+        if(Config::get('bad_words_enabled') != '1'){
             return $word;
         }
 
-        $block = $this->config["bad_words"];
+        $block = Config::get("bad_words");
         for($i=0;$i<count($block);$i++){
             if($block[$i] == ""){
                 continue;
@@ -747,9 +746,9 @@ class Server{
     private function answer_nick(User $user, PostData $post){
         $nick = substr($post->getMessage(), 6);
         $length = strlen($nick);
-        if($length < $this->getConfig("minNickLength")){
+        if($length < Config::get("minNickLength")){
           $this->error($post, "nickShort");
-        }elseif($length > $this->getConfig("maxNickLength")){
+        }elseif($length > Config::get("maxNickLength")){
           $this->error($post, "nickLong");
         }elseif($nick == $user->nick()){
           $this->error($post, "nickEquel");
@@ -955,22 +954,21 @@ class Server{
       include 'lib/user.php';
       include 'lib/postdata.php';
       include 'lib/log.php';//new in V1.1
+      include 'lib/sysconfig.php';
 
       if(!file_exists("./lib/config.php")){
           $this->missing_config();
       }
 
-      $data = include "./lib/config.php";
+      $data = Config::init();
       $this->init_db(
-         $data["db"]["host"],
-         $data["db"]["user"],
-         $data["db"]["pass"],
-         $data["db"]["table"]
+         $data["host"],
+         $data["user"],
+         $data["pass"],
+         $data["table"]
       );
       
-      define("DB_PREFIX", $data["db"]["prefix"]);
-      unset($data["db"]);
-      $this->config = $data;
+      define("DB_PREFIX", $data["prefix"]);
     }
 
     private function missing_config(){
@@ -1110,7 +1108,7 @@ class Server{
         LEFT JOIN `".DB_PREFIX."chat_user` AS us ON us.id = cm.uid
         WHERE cm.cid <> '1'
         AND LOCATE('b', cm.mode) = 0
-        AND cm.lastActiv > DATE_SUB(now(), INTERVAL ".(int)$this->config["leave"]." MINUTE)
+        AND cm.lastActiv > DATE_SUB(now(), INTERVAL ".(int)Config::get("leave")." MINUTE)
         GROUP BY us.id");
 
         if($this->database->isError){
@@ -1121,36 +1119,6 @@ class Server{
           echo "<div>".$row["nick"]."</div>";
         }
      }
-    
-    //variabel sektion
-    
-    private function getVariabel($key){
-        if(empty($this->variabel[$key])){
-            return null;
-        }else{
-            if(is_object($this->variabel[$key])){
-                return $this->variabel[$key];
-            }
-            if(!is_array($this->variabel[$key]) && !trim($this->variabel[$key])){
-                return null;
-            }
-
-        }
-        
-        return $this->variabel[$key];
-    }
-    
-    private function loadVariabel(){
-        $this->variabel['isPost']    = $this->get("isPost")    ? true : false;
-    }
-    
-    private function getConfig($key){
-        if(empty($this->config[$key])){
-            return null;
-        }
-        
-        return $this->config[$key];
-    }
     
     //session sektion
     private function sessionInit(){
@@ -1264,12 +1232,6 @@ class Server{
     
     private function getSessionId(){
         return session_id();
-    }
-    
-    //header sektion (post get session)
-    
-    private function get($key){
-        return Request::get($key);
     }
     
     private  function post($key){
