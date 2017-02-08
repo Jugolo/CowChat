@@ -804,7 +804,7 @@ class Server{
      }
 
     private function error(PostData $data, string $code){
-       bot_self($data->getChannel(), "/error ".$code);
+       error($data, $code);
     }
 
     private function answer_join(User $user, PostData $post){
@@ -961,7 +961,8 @@ class Server{
       include 'lib/log.php';//new in V1.1
       include 'lib/sysconfig.php';//new in V1.1
       include 'lib/plugin.php';//new in V1.1
-      include 'lib/admin.php';
+      include 'lib/admin.php';//new in V1.1
+      include 'lib/command.php';
 
       if(!file_exists("./lib/config.php")){
           $this->missing_config();
