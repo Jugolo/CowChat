@@ -20,6 +20,11 @@ class Plugin{
   }
   
   public function command(string $name, User $user, PostData $post){
+    //this plugin listen after /plugin command :)
+    if($name == "plugin"){
+      $this->handleCommand(explode(" ", substr($post->getMessage(), 8)), $user, $post);
+      return true;
+    }
      if(empty($this->plugin["command"][$name]))
        return false;
      $this->evulate($this->plugin["trigger"][$name][0], [$user, $post]);
@@ -53,5 +58,26 @@ class Plugin{
        "dir"    => $dir,
        "method" => $method
      ];
+  }
+  
+  private function handleCommand(array $arg, User $user, PostData $data){
+    if(!is_admin($user->id())){
+      error("accessDeniad");
+      return;
+    }
+    
+    if(count($arg)){
+      $this->sendList($data->id());
+      return;
+    }
+  }
+  
+  private function sendList(int $cid){
+    $query = $this->db->query("SELECT `dir` FROM `".DB_PREFIX."chat_plugin` GROUP BY dir");
+    $buffer = [];
+    while($row = $query->get())
+      $buffer[] = "+".$row["dir"];
+    
+    bot_self($cid, "/pluginlist ".implode(",", $buffer));
   }
 }
