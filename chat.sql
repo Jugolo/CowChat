@@ -56,7 +56,6 @@ CREATE TABLE IF NOT EXISTS `%prefix%chat_plugin` (
   `type` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `dir` varchar(255) NOT NULL,
-  `class` varchar(255) NOT NULL,
   `method` varchar(255) NOT NULL,
   PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
