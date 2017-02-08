@@ -21,7 +21,7 @@ class Plugin{
   public function command(string $name, User $user, PostData $post){
     //this plugin listen after /plugin command :)
     if($name == "plugin"){
-      $this->handleCommand(explode(" ", substr($post->getMessage(), 8)), $user, $post);
+      $this->handleCommand(trim($post->getMessage()) == "/plugin" ? [] : explode(" ", substr($post->getMessage(), 8)), $user, $post);
       return true;
     }
      if(empty($this->plugin["command"][$name]))
