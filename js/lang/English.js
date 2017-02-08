@@ -25,7 +25,6 @@ const language = {
   "unban"         : "%nick is no longer bannet from the channel",
   "noPlugin"      : "There are 0 plugin",
   "pluginlist"    : "Plugin list: ",
-  "unknownPlugin" : "Unknown plugin",
   "error" : {
     "invalidJoin"       : "You typed a invalid join command",
     "joinBan"           : "You are banned from the channel",
@@ -45,5 +44,6 @@ const language = {
     "accessDeniad"      : "Access denaid",
     "invalidKick"       : "Invalid kick kommand",
     "invalidMode"       : "Invalid mode command",
+    "unknownPlugin"     : "Unknown plugin"
   }
 };
