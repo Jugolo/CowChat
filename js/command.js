@@ -12,7 +12,7 @@ commands["pluginlist"] = function(data){
   }
   var msg = language["pluginlist"];
   for(var i=0;i<plugin.length;i++){
-    msg += (i == 0 ? "" ",")+" [color="+(plugin[i].charAt(0) == "+" ? "green" : "red")+"]"+plugin[i].substr(1)+"[/color]";
+    msg += (i == 0 ? "" : ",")+" [color="+(plugin[i].charAt(0) == "+" ? "green" : "red")+"]"+plugin[i].substr(1)+"[/color]";
   }
   this.line(
     data.time,
@@ -20,7 +20,7 @@ commands["pluginlist"] = function(data){
     "Bot",
     msg
     );
-}
+};
 //->
 commands["kick"] = function(data){
   var message = data.message.substr(6);
