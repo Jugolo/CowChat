@@ -1,3 +1,17 @@
+//<-Plugin handler
+commands["pluginlist"] = function(data){
+  var plugin = data.substr(12).split(",");
+  if(plugin.length == 0){
+    this.line(
+      data.time,
+      "",
+      "Bot",
+      "[color=red]"+language["noPlugin"]+"[/color]"
+      );
+    return;
+  }
+}
+//->
 commands["kick"] = function(data){
   var message = data.message.substr(6);
   var pos = message.indexOf(" ");
