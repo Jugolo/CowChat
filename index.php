@@ -24,7 +24,6 @@ class Server{
         header("Pragma: no-cache");
    
         $this->loadPages();
-	$this->loadVariabel();
         
         $this->sessionInit();
 	$this->plugin->trigger("server.start", [time()]);//added in version 1.1
