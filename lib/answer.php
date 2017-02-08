@@ -34,8 +34,8 @@ class Answer{
   public static function parse(AnswerRequest $answer){
     self::handle(
       $answer->getTo(),
-      $answer->hasFrom() ? $answer->getFrom() : self::$user->id(),
-      $answer->hasAvatar() ? $answer->getAvatar() : self::$user->avatar(),
+      $answer->hasFrom() ? $answer->getFrom() : (self::$user == null ? 0 self::$user->id()),
+      $answer->hasAvatar() ? $answer->getAvatar() : (self::$user == null ?  "" : self::$user->avatar()),
       $answer->hasNick() ? $answer->getNick() : "Bot",
       $answer->hasChannel() ? $answer->getChannel() : "Bot",
       $answer->getMessage()
