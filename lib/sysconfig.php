@@ -1,7 +1,7 @@
 <?php
 
 class Config{
-  private $config = null;
+  private static $config = null;
   
   public static function init(){
     if(self::$config !== null){
