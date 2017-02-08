@@ -125,7 +125,7 @@ class Server{
         ],
         "raw_js" => $this->rawJs($user)
       ]);
-
+      $this->plugin->trigger("client.loaded", []);
       ?>
 <div id='chat-top'>
 
