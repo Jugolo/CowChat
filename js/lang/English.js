@@ -23,6 +23,7 @@ const language = {
   "myKick"        : "%nick kicked you out of %channel: %message",
   "ban"           : "%nick is now banned from the channel",
   "unban"         : "%nick is no longer bannet from the channel",
+  "noPlugin"      : "There are 0 plugin",
   "error" : {
     "invalidJoin"       : "You typed a invalid join command",
     "joinBan"           : "You are banned from the channel",
