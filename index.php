@@ -962,7 +962,7 @@ class Server{
       include 'lib/sysconfig.php';//new in V1.1
       include 'lib/plugin.php';//new in V1.1
       include 'lib/admin.php';//new in V1.1
-      include 'lib/command.php';
+      include 'lib/command.php';//new in V1.1
 
       if(!file_exists("./lib/config.php")){
           $this->missing_config();
@@ -1206,6 +1206,8 @@ class Server{
         '".No."'
       )");
 	system_log("New user is created: ".$username);//new in V1.1
+	//some plugin can send some message. if wee do not call login() it will fail
+	$this->login();
 	$this->plugin->trigger("system.user.create", [$username]);
     }
 
