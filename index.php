@@ -1207,7 +1207,7 @@ class Server{
       )");
 	system_log("New user is created: ".$username);//new in V1.1
 	//some plugin can send some message. if wee do not call login() it will fail
-	$this->login();
+	Answer::setUser($this->login());
 	$this->plugin->trigger("system.user.create", [$username]);
     }
 
