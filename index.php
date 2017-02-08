@@ -46,13 +46,13 @@ class Server{
           return;
         }
 
-        $this->init_lastIndex();
+        $id = $this->init_lastIndex();
 		
 	//ajax only ;) if it is not ajax it will not work!
 	if(Request::get("isPost")){
         	$this->handlePost($user, $this->post("message"), Request::get("channel") ? Request::get("channel") : "Bot");
         }
-        $this->showMessage($user);
+        $this->showMessage($user, $id);
 
         if($this->database->isError){
             exit($this->database->getError());
@@ -251,7 +251,7 @@ class Server{
         );
     }
 
-    private function init_lastIndex(){
+    private function init_lastIndex() : int{
       if(!$this->session("li")){
         $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_message` ORDER BY id DESC LIMIT 1");
         if($this->database->isError){
@@ -259,12 +259,12 @@ class Server{
         }
         $data = $query->get();
         if(!$data){
-          $this->variabel["li"] = 0;
+          return 0;
         }else{
-          $this->variabel["li"] = $data["id"];
+          return $data["id"];
         }
       }else{
-        $this->variabel["li"] = $this->session("li");
+        return $this->session("li");
       }
     }
 
@@ -273,8 +273,7 @@ class Server{
     }
     
     //message sektion
-    private function showMessage(User $user){
-        $id = $this->getVariabel("li");
+    private function showMessage(User $user, int $id){
 	$data = $this->database->query("SELECT tm.id AS id, tm.message AS message, tm.isMsg AS isMsg, tm.msgTo AS msgTo, tm.isBot AS isBot, user.nick AS nick, tm.time AS time, tn.id AS cid, tn.name AS channel, cm.id AS cmid, user.id AS uid, user.avatar, tn.isPriv AS isPriv
 		FROM ".DB_PREFIX."chat_message AS tm
 		LEFT JOIN ".DB_PREFIX."chat_member AS cm ON tm.cid = cm.cid
@@ -339,7 +338,7 @@ class Server{
                 continue;
             }
 
-            $word = preg_replace("/".$block[$i]."/si", str_repeat($this->config['bad_word_replace'], strlen($block[$i])), $word);
+            $word = preg_replace("/".$block[$i]."/si", str_repeat(Config::get('bad_word_replace'), strlen($block[$i])), $word);
         }
 
         return $word;
