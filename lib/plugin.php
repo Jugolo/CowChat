@@ -76,7 +76,7 @@ class Plugin{
           $this->installPlugin($arg, $i, $data, $user);
         break;
         default:
-          error($data, "unknownCommand");
+          error($data, "unkownCommand");
         break;
       }
     }
@@ -84,7 +84,7 @@ class Plugin{
   
   private function installPlugin(array $arg, int &$i, PostData $post, User $user){
     if($i+1 >= count($arg)){
-      error($post, "unknownCommand");
+      error($post, "unkownCommand");
       return;
     }
     $i++;
