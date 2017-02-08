@@ -10,6 +10,16 @@ commands["pluginlist"] = function(data){
       );
     return;
   }
+  var msg = language["pluginlist"];
+  for(var i=0;i<plugin.length;i++){
+    msg += (i == 0 ? "" ",")+" [color="+(plugin[i].charAt(0) == "+" ? "green" : "red")+"]"+plugin[i].substr(1)+"[/color]";
+  }
+  this.line(
+    data.time,
+    "",
+    "Bot",
+    msg
+    );
 }
 //->
 commands["kick"] = function(data){
