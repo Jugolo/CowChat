@@ -1,7 +1,6 @@
 //<-Plugin handler
 commands["pluginlist"] = function(data){
-  var plugin = data.substr(12).split(",");
-  if(plugin.length == 0){
+  if(data.message == "/pluginlist "){
     this.line(
       data.time,
       "",
@@ -10,7 +9,8 @@ commands["pluginlist"] = function(data){
       );
     return;
   }
-  var msg = language["pluginlist"];
+  var plugin = data.message.substr(12).split(",");
+  var msg = "[color=green]"+language["pluginlist"]+"[/color]";
   for(var i=0;i<plugin.length;i++){
     msg += (i == 0 ? "" : ",")+" [color="+(plugin[i].charAt(0) == "+" ? "green" : "red")+"]"+plugin[i].substr(1)+"[/color]";
   }
