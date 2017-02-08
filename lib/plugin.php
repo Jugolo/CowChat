@@ -65,7 +65,7 @@ class Plugin{
       return;
     }
     
-    if(count($arg)){
+    if(count($arg) == 0){
       $this->sendList($data->id());
       return;
     }
