@@ -15,7 +15,7 @@ class Config{
     return $db;
   }
   
-  public static function get(string $key) : get{
+  public static function get(string $key) : string{
     if(self::$config === null){
       exit("Init the config system first");
     }
