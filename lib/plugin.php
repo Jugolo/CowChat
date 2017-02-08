@@ -13,7 +13,6 @@ class Plugin{
       $row["type"],//type of plugin
       $row["name"],//the event/trigger/command name
       $row["dir"],//the dir of the plugin
-      $row["class"],//the class name
       $row["method"]//the method name
       );
     }
@@ -42,7 +41,7 @@ class Plugin{
   
   private function evulate(array $data, array $arg){
      if(empty($this->obj[$data["dir"]])){
-       include "./lib/plugin/".$data["dir"];
+       include "./lib/plugin/".$data["dir"]."/plugin.php";
        $class = $data["dir"]."_Plugin";
        $this->obj[$data["dir"]] = new $class($this->db);
      }
@@ -70,6 +69,63 @@ class Plugin{
       $this->sendList($data->id());
       return;
     }
+    
+    for($i=0;$i<count($arg);$i++){
+      switch($arg[$i]){
+        case "-i":
+          $this->installPlugin($arg, $i, $data, $user);
+        break;
+        default:
+          error($data, "unknownCommand");
+        break;
+      }
+    }
+  }
+  
+  private function installPlugin(array $arg, int &$i, PostData $post, User $user){
+    if($i+1 >= count($arg)){
+      error($post, "unknownCommand");
+      return;
+    }
+    $i++;
+    $name = $arg[$i];
+    
+    if(!file_exists("./lib/plugin/".$name."/plugin.php")){
+      error($post, "unknownPlugin");
+      return;
+    }
+    
+    include "./lib/plugin/".$name."/plugin.php";
+    if(!class_exists($name."_Plugin")){
+      error($post, "unknownPlugin");
+      return;
+    }
+    $cName = $name."_Plugin";
+    $obj = new $cName($this->db);
+    foreach($events as $event){
+      $this->db->query("INSERT INTO `".DB_PREFIX."chat_plugin` (
+        `type`,
+        `name`,
+        `dir`,
+        `method`
+      ) VALUES (
+        '".$this->db->clean($event->getType())."',
+        '".$this->db->clean($event->getName())."',
+        '".$this->db->clean($name)."',
+        '".$this->db->clean($event->getMethod())."'
+      );");
+      $this->cachePlugin(
+        $event->getType(),
+        $event->getName(),
+        $name,
+        $event->getMethod()
+        );
+    }
+    $this->obj[$name] = $obj;
+    if(method_exists($obj, "doInstall")){
+      $obj->doInstall();
+    }
+    bot_self($post->id(), "/plugininstalled");
   }
   
   private function sendList(int $cid){
@@ -79,5 +135,27 @@ class Plugin{
       $buffer[] = "+".$row["dir"];
     
     bot_self($cid, "/pluginlist ".implode(",", $buffer));
+  }
+}
+
+class PluginEventList{
+  private $type, $name, $method;
+  
+  public function __construct(string $type, string $name, string $method){
+    $this->type = $type;
+    $this->name = $name;
+    $this->method = $method;
+  }
+  
+  public function getType() : string{
+    return $this->type;
+  }
+  
+  public function getName() : string{
+    return $this->name;
+  }
+  
+  public function getMethod() : string{
+    return $this->method;
   }
 }
