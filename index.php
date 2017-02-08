@@ -12,6 +12,7 @@ class Server{
      private $ajax             = false;
      private $basepart         = null;
      private $database         = null;
+     private $plugin           = null;//append in version 1.1
      
     function __construct($websocket = false){
         $this->ajax = (!empty($_GET["_ajax"]));
@@ -26,6 +27,7 @@ class Server{
 	$this->loadVariabel();
         
         $this->sessionInit();
+	$this->plugin->trigger("server.start", [time()]);//added in version 1.1
         $user = $this->login();
 
         if($user == null){
@@ -122,7 +124,7 @@ class Server{
         ],
         "raw_js" => $this->rawJs($user)
       ]);
-
+      $this->plugin->trigger("client.loaded", []);
       ?>
 <div id='chat-top'>
 
@@ -548,7 +550,9 @@ class Server{
                 bot_self($data->id(), "/online ".$this->getOnline($data->id()));
             break;
             default:
-                $this->error($data, "unkownCommand");
+	        if(!$this->plugin->command($data->getCommand(), $user, $data)){
+                   $this->error($data, "unkownCommand");
+		}
             break;
     	}
     }
@@ -954,7 +958,8 @@ class Server{
       include 'lib/user.php';
       include 'lib/postdata.php';
       include 'lib/log.php';//new in V1.1
-      include 'lib/sysconfig.php';
+      include 'lib/sysconfig.php';//new in V1.1
+      include 'lib/plugin.php';//new in V1.1
 
       if(!file_exists("./lib/config.php")){
           $this->missing_config();
@@ -969,6 +974,7 @@ class Server{
       );
       
       define("DB_PREFIX", $data["prefix"]);
+      $this->plugin = new Plugin($this->database);
     }
 
     private function missing_config(){
