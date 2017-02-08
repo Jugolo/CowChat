@@ -834,7 +834,10 @@ class Server{
         if($new){
           bot($data["id"], "/mode ".$user->nick()." +o");
         }else{
-          bot_self($data["id"], "/online ".$this->getOnline($data["id"]));
+          bot_self($data["id"], "/online ".$this->getOnline($data["id"]), is_admin($user->id()) ? "o" : "");
+	  if(is_admin($user->id())){
+	     bot($data["id"], "/mode ".$user->nick()." +o");
+	  }
         }
         bot_self($data["id"], "/title ".$data["title"]);
     }
@@ -958,6 +961,7 @@ class Server{
       include 'lib/log.php';//new in V1.1
       include 'lib/sysconfig.php';//new in V1.1
       include 'lib/plugin.php';//new in V1.1
+      include 'lib/admin.php';
 
       if(!file_exists("./lib/config.php")){
           $this->missing_config();
