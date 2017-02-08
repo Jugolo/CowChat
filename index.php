@@ -428,7 +428,7 @@ class Server{
         //vi indsætter en for denne :)
         $count++;
 
-        if($count <= (int)$this->config["flood_count"]){
+        if($count <= (int)Config::get("flood_count")){
             $new_flood[] = time();
             $_SESSION["flood"][$cid] = $new_flood;
             return true;
