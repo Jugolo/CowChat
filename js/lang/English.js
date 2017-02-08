@@ -24,6 +24,7 @@ const language = {
   "ban"           : "%nick is now banned from the channel",
   "unban"         : "%nick is no longer bannet from the channel",
   "noPlugin"      : "There are 0 plugin",
+  "pluginlist"    : "Plugin list: ",
   "error" : {
     "invalidJoin"       : "You typed a invalid join command",
     "joinBan"           : "You are banned from the channel",
