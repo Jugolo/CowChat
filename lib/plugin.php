@@ -6,6 +6,7 @@ class Plugin{
   private $obj = [];
   
   public function __construct(DatabaseHandler $db){
+    $this->db = $db;
     $query = $this->db->query("SELECT * FROM `".DB_PREFIX."chat_plugin`");
     while($row = $query->get()){
       $this->cachePlugin(
