@@ -1205,6 +1205,7 @@ class Server{
         '".No."'
       )");
 	system_log("New user is created: ".$username);//new in V1.1
+	$this->plugin->trigger("system.user.create", [$username]);
     }
 
     private function getUserObject(string $nick) : User{
