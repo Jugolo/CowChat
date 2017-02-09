@@ -4,7 +4,7 @@ commands["plugininstalled"] = function(data){
     data.time,
     "",
     "Bot",
-    "[color=green]"+language["pluginInstalled"]+"[/color]
+    "[color=green]"+language["pluginInstalled"]+"[/color]"
     );
 };
 
