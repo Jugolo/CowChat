@@ -163,7 +163,7 @@ class Plugin{
     $query = $this->db->query("SELECT `dir` FROM `".DB_PREFIX."chat_plugin` GROUP BY dir");
     $buffer = [];
     while($row = $query->get())
-      $buffer[] = $dir;
+      $buffer[] = $row["dir"];
     return $buffer;
   }
 }
