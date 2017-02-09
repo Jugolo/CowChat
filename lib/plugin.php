@@ -2,7 +2,7 @@
 //append in version 1.1
 class Plugin{
   private $db;
-  private $plugin = ["trigger" => [], "event" => [], "command" => []];
+  private $plugin = ["trigger" => [], "command" => []];
   private $obj = [];
   
   public function __construct(DatabaseHandler $db){
@@ -105,6 +105,12 @@ class Plugin{
     if(!class_exists($name."_Plugin")){
       include "./lib/plugin/".$name."/plugin.php";
     }
+    $cName = $name."_Plugin";
+    $obj = !empty($this->obj[$name]) ? $this->obj[$name] : new $cName($this->db);
+    if(method_exists($obj, "uninstall")){
+      $obj->uninstall();
+    }
+    bot_self($post->id(), "/pluginRemoved");
   }
   
   private function installPlugin(array $arg, int &$i, PostData $post, User $user){
