@@ -76,7 +76,7 @@ class Plugin{
           $this->installPlugin($arg, $i, $data, $user);
         break;
         case "-u":
-          
+          $this->uninstallPlugin($arg, $i, $data, $user);
         break;
         default:
           error($data, "unkownCommand");
@@ -84,6 +84,26 @@ class Plugin{
           return;
         break;
       }
+    }
+  }
+  
+  private function uninstallPlugin(array $arg, int &$i, PostData $post, User $user){
+    if($i+1 >= count($arg)){
+      error($post, "unknownCommand");
+      return;
+    }
+    
+    $i++;
+    $name = $arg[$i];
+    if(!in_array($name, $this->getInsatalledPlugin())){
+      error($post, "pluginNotInstalled");
+      return;
+    }
+    
+    $this->db->query("DELETE FROM `".DB_PREFIX."chat_plugin` WHERE `dir`='".$this->db->clean($name)."'");
+    
+    if(!class_exists($name."_Plugin")){
+      include "./lib/plugin/".$name."/plugin.php";
     }
   }
   
