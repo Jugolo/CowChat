@@ -1,4 +1,22 @@
 //<-Plugin handler
+commands["plugininstalled"] = function(data){
+  this.line(
+    data.time,
+    "",
+    "Bot",
+    "[color=green]"+language["pluginInstalled"]+"[/color]
+    );
+};
+
+commands["pluginRemoved"] = function(data){
+  this.line(
+    data.time,
+    "",
+    "Bot",
+    "[color=red]"+language["pluginRemoved"]+"[/color]"
+    );
+};
+
 commands["pluginlist"] = function(data){
   if(data.message == "/pluginlist "){
     this.line(
