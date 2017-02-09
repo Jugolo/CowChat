@@ -44,6 +44,7 @@ const language = {
     "accessDeniad"      : "Access denaid",
     "invalidKick"       : "Invalid kick kommand",
     "invalidMode"       : "Invalid mode command",
-    "unknownPlugin"     : "Unknown plugin"
+    "unknownPlugin"     : "Unknown plugin",
+    "pluginInstalled"   : "The plugin is allready installed"
   }
 };
