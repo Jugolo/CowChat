@@ -95,7 +95,7 @@ class Plugin{
     
     $i++;
     $name = $arg[$i];
-    if(!in_array($name, $this->getInsatalledPlugin())){
+    if(!in_array($name, $this->getInstalledPlugin())){
       error($post, "pluginNotInstalled");
       return;
     }
