@@ -5,4 +5,8 @@ class Request{
      return null;
     return $_GET[$key];
   }
+  
+  public static function ip(){
+    return $_SERVER['REMOTE_ADDR'];
+  }
 }

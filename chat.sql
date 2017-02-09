@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `%prefix%chat_user` (
   `nick` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `avatar` varchar(255) NOT NULL,
+  `ip` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
 
