@@ -261,6 +261,7 @@ class Server{
         if(!$data){
           return 0;
         }else{
+	  $_SESSION["li"] = $data["id"];
           return $data["id"];
         }
       }else{
