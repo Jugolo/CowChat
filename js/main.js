@@ -115,9 +115,14 @@ function onAjaxRespons(){
     try{
       j = JSON.parse(this.responseText);
     }catch(e){
-      sys.getPage("console").line("","","AjaxError", "[color=red]There happend a error: "+this.responseText+"[/color]");
-      setUpdate();
-      return;
+      if(e.responseText == "login"){
+        location.reload();
+        return;
+      }else{
+        sys.getPage("console").line("","","AjaxError", "[color=red]There happend a error: "+this.responseText+"[/color]");
+        setUpdate();
+        return;
+      }
     }
     for(var i=0;i<j.message.length;i++){
        if(j.message[i].channel == "Bot"){
