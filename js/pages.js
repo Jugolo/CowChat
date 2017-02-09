@@ -67,6 +67,10 @@ const Page = (function(){
       const img = document.createElement("span");
       img.className = "message-avatar";
       img.style.backgroundImage = "url('"+avatar+"')";
+      //added in version 1.1. If there is a error to load the image hide this image
+      img.onerror = function(){
+        removeNode(img);
+      };
       container.appendChild(img);
     }
 
