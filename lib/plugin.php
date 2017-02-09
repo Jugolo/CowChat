@@ -75,8 +75,13 @@ class Plugin{
         case "-i":
           $this->installPlugin($arg, $i, $data, $user);
         break;
+        case "-u":
+          
+        break;
         default:
           error($data, "unkownCommand");
+          //stop here if the user missing - in -i it will send this twise :)
+          return;
         break;
       }
     }
@@ -89,6 +94,11 @@ class Plugin{
     }
     $i++;
     $name = $arg[$i];
+    
+    if(in_array($name, $this->getInstalledPlugin()){
+      error($post, "pluginInstalled");
+      return;
+    }
     
     if(!file_exists("./lib/plugin/".$name."/plugin.php")){
       error($post, "unknownPlugin");
@@ -135,6 +145,14 @@ class Plugin{
       $buffer[] = "+".$row["dir"];
     
     bot_self($cid, "/pluginlist ".implode(",", $buffer));
+  }
+  
+  private function getInstalledPlugin() : array{
+    $query = $this->db->query("SELECT `dir` FROM `".DB_PREFIX."chat_plugin` GROUP BY dir");
+    $buffer = [];
+    while($row = $query->get())
+      $buffer[] = $dir;
+    return $buffer;
   }
 }
 
