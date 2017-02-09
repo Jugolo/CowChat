@@ -1143,10 +1143,6 @@ class Server{
         }
     }
 
-    private function ip(){
-        return $_SERVER['REMOTE_ADDR'];
-    }
-
     private function loginAction(string $username, string $password) : bool{
        $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_user` WHERE `username`='".$this->database->clean($username)."' AND `password`='".$this->database->clean(sha1($password))."'");
        if($this->database->isError){
@@ -1157,6 +1153,10 @@ class Server{
          return false;
 
        $_SESSION["uid"] = $data["id"];
+       //append in version 1.1: Update the ip so the user not will be logout in the next page request
+       $this->database->query("UPDATE `".DB_PREFIX."chat_user` SET
+       `ip`='".$this->database->clean(Request::ip())."'
+       WHERE `id`='".$data["id"]."'");
        return true;
     }
 
@@ -1181,12 +1181,14 @@ class Server{
         `username`,
         `nick`,
         `password`,
-        `avatar`
+        `avatar`,
+	`ip`
       ) VALUES (
         '".$this->database->clean($username)."',
         '".$this->database->clean($username)."',
         '".$this->database->clean(sha1($password))."',
-        'img/avatar.png'
+        'img/avatar.png',
+	'".$this->database->clean(Request::ip())."'
       )");
       
       if($this->database->isError){
@@ -1228,7 +1230,7 @@ class Server{
             exit("Database error");
         }
 
-        if(empty($row)){
+        if(empty($row) || $row["ip"] !== Request::ip()){
             return null;
         }
 
