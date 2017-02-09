@@ -139,12 +139,24 @@ class Plugin{
   }
   
   private function sendList(int $cid){
-    $query = $this->db->query("SELECT `dir` FROM `".DB_PREFIX."chat_plugin` GROUP BY dir");
-    $buffer = [];
-    while($row = $query->get())
-      $buffer[] = "+".$row["dir"];
-    
+    $insttaled = $this->getInstalledPlugin();
+    $all = $this->getAllPlugin();
+    $buffer = [];//all plugin will be cached in this buffer
+    foreach($all as $name){
+      $buffer[] = (in_array($name, $insttaled) ? "+" : "-").$name;
+    }
     bot_self($cid, "/pluginlist ".implode(",", $buffer));
+  }
+       
+  private function getAllPlugin() : array{
+    $dir = opendir("./lib/plugin/");
+    $buffer = [];
+    while($i = readdir($dir)){
+      if($i != "." && $i != ".." && is_dir("./lib/plugin/".$i)){
+        $buffer[] = $i;
+      }
+    }
+    return $buffer;
   }
   
   private function getInstalledPlugin() : array{
