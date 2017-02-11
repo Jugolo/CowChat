@@ -1190,7 +1190,7 @@ class Server{
         '".$this->database->clean($username)."',
         '".$this->database->clean($username)."',
         '".$this->database->clean(sha1($password))."',
-        'img/avatar.png',
+        '".$this->database->clean(Config::get("defaultAvatar"))."',
 	'".$this->database->clean(Request::ip())."'
       )");
       
