@@ -40,4 +40,7 @@ $conf["serverAdmin"] = [//the server admin. it is there id in the user table!!
   1
 ];
 
+//new users avatar
+$conf["defaultAvatar"] = "";
+
 return $conf;
