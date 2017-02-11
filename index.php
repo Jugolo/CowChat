@@ -52,7 +52,10 @@ class Server{
 	if(Request::get("isPost")){
         	$this->handlePost($user, $this->post("message"), Request::get("channel") ? Request::get("channel") : "Bot");
         }
-        $this->showMessage($user, $id);
+	    
+	if(!Request::get("noMessage")){//append in version 1.1
+           $this->showMessage($user, $id);
+	}
 
         if($this->database->isError){
             exit($this->database->getError());
