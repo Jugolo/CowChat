@@ -1,0 +1,4 @@
+How to upgrade.
+
+select the sql there has the version number you will upgrade from and rename chat.sql.
+visit setup.php and you chat is now upgraded.
