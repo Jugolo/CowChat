@@ -104,11 +104,9 @@ class Server{
     }
 
     private function showChat(User $user){
-      if($this->session("li")){
-        unset($_SESSION["li"]);
-      }
+      Request::unsetSession("li");
       if(Request::get("logout") && Request::get("sess_id") == session_id()){
-        unset($_SESSION["uid"]);
+	Request::unsetSession("uid");
         header("location:#");
         exit;
       }
@@ -255,7 +253,7 @@ class Server{
     }
 
     private function init_lastIndex() : int{
-      if(!$this->session("li")){
+      if(!Request::session("li")){
         $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_message` ORDER BY id DESC LIMIT 1");
         if($this->database->isError){
           exit($this->database->getError());
@@ -264,16 +262,12 @@ class Server{
         if(!$data){
           return 0;
         }else{
-	  $_SESSION["li"] = $data["id"];
+          Request::setSession("li", $data["id"]);
           return $data["id"];
         }
       }else{
-        return $this->session("li");
+        return Request::session("li");
       }
-    }
-
-    private function save_lastIndex(int $id){
-      $_SESSION["li"] = $id;
     }
     
     //message sektion
@@ -304,7 +298,7 @@ class Server{
     	}
 
         if($cache_id != -1){
-          $this->save_lastIndex($cache_id);
+	  Request::setSession("li", $cache_id);
         }
         $this->garbageMember();
     }
@@ -408,14 +402,14 @@ class Server{
     }
 
     private function is_flood($cid){
-        if(empty($_SESSION["flood"])){
-          $_SESSION["flood"] = [
-             $cid => []
-          ];
-        }elseif(empty($_SESSION["flood"][$cid])){
-          $_SESSION["flood"][$cid] = [];
+        if(!Request::session("flood")){
+	  Request::setSession("flood", [$cid=>[]]);
+        }elseif(empty(Request::session("flood")[$cid])){
+          $item = Request::session("flood");
+          $item[$cid]=[];
+          Request::setSession("flood", $item);
         }
-        $flood = $_SESSION["flood"][$cid];
+        $flood = Request::session("flood")[$cid];
 
         $count = 0;
         $new_flood = array();
@@ -434,7 +428,9 @@ class Server{
 
         if($count <= (int)Config::get("flood_count")){
             $new_flood[] = time();
-            $_SESSION["flood"][$cid] = $new_flood;
+	    $item = Request::get("flood");
+	    $item[$cid] = $new_flood;
+            Request::setSession("flood", $item);
             return true;
         }else{
             return false;
@@ -1155,7 +1151,7 @@ class Server{
        if(!$data)
          return false;
 
-       $_SESSION["uid"] = $data["id"];
+       Request::setSession("uid", $data["id"]);
        //append in version 1.1: Update the ip so the user not will be logout in the next page request
        $this->database->query("UPDATE `".DB_PREFIX."chat_user` SET
        `ip`='".$this->database->clean(Request::ip())."'
@@ -1197,7 +1193,7 @@ class Server{
       if($this->database->isError){
         exit($this->database->getError());
       }
-      $_SESSION["uid"] = $this->database->lastIndex();
+      Request::setSession("uid", $this->database->lastIndex());
 
       //wee insert user in globel channel (i will devolpe so it can be deleted)
       $this->database->query("INSERT INTO `".DB_PREFIX."chat_member` (
@@ -1224,11 +1220,11 @@ class Server{
 
     private function login(){
 
-        if(empty($_SESSION["uid"])){
+        if(!Request::session("uid")){
            return null;
         }
 
-        $row = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_user` WHERE `id`='".(int)$_SESSION["uid"]."'")->get();
+        $row = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_user` WHERE `id`='".(int)Request::session("uid")."'")->get();
         if($this->database->isError){
             exit("Database error");
         }
@@ -1259,46 +1255,6 @@ class Server{
     	
     	return $_POST[$key];
     }
-
-     public function session($name){
-         if(empty($_SESSION[$name]) || !is_array($_SESSION[$name]) && !trim($_SESSION[$name])){
-             return null;
-         }
-
-         return $_SESSION[$name];
-     }
-    
-    private function kick($channel,$message = null,$uid = 0, $sendMessage = true){
-		 if($uid === 0){
-			 $uid = $this->protokol->user['user_id'];
-		 }
-
-         if(!is_numeric($channel)){
-             $cid = $this->getCidFromChannel($channel,false);
-         }else{
-             $cid = (int)$channel;
-         }
-		 
-		 if($cid == 1){
-			 return;
-		 }
-
-         if($sendMessage){
-             $this->sendBotPrivMessage(
-                 1,
-                 "/kick ".$channel.($message !== null ? ' '.$message : null),
-                 "red",
-                 $uid,
-                 $uid//kun for denne bruger :D
-             );
-         }
-
-         $this->removeUserMember($cid, $uid);
-
-         if($sendMessage){
-             $this->sendBotMessage($cid, "/kick".($message !== null ? " ".$message : null),"red",$uid);
-         }
-     }
 
      private function htmlHead(array $config = []){
        ?>
