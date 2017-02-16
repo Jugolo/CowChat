@@ -17,6 +17,12 @@ class Request{
     $_SESSION[Config::get("cookie_prefix").$key] = $value;
   }
   
+  public static function unsetSession(string $key){
+    if(self::session($key)){
+      unset($_SESSION[Config::get("cookie_prefix").$key]);
+    }
+  }
+  
   public static function ip(){
     return $_SERVER['REMOTE_ADDR'];
   }
