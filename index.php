@@ -104,11 +104,9 @@ class Server{
     }
 
     private function showChat(User $user){
-      if($this->session("li")){
-        unset($_SESSION["li"]);
-      }
+      Request::unsetSession("li");
       if(Request::get("logout") && Request::get("sess_id") == session_id()){
-        unset($_SESSION["uid"]);
+	Request::unsetSession("uid");
         header("location:#");
         exit;
       }
