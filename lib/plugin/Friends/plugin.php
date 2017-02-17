@@ -15,6 +15,6 @@ class Friends_Plugin{
    }
    
    public function uninstall(){
-   
+     $this->db->query("DROP TABLE `".DB_PREFIX."chat_friends`;");
    }
 }
