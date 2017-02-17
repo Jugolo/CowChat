@@ -9,8 +9,32 @@ class Friends_Plugin{
    
    public function events(){
      return [
-       new PluginEventList("trigger", "system.user.login", "userlogin")
+       new PluginEventList("trigger", "system.user.login",     "userlogin"),
+       new PluginEventList("trigger", "client.javascript.end", "javascriptend")
      ];
+   }
+   
+   public function javascriptend(){
+      ?>
+<script>
+   commands["friend"] = function(data){
+      var arg = data.message.substr(8).split(" ");
+      for(var i=0;i<arg.length;i++){
+         switch(arg[i]){
+            case "login":
+               i++;
+               sys.currentPage().line(
+                  data.time,
+                  "",
+                  "Bot",
+                  "[color=green]Your friend "+arg[i]+" has just login[/color]"
+                  );
+              break;
+         }
+      }
+   };
+</script>
+      <?php
    }
    
    public function userlogin(User $user){
