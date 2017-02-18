@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `%prefix%chat_name`(
   `name` varchar(255) NOT NULL,
   `isPriv` tinyint(1) NOT NULL,
   `title` text NOT NULL,
+  `members` int(11) NOT NULL
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
 
