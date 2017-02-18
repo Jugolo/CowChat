@@ -6,7 +6,7 @@ class Request{
     return $_GET[$key];
   }
   
-  public static function post(string $post){
+  public static function post(string $key){
     if(empty($_POST[$key]) || !trim($_POST[$key])){
       return null;
     }
