@@ -1156,6 +1156,10 @@ class Server{
        $this->database->query("UPDATE `".DB_PREFIX."chat_user` SET
        `ip`='".$this->database->clean(Request::ip())."'
        WHERE `id`='".$data["id"]."'");
+       $data["ip"] = Request::ip();
+       $user = new User($this->database, $data);
+       Answer::setUser($user);
+       $this->plugin->trigger("system.user.login", [$user]);
        return true;
     }
 
@@ -1276,6 +1280,7 @@ class Server{
     alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
     return true;
    }
+   <?php $this->plugin->trigger("client.javascript.end", []);?>
   </script>
   <?php
     $this->getStyle();
