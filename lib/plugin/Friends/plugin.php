@@ -16,24 +16,24 @@ class Friends_Plugin{
    
    public function javascriptend(){
       ?>
-<script>
-   commands["friend"] = function(data){
-      var arg = data.message.substr(8).split(" ");
-      for(var i=0;i<arg.length;i++){
-         switch(arg[i]){
-            case "login":
-               i++;
-               sys.currentPage().line(
-                  data.time,
-                  "",
-                  "Bot",
-                  "[color=green]Your friend "+arg[i]+" has just login[/color]"
+   if(typeof commands !== "undefined"){
+      commands["friend"] = function(data){
+         var arg = data.message.substr(8).split(" ");
+         for(var i=0;i<arg.length;i++){
+            switch(arg[i]){
+               case "login":
+                  i++;
+                  sys.currentPage().line(
+                     data.time,
+                     "",
+                     "Bot",
+                     "[color=green]Your friend "+arg[i]+" has just login[/color]"
                   );
-              break;
+                  break;
+              }
          }
-      }
-   };
-</script>
+      };
+   }
       <?php
    }
    
