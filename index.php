@@ -50,7 +50,7 @@ class Server{
 		
 	//ajax only ;) if it is not ajax it will not work!
 	if(Request::get("isPost")){
-        	$this->handlePost($user, $this->post("message"), Request::get("channel") ? Request::get("channel") : "Bot");
+        	$this->handlePost($user, Request::post("message"), Request::get("channel") ? Request::get("channel") : "Bot");
         }
 	    
 	if(!Request::get("noMessage")){//append in version 1.1
@@ -1008,16 +1008,16 @@ class Server{
      private function doLogin(){
        $error = [];
 
-       if($this->post("login")){
-         if(!$this->post("username")){
+       if(Request::post("login")){
+         if(!Request::post("username")){
            $error[] = $this->lang["missing_username"];
          }
-         if(!$this->post("password")){
+         if(!Request::post("password")){
            $error[] = $this->lang["missing_password"];
          }
 
          if(count($error) == 0){
-           if($this->loginAction($this->post("username"), $this->post("password"))){
+           if($this->loginAction(Request::post("username"), Request::post("password"))){
              header("location: #");
              exit;
            }
@@ -1025,11 +1025,11 @@ class Server{
          }
        }
 
-       if($this->post("create")){
-         if(!$this->post("username")){
+       if(Request::post("create")){
+         if(!Request::post("username")){
            $error[] = $this->lang["missing_username"];
          }else{
-           $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_user` WHERE `username`='".$this->database->clean($this->post("username"))."'");
+           $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_user` WHERE `username`='".$this->database->clean(Request::post("username"))."'");
            if($this->database->isError){
             exit($this->database->getError());
            }
@@ -1037,18 +1037,18 @@ class Server{
              $error[] = $this->lang["username_taken"];
            }
          }
-         if(!$this->post("password")){
+         if(!Request::post("password")){
            $error[] = $this->lang["missing_password"];
          }
-         if(!$this->post("re_password")){
+         if(!Request::post("re_password")){
            $error[] = $this->lang["missing_re_password"];
          }
-         if($this->post("password") && $this->post("re_password") && $this->post("password") != $this->post("re_password")){
+         if(Request::post("password") && Request::post("re_password") && Request::post("password") != Request::post("re_password")){
            $error[] = $this->lang["password_mismatch"];
          }
      
          if(count($error) == 0){
-          $this->createAction($this->post("username"), $this->post("password"));
+          $this->createAction(Request::post("username"), Request::post("password"));
           header("location: #");
           exit;
          }
@@ -1256,14 +1256,6 @@ class Server{
     
     private function getSessionId(){
         return session_id();
-    }
-    
-    private  function post($key){
-    	if(empty($_POST[$key]) || !trim($_POST[$key])){
-    		return null;
-    	}
-    	
-    	return $_POST[$key];
     }
 
      private function htmlHead(array $config = []){
