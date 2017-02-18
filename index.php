@@ -1,7 +1,7 @@
 <?php
 //this will debug sql. Please only use it when it not life
 //define("SQL_DEBUG", true);
-define("CHAT_VERSION", "V1.1");
+define("CHAT_VERSION", "V1.2");
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
