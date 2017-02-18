@@ -813,7 +813,7 @@ class Server{
           $this->error($post, "invalidJoin");
           return;
         }
-        $new = false;
+        
         if($data = $this->isChannelExists($name)){
           if($this->isMemberOfChannel($user, $name)){
            $this->error(
@@ -825,13 +825,12 @@ class Server{
           $this->join($user->id(), $data["id"]);
         }else{
           $data = $this->createChannel($name);
-          $new = true;
           $this->join($user->id(), $data["id"], "o");
         }
 
         bot_self(1, "/join ".$data["name"]);
         bot($data["id"], "/join ".$user->nick());
-        if($new){
+        if($data["members"] == 0){
           bot($data["id"], "/mode ".$user->nick()." +o");
         }else{
           bot_self($data["id"], "/online ".$this->getOnline($data["id"]), is_admin($user->id()) ? "o" : "");
@@ -846,11 +845,13 @@ class Server{
       $this->database->query("INSERT INTO `".DB_PREFIX."chat_name` (
         `name`,
         `isPriv`,
-        `title`
+        `title`,
+	`members`
       ) VALUES (
         '".$this->database->clean($name)."',
         '".No."',
-        '".$this->database->clean($name)."'
+        '".$this->database->clean($name)."',
+	'0'
       );");
 
       if($this->database->isError){
@@ -858,10 +859,11 @@ class Server{
       }
 
       return [
-        'id'     => $this->database->lastIndex(),
-        'name'   => $name,
-        'isPriv' => No,
-        'title'  => $name
+        'id'      => $this->database->lastIndex(),
+        'name'    => $name,
+        'isPriv'  => No,
+        'title'   => $name,
+	'members' => 0,
       ];
     }
 
@@ -876,6 +878,9 @@ class Server{
 
     private function setUserMode(PostData $post, User $user, string $mode){
        if($mode[0] == "+"){
+	 if($mode == '+b'){
+            $this->database->query("UPDATE `".DB_PREFIX."chat_name` SET `members`=members-1 WHERE `id`='".$post->id()."'");
+	 }
          $this->database->query("UPDATE `".DB_PREFIX."chat_member` SET `mode`=CONCAT(mode, '".$mode[1]."') WHERE `uid`='".$user->id()."' AND `cid`='".$post->id()."' AND LOCATE('".$mode[1]."', `mode`) = 0");
        }elseif($mode[0] == "-"){
          if(!$this->hasUserMode($post->id(), $user->id(), $mode[1])){
@@ -910,6 +915,7 @@ class Server{
          if($this->database->isError){
            exit($this->database->getError());
          }
+	 $this->database->query("UPDATE `".DB_PREFIX."chat_name` SET `members`=members+1 WHERE `id`='".$cid."'");
      }
     
     private function getOnline($id) : string{
