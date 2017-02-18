@@ -1,4 +1,5 @@
 ALTER TABLE `%prefix%chat_user` ADD ip VARCHAR(255) AFTER avatar;
+ALTER TABLE `%prefix%chat_name` ADD `members` int(11) NOT NULL AFTER `title`;
 
 CREATE TABLE IF NOT EXISTS `%prefix%chat_plugin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
