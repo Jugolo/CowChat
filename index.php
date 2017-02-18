@@ -1280,6 +1280,7 @@ class Server{
     alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
     return true;
    }
+   <?php $this->plugin->trigger("client.javascript.end", []);?>
   </script>
   <?php
     $this->getStyle();
