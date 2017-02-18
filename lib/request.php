@@ -6,6 +6,13 @@ class Request{
     return $_GET[$key];
   }
   
+  public static function post(string $post){
+    if(empty($_POST[$key]) || !trim($_POST[$key])){
+      return null;
+    }
+    return $_POST[$key];
+  }
+  
   public static function session(string $key){
     if(empty($_SESSION[Config::get("cookie_prefix").$key])){
       return null;
