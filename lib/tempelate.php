@@ -39,7 +39,7 @@ class Tempelate{
           if(!file_exists($dir.$f.".style")){
             return false;
           }
-          $s = $this->render(file_get_contents($dir."/".$f.".style"));
+          $s = $this->render(file_get_contents($dir.$f.".style"));
           if(!$s){
             return false;
           }
