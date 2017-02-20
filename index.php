@@ -1144,8 +1144,8 @@ class Server{
             exit("Header is allray sendt!");
         }
 
-        if(!$this->isSessionStarted()){
-            $this->startSession();
+        if(session_id() == ''){
+            session_start();
         }
     }
 
@@ -1245,18 +1245,6 @@ class Server{
         }
 
         return new User($this->database, $row);
-    }
-    
-    private function startSession(){
-        session_start();
-    }
-    
-    private function isSessionStarted(){
-        return (session_id() != '');
-    }
-    
-    private function getSessionId(){
-        return session_id();
     }
 
      private function htmlHead(array $config = []){
