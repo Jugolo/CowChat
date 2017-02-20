@@ -12,6 +12,8 @@ $conf["db"] = [
 
 //start channel the user join if the user is not in a channel
 $conf["startChannel"] = "#start";
+//use this as default style
+$conf["defaultStyle"] = "star";
 
 //cookie prefix allow you to have more chat installed
 $conf["cookie_prefix"] = "chat_";
