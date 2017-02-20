@@ -965,6 +965,10 @@ class Server{
       include 'lib/plugin.php';//new in V1.1
       include 'lib/admin.php';//new in V1.1
       include 'lib/command.php';//new in V1.1
+      if(!$this->ajax){
+	      include "lib/tempelate.php";//new in V1.3
+	      $this->tempelate = new Tempelate();//new in V1.3
+      }
 
       if(!file_exists("./lib/config.php")){
           $this->missing_config();
@@ -1049,6 +1053,9 @@ class Server{
           exit;
          }
        }
+	     
+       $this->showTempelate("login");
+       return;
 
        $this->htmlHead([
          "title" => $this->lang["login_title"],
@@ -1241,6 +1248,21 @@ class Server{
 
         return new User($this->database, $row);
     }
+	
+	private function showTempelate(string $name){
+		if(Request::session("template")){
+			$this->tempelate->path(Request::session("tempelate"));
+			if($this->tempelate->parse($name.".style")){
+				return;
+			}
+		}
+		
+		//okay wee has no option wee take the default style
+		$this->tempelate->path(Config::get("defaultStyle"));
+		if(!$this->tempelate->parse($name.".style")){
+			exit("Failed to show the page");
+		}
+	}
 
      private function htmlHead(array $config = []){
        ?>
