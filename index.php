@@ -350,9 +350,7 @@ class Server{
           $sql = " LEFT JOIN `".DB_PREFIX."chat_member` as cm ON cm.uid=user.id";
           $end = " AND cm.cid='".$id."'";
         }
-    	$sql = $this->database->prepare("SELECT user.id FROM `".DB_PREFIX."chat_user` AS user".$sql." WHERE BINARY user.nick={nick}".$end);
-        $sql->add("nick",$nick);
-        $data = $sql->done();
+    	$data = $this->database->query("SELECT user.id FROM `".DB_PREFIX."chat_user` AS user".$sql." WHERE BINARY user.nick='".$this->database->clean($nick)."'".$end);
         if($this->database->isError)
             exit($this->database->getError());
     	$row = $data->get();
@@ -466,7 +464,7 @@ class Server{
 		return;
 	}
 
-    	$datas = $this->database->prepare("INSERT INTO `".DB_PREFIX."chat_message`
+    	$datas = $this->database->query("INSERT INTO `".DB_PREFIX."chat_message`
             (
             `uid`,
             `cid`,
@@ -480,13 +478,10 @@ class Server{
                 '".$data->id()."',
                 '".No."',
                 NOW(),
-                {message},
+                '".$this->database->clean($data->getMessage())."',
                 '".No."',
                 '0'
                 )");
-
-        $datas->add("message",$data->getMessage());
-        $datas->done();
 
         if($this->database->isError){
             exit($this->database->getError());

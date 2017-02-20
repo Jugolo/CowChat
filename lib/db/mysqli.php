@@ -39,10 +39,6 @@ class DatabaseHandler{
         return new DatabaseResult($sql,$this->head,$result);
     }
 
-    function prepare($sql){
-        return new DatabasePrepare($sql,$this);
-    }
-
     function clean($context){
         return $this->head->escape_string($context);
     }
@@ -89,27 +85,5 @@ class DatabaseResult{
 
     function get(){
         return @$this->result->fetch_assoc();
-    }
-}
-
-class DatabasePrepare{
-    private $sql = null;
-    private $main = null;
-
-    function __construct($sql,DatabaseHandler $main){
-        $this->sql = $sql;
-        $this->main = $main;
-    }
-
-    function add($name,$context){
-        $this->sql = str_replace(
-            "{".$name."}",
-            "'".$this->main->clean($context)."'",
-            $this->sql
-        );
-    }
-
-    function done(){
-        return $this->main->query($this->sql);
     }
 }
