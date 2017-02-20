@@ -18,7 +18,7 @@ class Tempelate{
       return false;
     }
     echo $arg;
-    return false;
+    return true;
   }
     
   private function render(string $source){
