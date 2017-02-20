@@ -33,7 +33,7 @@ class Tempelate{
             if(trim($item[$i]) == "" || !file_exists($dir."/".$item[$i])){
               return false;
             }
-            $dir .= ."/".$item[$i];
+            $dir .= "/".$item[$i];
           }
           
           if(!file_exists($dir."/".$f.".style")){
