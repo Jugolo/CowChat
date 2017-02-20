@@ -30,13 +30,13 @@ class Tempelate{
           $f = array_pop($item);
           $dir = $this->path;
           for($i=0;$i<count($item);$i++){
-            if(trim($item[$i]) == "" || !file_exists($dir."/".$item[$i])){
+            if(trim($item[$i]) == "" || !file_exists($dir.$item[$i])){
               return false;
             }
-            $dir .= "/".$item[$i];
+            $dir .= $item[$i]."/";
           }
           
-          if(!file_exists($dir."/".$f.".style")){
+          if(!file_exists($dir.$f.".style")){
             return false;
           }
           $s = $this->render(file_get_contents($dir."/".$f.".style"));
