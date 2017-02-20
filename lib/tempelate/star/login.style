@@ -1,0 +1,56 @@
+@-include lib.head-@
+<div id='left-container'>
+ <div>
+  <h3>@-lang online_user-@</h3>
+  @-foreach nick : online-@
+  <div>@-nick-@</div>
+  @-end-@
+ </div>
+</div>
+<div id='main-container' class='login'>
+ <div id='login-left'>
+ <form action='#' method='post'>
+  <table>
+   <caption>@-lang login-@</caption>
+   <tr>
+    <th>@-lang username-@</th>
+    <td><input type='text' name='username'></td>
+   </tr>
+   <tr>
+    <th>@-lang password-@</th>
+    <td><input type='password' name='password'></td>
+   </tr>
+   <tr>
+    <td colspan='2'>
+     <input type='submit' name='login' value='@-echo login_now-@'>
+    </td>
+   </tr>
+  </table>
+ </form>
+ </div>
+ <div id='login-right'>
+ <form action='#' method='post'>
+  <table>
+   <caption>@-lang create_account-@</caption>
+   <tr>
+    <th>@-lang username-@</th>
+    <td><input type='username' name='username'></td>
+   </tr>
+   <tr>
+    <th>@-lang password-@</th>
+    <td><input type='password' name='password'></td>
+   </tr>
+   <tr>
+    <th>@-lang re_password-@</th>
+    <td><input type='password' name='re_password'></td>
+   </tr>
+   <tr>
+    <td colspan='2'>
+     <input type='submit' name='create' value='@-lang create_account-@'>
+    </td>
+   </tr>
+  </table>
+ </form>
+ </div>
+</div>
+@-include lib.bottom-@
