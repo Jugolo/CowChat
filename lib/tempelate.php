@@ -13,14 +13,40 @@ class Tempelate{
     if(!file_exists($this->path.$file)){
       return false;
     }
-    $source = file_get_contents($this->path.$file);
+    $arg = $this->render(file_get_contents($this->path.$file));
+    if(!$arg){
+      return false;
+    }
+    echo $arg;
+    return false;
+  }
+    
+  private function render(string $source){
     $preg = preg_match_all("/@-([a-z]*) (.*?[^-@])-@/", $source, $reg);
     for($i=0;$i<$preg;$i++){
       switch($reg[1][$i]){
+        case "include":
+          $item = explode(".", $reg[2][$i]);
+          $f = array_pop($item);
+          $dir = $this->path;
+          for($i=0;$i<count($item);$i++){
+            if(trim($item[$i]) == "" || !file_exists($dir."/".$item[$i])){
+              return false;
+            }
+            $dir .= ."/".$item[$i];
+          }
           
+          if(!file_exists($dir."/".$f.".style")){
+            return false;
+          }
+          $s = $this->render(file_get_contents(implode("/", $item)."/".$f));
+          if(!$s){
+            return false;
+          }
+          $source = str_replace($reg[0][$i], $s, $source);
+          break;
       }
     }
-    echo $source;
-    return true;
+    return $source;
   }
 }
