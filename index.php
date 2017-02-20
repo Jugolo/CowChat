@@ -7,8 +7,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 class Server{
      private $variabel         = array();
-     private $lang             = array();
-     private $langCache        = array();
      private $ajax             = false;
      private $basepart         = null;
      private $database         = null;
@@ -34,7 +32,6 @@ class Server{
           if($this->ajax){
             exit("login");
           }
-          $this->init_lang();
           $this->doLogin();
           return;
         }
@@ -42,7 +39,6 @@ class Server{
         Answer::setUser($user);
 
         if(!$this->ajax){
-          $this->init_lang();
           $this->showChat($user);
           return;
         }
@@ -158,29 +154,14 @@ class Server{
     }
 	 
      private function init_lang(){
-         $this->setLang(Config::get("locale"));
+         return $this->setLang(Config::get("locale"));
      }
 
      function setLang($name){
-         if(!empty($this->langCache[$name]) && is_array($this->langCache[$name])){
-             $this->lang = $this->langCache[$name];
-             return;//super :)
-         }
          $locale = array();
-
-         $langUse = "./locale/".$name."/server.php";
-
-         if(file_exists($langUse)){
-	   include $langUse;
-	   $this->lang = $this->langCache[$name] = $locale;
-	 }else{
-           if(!empty($this->langCache['English']) && is_array($this->langCache['English'])){
-              $this->lang = $this->langCache['English'];
-              return;
-           }
-           include "./locale/English/server.php";
-           $this->lang = $this->langCache['English'] = $locale;
-         }
+	 $langUse = "./locale/".$name."/server.php";
+	 include file_exists($langUse) ? $langUse : "./locale/English/server.php";
+	 return $locale;
      }
 
 
@@ -966,16 +947,18 @@ class Server{
       include 'lib/plugin.php';//new in V1.1
       include 'lib/admin.php';//new in V1.1
       include 'lib/command.php';//new in V1.1
+	    
+      if(!file_exists("./lib/config.php")){
+	      $this->missing_config();
+      }
+      $data = Config::init();    
+	    
       if(!$this->ajax){
 	      include "lib/tempelate.php";//new in V1.3
 	      $this->tempelate = new Tempelate();//new in V1.3
+	      $this->tempelate->setLang($this->init_lang());
       }
 
-      if(!file_exists("./lib/config.php")){
-          $this->missing_config();
-      }
-
-      $data = Config::init();
       $this->init_db(
          $data["host"],
          $data["user"],
