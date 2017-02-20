@@ -13,6 +13,7 @@ class Server{
      private $basepart         = null;
      private $database         = null;
      private $plugin           = null;//append in version 1.1
+     private $tempelate        = null;
      
     function __construct($websocket = false){
         $this->ajax = (!empty($_GET["_ajax"]));
