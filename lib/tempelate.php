@@ -1,5 +1,11 @@
 <?php
 class Tempelate{
+  private $path;
+  
+  public function path(string $dir){
+    $this->path = $dir;
+  }
+  
   public function parse($file) : bool{
     if(!file_exists($file)){
       return false;
