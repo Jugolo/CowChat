@@ -2,7 +2,7 @@
 class Tempelate{
   public function parse($file) : bool{
     if(!file_exists($file)){
-      return true;
+      return false;
     }
     $source = file_get_contents($file);
     $preg = preg_match_all("/@-([a-z]*) (.*?[^-@])-@/", $source, $reg);
@@ -12,5 +12,6 @@ class Tempelate{
       }
     }
     echo $source;
+    return true;
   }
 }
