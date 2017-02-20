@@ -29,11 +29,11 @@ class Tempelate{
           $item = explode(".", $reg[2][$i]);
           $f = array_pop($item);
           $dir = $this->path;
-          for($i=0;$i<count($item);$i++){
-            if(trim($item[$i]) == "" || !file_exists($dir.$item[$i])){
+          for($d=0;$d<count($item);$d++){
+            if(trim($item[$d]) == "" || !file_exists($dir.$item[$d])){
               return false;
             }
-            $dir .= $item[$i]."/";
+            $dir .= $item[$d]."/";
           }
           
           if(!file_exists($dir.$f.".style")){
