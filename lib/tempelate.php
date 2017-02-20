@@ -10,10 +10,10 @@ class Tempelate{
   }
   
   public function parse($file) : bool{
-    if(!file_exists($this->dir.$file)){
+    if(!file_exists($this->path.$file)){
       return false;
     }
-    $source = file_get_contents($this->dir.$file);
+    $source = file_get_contents($this->path.$file);
     $preg = preg_match_all("/@-([a-z]*) (.*?[^-@])-@/", $source, $reg);
     for($i=0;$i<$preg;$i++){
       switch($reg[1][$i]){
