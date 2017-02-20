@@ -1252,14 +1252,14 @@ class Server{
 	
 	private function showTempelate(string $name){
 		if(Request::session("template")){
-			$this->tempelate->path(Request::session("tempelate"));
+			$this->tempelate->path("./lib/tempelate/".Request::session("tempelate"));
 			if($this->tempelate->parse($name.".style")){
 				return;
 			}
 		}
 		
 		//okay wee has no option wee take the default style
-		$this->tempelate->path(Config::get("defaultStyle"));
+		$this->tempelate->path("./lib/tempelate/".Config::get("defaultStyle"));
 		if(!$this->tempelate->parse($name.".style")){
 			exit("Failed to show the page");
 		}
