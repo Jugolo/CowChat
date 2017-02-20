@@ -198,7 +198,7 @@ class Server{
     
     //inaktiv sektion
     private function garbageMember(){
-        $data = $this->database->query("SELECT cm.isInAktiv, cm.id, cm.uid , us.nick, cm.cid, cn.name
+        $data = $this->database->query("SELECT cm.isInAktiv, cm.id, cm.uid , us.nick, cm.cid, cn.name, cn.members
         FROM `".DB_PREFIX."chat_member` AS cm
         LEFT JOIN `".DB_PREFIX."chat_user` AS us ON us.id = cm.uid
         LEFT JOIN `".DB_PREFIX."chat_name` AS cn ON cn.id=cm.cid
@@ -232,7 +232,8 @@ class Server{
           "/leave ".$row["nick"]
         );
         
-        $this->removeUserMember($row["cid"], $row["uid"]);
+	//In version 1.3 wee handle the data wee allredy know(How many members there are) Wee will avoid to calculate it 
+        $this->removeUserMember($row["cid"], $row["uid"], $row["members"]);
         bot_self_other(
           $row["uid"],
           1,
@@ -634,7 +635,7 @@ class Server{
 			 return;
 		 }
 		 
-		$query = $this->database->query("SELECT `cid`, `uid` FROM `".DB_PREFIX."chat_member` WHERE `cid`='".$post->id()."' AND `uid`='".$user->id()."'");
+	 $query = $this->database->query("SELECT `cid`, `uid` FROM `".DB_PREFIX."chat_member` WHERE `cid`='".$post->id()."' AND `uid`='".$user->id()."'");
          if($this->database->isError){
              exit($this->database->getError());
          }
@@ -1324,23 +1325,33 @@ class Server{
         echo '<link rel="alternate" type="text/css" href="style/'.$buffer[$i].'/style.css">';
      }
 
-     private function removeUserMember(int $cid, int $uid){
+     private function removeUserMember(int $cid, int $uid, int $members = -1){
         $this->database->query("DELETE FROM `".DB_PREFIX."chat_member`
                                 WHERE `uid`='".$uid."'
                                 AND `cid`='".$cid."'");
         if($this->database->isError){
           exit($this->database->getError());
         }
-
-        $data = $this->database->query("SELECT COUNT(`id`) AS id FROM `".DB_PREFIX."chat_member` WHERE `cid`='".$cid."' AND LOCATE('b', `mode`) = 0;");
-        if($this->database->isError){
-          exit($this->database->getError());
-        }
-        if(($row = $data->get()) && $row["id"] == 0){
-           $this->database->query("DELETE FROM `".DB_PREFIX."chat_name` WHERE `id`='".$cid."'");
-           $this->database->query("DELETE FROM `".DB_PREFIX."chat_message` WHERE `cid`='".$cid."'");
-           $this->database->query("DELETE FROM `".DB_PREFIX."chat_member` WHERE `cid`='".$cid."'");
-        }
+	     
+	if($members == -1){
+		$data = $this->database->query("SELECT COUNT(`id`) AS id FROM `".DB_PREFIX."chat_member` WHERE `cid`='".$cid."' AND LOCATE('b', `mode`) = 0;");
+		if($this->database->isError){
+			exit($this->database->getError());
+		}
+		if(($row = $data->get()){
+			$members = $row["id"];
+		}
+	}else{
+		$members--;//wee has remove one user
+	}
+		   
+        if($members == 0){
+               $this->database->query("DELETE FROM `".DB_PREFIX."chat_name` WHERE `id`='".$cid."'");
+                $this->database->query("DELETE FROM `".DB_PREFIX."chat_message` WHERE `cid`='".$cid."'");
+                $this->database->query("DELETE FROM `".DB_PREFIX."chat_member` WHERE `cid`='".$cid."'");
+        }else{
+		$this->database->query("UPDATE `".DB_PREFIX."chat_name` SET `members`=members-1 WHERE `id`='".$cid."'");
+	}
      }
  }
  
