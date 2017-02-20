@@ -1344,7 +1344,7 @@ class Server{
 		if($this->database->isError){
 			exit($this->database->getError());
 		}
-		if(($row = $data->get()){
+		if(($row = $data->get())){
 			$members = $row["id"];
 		}
 	}else{
