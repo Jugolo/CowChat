@@ -466,7 +466,7 @@ class Server{
 		return;
 	}
 
-    	$datas = $this->database->prepare("INSERT INTO `".DB_PREFIX."chat_message`
+    	$datas = $this->database->query("INSERT INTO `".DB_PREFIX."chat_message`
             (
             `uid`,
             `cid`,
@@ -480,13 +480,10 @@ class Server{
                 '".$data->id()."',
                 '".No."',
                 NOW(),
-                {message},
+                '".$this->database->clean($data->getMessage())."',
                 '".No."',
                 '0'
                 )");
-
-        $datas->add("message",$data->getMessage());
-        $datas->done();
 
         if($this->database->isError){
             exit($this->database->getError());
