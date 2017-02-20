@@ -1,6 +1,11 @@
 <?php
 class Tempelate{
   private $path;
+  private $lang = [];
+  
+  public function setLang(array $lang){
+    $this->lang = $lang;
+  }
   
   public function path(string $dir){
     if(!preg_match("/\/$/", $dir)){
@@ -25,6 +30,13 @@ class Tempelate{
     $preg = preg_match_all("/@-([a-z]*) (.*?[^-@])-@/", $source, $reg);
     for($i=0;$i<$preg;$i++){
       switch($reg[1][$i]){
+        case "lang":
+          $lang = "";
+          if(!empty($this->lang[$reg[2][$i]])){
+            $lang = $this->lang[$reg[2][$i]];
+          }
+          $source = str_replace($reg[0][$i], $lang, $source);
+        break;
         case "include":
           $item = explode(".", $reg[2][$i]);
           $f = array_pop($item);
