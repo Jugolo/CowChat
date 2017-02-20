@@ -27,9 +27,16 @@ class Tempelate{
   }
     
   private function render(string $source){
-    $preg = preg_match_all("/@-([a-z]*) (.*?[^-@])-@/", $source, $reg);
+    $preg = preg_match_all("/@-(@?[a-z]*) (.*?[^-@])-@/", $source, $reg);
     for($i=0;$i<$preg;$i++){
       switch($reg[1][$i]){
+        case "echo":
+        case "@echo":
+          if($this->getExpresion($reg[2][$i], $expresion)){
+             $source = str_replace($reg[0][$i], $reg[1][$i] == "echo" ? $expresion : htmlentities($expresion), $source);
+          }else{
+            return false;
+          }
         case "lang":
           $lang = "";
           if(!empty($this->lang[$reg[2][$i]])){
@@ -60,5 +67,8 @@ class Tempelate{
       }
     }
     return $source;
+  }
+  
+  private function getExpresion($str, &$expresion){
   }
 }
