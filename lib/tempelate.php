@@ -73,6 +73,28 @@ class Tempelate{
           }
           $buffer .= $s["source"];
           break;
+          case "foreach":
+            $scope = substr($block, $pos+1);
+            $b=0;
+            $identify = $this->getIdentify(ltrim($scope), $b);
+            if(!$identify){
+              return false;
+            }
+            $this->removeJunk($scope, $b);
+            if($scope[$b] != ":"){
+              return false;
+            }
+            
+            $arg = $this->expresion();
+            if(!$arg || !is_array($arg)){
+              return false;
+            }
+            
+            $bl = $this->render($source, $i);
+            if(!$bl || $bl["type"] != "block"){
+              return false;
+            }
+          break;
         }
       }else{
         $buffer .= $source[$i];
