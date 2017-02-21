@@ -187,6 +187,21 @@ class Tempelate{
           return "(!empty(".$this->primary($str, $i)."))";
       }
       return "\$this->variabel['".$e."']";
+    }elseif($str[$i] == "_" && $str[$i+1] == "_"){
+      //wee got the name
+      $i+=2;
+      $identify = $this->getIdentify($str, $i);
+      if(!$identify || $str[$i] != "_" || $str[$i+1] != "_"){
+        return false;
+      }
+      $i += 2;
+      $this->removeJunk($str, $i);
+      switch($identify){
+        case "DIR":
+          return "'".$this->path."'";
+        default:
+          return false;
+      }
     }
     
     return false;
