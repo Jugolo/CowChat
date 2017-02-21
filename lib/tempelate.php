@@ -22,10 +22,10 @@ class Tempelate{
     $source = file_get_contents($this->path.$file);
     $arg = $this->render($source, $i);
     //controle if got to the end and the render not return true. true is return when @-end-@
-    if(strlen($source)-1 > $i || $arg["type"] === "block"){
+    if(strlen($source)-1 > $i || !$arg){
       return false;
     }
-    echo $arg["source"];
+    eval("?> {$arg} <?php ");
     return true;
   }
     
@@ -67,10 +67,10 @@ class Tempelate{
           }
           $b = 0;
           $s = $this->render(file_get_contents($dir.$f.".style"), $b);
-          if(!$s || $s["type"] != "code"){
+          if(!$s){
             return false;
           }
-          $buffer .= $s["source"];
+          $buffer .= $s;
           break;
           case "foreach":
             $scope = substr($block, $pos+1);
@@ -114,53 +114,13 @@ class Tempelate{
         $buffer .= $source[$i];
       }
     }
-    return ["type" => "code", "source" => $buffer];
-    $preg = preg_match_all("/@-(@?[a-z]*) (.*?[^-@])-@/", $source, $reg);
-    for($i=0;$i<$preg;$i++){
-      switch($reg[1][$i]){
-        case "echo":
-        case "@echo":
-          if($this->getExpresion($reg[2][$i], $expresion)){
-             $source = str_replace($reg[0][$i], $reg[1][$i] == "echo" ? $expresion : htmlentities($expresion), $source);
-          }else{
-            return false;
-          }
-        case "lang":
-          $lang = "";
-          if(!empty($this->lang[$reg[2][$i]])){
-            $lang = $this->lang[$reg[2][$i]];
-          }
-          $source = str_replace($reg[0][$i], $lang, $source);
-        break;
-        case "include":
-          $item = explode(".", $reg[2][$i]);
-          $f = array_pop($item);
-          $dir = $this->path;
-          for($d=0;$d<count($item);$d++){
-            if(trim($item[$d]) == "" || !file_exists($dir.$item[$d])){
-              return false;
-            }
-            $dir .= $item[$d]."/";
-          }
-          
-          if(!file_exists($dir.$f.".style")){
-            return false;
-          }
-          $s = $this->render(file_get_contents($dir.$f.".style"));
-          if(!$s){
-            return false;
-          }
-          $source = str_replace($reg[0][$i], $s, $source);
-          break;
-      }
-    }
-    return $source;
+    return $buffer;
   }
   
   private function isIdentify($str){
     return ($o=ord($str)) >= 97 && $o <= 122 || $o >= 65 && $o <= 90;
   }
-  
+ 
   private function getIdentify($str, &$i){
     $buffer = "";
     for(;$i<strlen($str);$i++){
