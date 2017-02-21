@@ -81,7 +81,7 @@ class Tempelate{
               return false;
             }
             
-            $arg = $this->expresion($scope, $b);
+            $arg = $this->getExpresion($scope, $b);
             if(!$arg){
               return false;
             }
@@ -134,6 +134,70 @@ class Tempelate{
       }
     }
     return $source;
+  }
+  
+  private function getIdentify($str, &$i){
+    $buffer = "";
+    for(;$i<strlen($str);$i++){
+      $o = ord($str[$i]);
+      if($o >= 97 && $o <= 122 || $o >= 65 && $o <= 90){
+        $buffer .= $str[$i];
+      }else{
+        $i--;
+        break;
+      }
+    }
+    return $buffer;
+  }
+  
+  private function getExpresion($str, &$i){
+    $this->removeJunk($str, $i);
+    return $this->expresion($str, $i);
+  }
+  
+  private function expresion($str, &$i){
+    $e = $this->primary($str, $i);
+    if(!$e){
+      return false;
+    }
+    switch(substr($str, $i, 2)){
+      case "&&":
+        $i += 2;
+        $this->removeJunk($str, $i);
+        $b = $this->primary($str, $i);
+        if(!$b){
+          return false;
+        }
+        return $e." && ".$b;
+      case "||":
+        $i += 2;
+        $this->removeJunk($str, $i):
+        $b = $this->primary($str, $i);
+        if(!$b){
+          return $e." || ".$b;
+        }
+    }
+    return $e;
+  }
+  
+  private function primary($str, &$i){
+    if($this->isIdentify($str[$i])){
+      $e = $this->getIdentify($str, $i);
+      $this->removeJunk($str, $i);
+      switch($e){
+        case "true":
+        case "false":
+        case "null":
+          return $e;
+        case "not":
+          return "!".$this->primary($str, $i);
+        case "exist":
+          return "(!empty(".$this->primary($str, $i).")";
+      }
+      return "\$this->variabel['".$e."']";
+    }
+    
+    return false;
   }
   
   private function renderBlock($str, &$i){
