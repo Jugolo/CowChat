@@ -1011,7 +1011,7 @@ class Server{
        }
        $this->tempelate->putVariabel("title", $this->tempelate->getLang("login_title"));
        if(count($error) > 0){
-	     $this->tempelate->putVariabel("error", implode("\r\n", $error));
+	     $this->tempelate->putVariabel("error", implode("\\r\\n", $error));
        }
        $this->onlineUsers();
        $this->showTempelate("login");
