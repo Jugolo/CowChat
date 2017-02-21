@@ -994,10 +994,10 @@ class Server{
 
        if(Request::post("login")){
          if(!Request::post("username")){
-           $error[] = $this->lang["missing_username"];
+           $error[] = $this->tempelate->getLang("missing_username");
          }
          if(!Request::post("password")){
-           $error[] = $this->lang["missing_password"];
+           $error[] = $this->tempelate->getLang("missing_password");
          }
 
          if(count($error) == 0){
@@ -1005,30 +1005,30 @@ class Server{
              header("location: #");
              exit;
            }
-           $error[] = $this->lang["wrong_login"];
+           $error[] = $this->tempelate->getLang("wrong_login");
          }
        }
 
        if(Request::post("create")){
          if(!Request::post("username")){
-           $error[] = $this->lang["missing_username"];
+           $error[] = $this->tempelate->getLang("missing_username");
          }else{
            $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_user` WHERE `username`='".$this->database->clean(Request::post("username"))."'");
            if($this->database->isError){
             exit($this->database->getError());
            }
            if($query->get()){
-             $error[] = $this->lang["username_taken"];
+             $error[] = $this->tempelate->getLang("username_taken");
            }
          }
          if(!Request::post("password")){
-           $error[] = $this->lang["missing_password"];
+           $error[] = $this->tempelate->getLang("missing_password");
          }
          if(!Request::post("re_password")){
-           $error[] = $this->lang["missing_re_password"];
+           $error[] = $this->tempelate->getLang("missing_re_password");
          }
          if(Request::post("password") && Request::post("re_password") && Request::post("password") != Request::post("re_password")){
-           $error[] = $this->lang["password_mismatch"];
+           $error[] = $this->tempelate->getLang("password_mismatch");
          }
      
          if(count($error) == 0){
