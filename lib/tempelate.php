@@ -85,14 +85,19 @@ class Tempelate{
               return false;
             }
             
-            $arg = $this->expresion();
+            $arg = $this->expresion($scope, $b);
             if(!$arg || !is_array($arg)){
               return false;
             }
             
-            $bl = $this->render($source, $i);
-            if(!$bl || $bl["type"] != "block"){
-              return false;
+            $scopeBlock = $this->getBlock($source, $i);
+            foreach($arg as $value){
+              $this->variabel[$identify] = $value;
+              $n = 0;
+              $b = $this->render($scopeBlock, $b);
+              if(!$b || $b["type"] != "code"){
+                
+              }
             }
           break;
         }
