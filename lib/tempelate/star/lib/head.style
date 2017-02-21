@@ -31,9 +31,9 @@
   <script src='@-echo dir-@'></script>
   @-end-@
   @-end-@
-  @-if exist raw_js-@
+  @-if exist rawjs-@
   <script>
-    @-echo raw_js-@
+    @-echo rawjs-@
   </script>
   @-end-@
 </head>
