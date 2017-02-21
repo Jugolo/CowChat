@@ -81,6 +81,8 @@ class Tempelate{
               return false;
             }
             
+            $b++;
+            
             $arg = $this->getExpresion($scope, $b);
             if(!$arg){
               return false;
@@ -215,7 +217,7 @@ class Tempelate{
   }
   
   private function removeJunk($str, &$i){
-    while($str[$i] == " " || $str[$i] == "\r" || $str[$i] == "\n"){
+    while($i<strlen($str) && ($str[$i] == " " || $str[$i] == "\r" || $str[$i] == "\n")){
       $i++;
     }
   }
