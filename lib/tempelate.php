@@ -5,7 +5,7 @@ class Tempelate{
   private $variabel = [];
   private $lang = [];
   
-  public function Tempelate(Plugin $plugin){
+  public function __construct(Plugin $plugin){
     $this->plugin = $plugin;
   }
   
