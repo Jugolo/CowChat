@@ -97,7 +97,7 @@ class Server{
         $js .= "send('Bot', '/join ".Config::get("startChannel")."');";
       }
       $js .= "});";
-      return $js;
+      $this->tempelate->putVariabel("rawjs", $js);
     }
 
     private function showChat(User $user){
@@ -107,50 +107,22 @@ class Server{
         header("location:#");
         exit;
       }
-      $this->htmlHead([
-        "title" => $this->lang["chat_index"],
-        "js" => [
-          "js/main.js",
-          "js/page.js",
-          "js/pages.js",
-          "js/userlist.js",
-          "js/user.js",
-          "js/command.js",
-          "js/bbcode.js",
-          "js/lang/".Config::get("locale").".js",
-        ],
-        "raw_js" => $this->rawJs($user)
+      $this->tempelate->putVariabel("title", $this->tempelate->getLang("title"));
+      $this->tempelate->putVariabel("avatar", $user->avatar());
+      $this->tempelate->putVariabel("username", $user->username());
+      $this->tempelate->putVariabel("js", [
+	      "js/main.js",
+	      "js/page.js",
+	      "js/pages.js",
+	      "js/userlist.js",
+	      "js/user.js",
+	      "js/command.js",
+	      "js/bbcode.js",
+	      "js/lang/".Config::get("locale").".js",
       ]);
+      $this->rawJs($user);
       $this->plugin->trigger("client.loaded", []);
-      ?>
-<div id='chat-top'>
-
-</div>
-<div id='chat-left'>
- <div id='pageContainer'>
- </div>
- <div id='inputContainer'>
-  <input id='txt'>
- </div>
-</div>
-<div id='chat-right'>
- <div id='user-menu'>
-   <div id='user-avatar' style='background-image:url("<?php echo $user->avatar();?>");'>
-   </div>
-   <div id='user-info'>
-     <h3><?php echo $user->username();?></h3>
-     <ul>
-       <li><a href='#' onclick='send("Bot", "/exit");'><?php echo $this->lang["logout"];?></a></li>
-     </ul>
-   </div>
- </div>
- <div id='ulist-container'>
-
- </div>
-</div>
-      <?php
-
-      $this->htmlBottom();
+      $this->showTempelate("main");
     }
 	 
      private function init_lang(){
@@ -1190,72 +1162,6 @@ class Server{
 			exit("Failed to show the page");
 		}
 	}
-
-     private function htmlHead(array $config = []){
-       ?>
-<!DOCTYPE html>
-<html>
- <head>
-  <?php echo !empty($config["title"]) ? "<title>".$config["title"]."</title>" : "";?>
-  <script>
-   const onload = [];
-   function load(){
-     for(var i=0;i<onload.length;i++)
-      onload[i]();
-   }
-   window.onerror = function(msg, url, linenumber) {
-    if(typeof sys !== undefined){
-     sys.getPage("console").line("", "", "JavascriptError", "[color=red]"+msg+". On line "+linenumber+" In file "+url+"[/color]");
-      
-    }
-    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
-    return true;
-   }
-   <?php $this->plugin->trigger("client.javascript.end", []);?>
-  </script>
-  <?php
-    $this->getStyle();
-    if(!empty($config["error"])){
-      if(!is_array($config["error"]))
-       $config["error"] = [$config["error"]];
-      echo "<script>";
-       echo "alert('Error: ".implode(".'\r\n+ ' ", $config["error"])."');";
-      echo "</script>";
-    }
-    if(!empty($config["js"])){
-      if(!is_array($config["js"]))
-       $config["js"] = [$config["js"]];
-      foreach($config["js"] as $url){
-        echo "<script src='".$url."'></script>";
-      }
-    }
-    if(!empty($config["raw_js"])){
-      echo "<script>".$config["raw_js"]."</script>";
-    }
-  ?>
- </head>
- <body onload='load();'>
-<?php
-     }
-
-     private function htmlBottom(){
-       echo "</body></html>";
-     }
-
-     private function getStyle(){
-       $od = opendir("./style/");
-       $buffer = [];
-       while($dir = readdir($od)){
-         if($dir == "." || $dir == ".." || !is_dir("./style/".$dir))
-           continue;
-         $buffer[] = $dir;
-       }
-       closedir($od);
-       echo '<link rel="stylesheet" type="text/css" href="style/'.array_pop($buffer).'/style.css">';
-
-       for($i=0;$i<count($buffer);$i++)
-        echo '<link rel="alternate" type="text/css" href="style/'.$buffer[$i].'/style.css">';
-     }
 
      private function removeUserMember(int $cid, int $uid, int $members = -1){
         $this->database->query("DELETE FROM `".DB_PREFIX."chat_member`
