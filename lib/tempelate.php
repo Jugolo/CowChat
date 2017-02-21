@@ -30,7 +30,7 @@ class Tempelate{
   }
     
   private function render(string $source, &$i){
-    $buffer = [];
+    $buffer = "";
     for(;$i<strlen($source);$i++){
       if($source[$i] == "@" && $source[$i+1] == "-"){
         //wee has a block start here! 
@@ -66,7 +66,8 @@ class Tempelate{
           if(!file_exists($dir.$f.".style")){
             return false;
           }
-          $s = $this->render(file_get_contents($dir.$f.".style"));
+          $b = 0;
+          $s = $this->render(file_get_contents($dir.$f.".style"), $b);
           if(!$s || $s["type"] != "code"){
             return false;
           }
