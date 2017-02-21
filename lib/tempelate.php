@@ -40,7 +40,8 @@ class Tempelate{
           return false;
         }
         if($block == "end"){
-          return ["type" => "block", "source" => $buffer];
+          $buffer .= "<?php } ?>";
+          continue;
         }
         $pos = strpos($block, " ");
         switch($pos !== false ? substr($block, 0, $pos) : ""){
