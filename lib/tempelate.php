@@ -136,14 +136,16 @@ class Tempelate{
     return $source;
   }
   
+  private function isIdentify($str){
+    return ($o=ord($str)) >= 97 && $o <= 122 || $o >= 65 && $o <= 90;
+  }
+  
   private function getIdentify($str, &$i){
     $buffer = "";
     for(;$i<strlen($str);$i++){
-      $o = ord($str[$i]);
-      if($o >= 97 && $o <= 122 || $o >= 65 && $o <= 90){
+      if($this->isIdentify($str[$i])){
         $buffer .= $str[$i];
       }else{
-        $i--;
         break;
       }
     }
