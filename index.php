@@ -1037,71 +1037,12 @@ class Server{
           exit;
          }
        }
-	     
+       $this->tempelate->putVariabel("title", $this->tempelate->getLang("login_title"));
+       if(count($error) > 0){
+	     $this->tempelate->putVariabel("error", implode("\r\n", $error));
+       }
        $this->showTempelate("login");
        return;
-
-       $this->htmlHead([
-         "title" => $this->lang["login_title"],
-         "error" => $error
-       ]);
-?>
-<div id='left-container'>
- <div>
-  <h3><?php echo $this->lang["online_user"]; ?></h3>
-  <?php $this->onlineUsers(); ?>
- </div>
-</div>
-<div id='main-container' class='login'>
- <div id='login-left'>
- <form action='#' method='post'>
-  <table>
-   <caption><?php echo $this->lang["login"]; ?></caption>
-   <tr>
-    <th><?php echo $this->lang["username"]; ?></th>
-    <td><input type='text' name='username'></td>
-   </tr>
-   <tr>
-    <th><?php echo $this->lang["password"]; ?></th>
-    <td><input type='password' name='password'></td>
-   </tr>
-   <tr>
-    <td colspan='2'>
-     <input type='submit' name='login' value='<?php echo $this->lang["login_now"];?>'>
-    </td>
-   </tr>
-  </table>
- </form>
- </div>
- <div id='login-right'>
- <form action='#' method='post'>
-  <table>
-   <caption><?php echo $this->lang["create_account"];?></caption>
-   <tr>
-    <th><?php echo $this->lang["username"];?></th>
-    <td><input type='username' name='username'></td>
-   </tr>
-   <tr>
-    <th><?php echo $this->lang["password"];?></th>
-    <td><input type='password' name='password'></td>
-   </tr>
-   <tr>
-    <th><?php echo $this->lang["re_password"];?></th>
-    <td><input type='password' name='re_password'></td>
-   </tr>
-   <tr>
-    <td colspan='2'>
-     <input type='submit' name='create' value='<?php echo $this->lang["create_account"];?>'>
-    </td>
-   </tr>
-  </table>
- </form>
- </div>
-</div>
-<?php
-       $this->htmlBottom();
-
-       exit;
      }
 
      private function onlineUsers(){
@@ -1116,10 +1057,11 @@ class Server{
         if($this->database->isError){
           exit($this->database->getError());
         }
-
+        $buffer = [];
         while($row = $query->get()){
-          echo "<div>".$row["nick"]."</div>";
+          $buffer[] = $row["nick"];
         }
+	$this->tempelate->putVariabel("online", $buffer);
      }
     
     //session sektion
