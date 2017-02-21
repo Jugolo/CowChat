@@ -1041,6 +1041,7 @@ class Server{
        if(count($error) > 0){
 	     $this->tempelate->putVariabel("error", implode("\r\n", $error));
        }
+       $this->onlineUsers();
        $this->showTempelate("login");
        return;
      }
