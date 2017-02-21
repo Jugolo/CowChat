@@ -101,6 +101,14 @@ class Tempelate{
             $b = 0;
             $buffer .= "<?php }elseif(".$this->getExpresion(substr($block, $pos+1), $b)."){ ?>";
           break;
+          case "echo":
+            $b = 0;
+            $buffer .= "<?php echo htmlentities(".$this->getExpresion(substr($block, $pos+1), $b)."); ?>";
+          break;
+          case "@echo":
+            $b=0;
+            $buffer .= "<?php echo ".$this->getExpresion(substr($block, $pos), $b)."; ?>";
+          break;
         }
       }else{
         $buffer .= $source[$i];
