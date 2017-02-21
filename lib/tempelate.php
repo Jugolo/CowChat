@@ -42,6 +42,9 @@ class Tempelate{
         if($block == "end"){
           $buffer .= "<?php } ?>";
           continue;
+        }elseif($block == "else"){
+          $buffer .= "<?php }else{ ?>";
+          continue;
         }
         $pos = strpos($block, " ");
         switch($pos !== false ? substr($block, 0, $pos) : ""){
@@ -90,6 +93,10 @@ class Tempelate{
             
             $buffer .= "<?php foreach(".$arg." as \$value){ \$this->variabel['".$identify."']=\$value; ?>";
           break;
+          case "if":
+            return "<?php if(".$this->getExpresion(substr($block, $pos+1))."){ ?>";
+          case "elseif":
+            return "<?php }elseif(".$this->getExpresion(substr($block, $pos+1))."){ ?>";
         }
       }else{
         $buffer .= $source[$i];
