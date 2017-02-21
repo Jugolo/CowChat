@@ -1,0 +1,25 @@
+@-include lib.head-@
+<div id='chat-top'></div>
+<div id='chat-left'>
+ <div id='pageContainer'>
+ </div>
+ <div id='inputContainer'>
+  <input id='txt'>
+ </div>
+</div>
+<div id='chat-right'>
+ <div id='user-menu'>
+   <div id='user-avatar' style='background-image:url("@-echo avatar-@");'>
+   </div>
+   <div id='user-info'>
+     <h3>@-echo username-@</h3>
+     <ul>
+       <li>
+         <a href='#' onclick='send("Bot", "/exit");'>@-lang logout-@</a>
+       </li>
+     </ul>
+   </div>
+ </div>
+ <div id='ulist-container'></div>
+</div>
+@-include lib.bottom-@
