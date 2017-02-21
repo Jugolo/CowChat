@@ -1,8 +1,13 @@
 <?php
 class Tempelate{
   private $path;
+  private $plugin;
   private $variabel = [];
   private $lang = [];
+  
+  public function Tempelate(Plugin $plugin){
+    $this->plugin = $plugin;
+  }
   
   public function putVariabel(string $name, $value){
     $this->variabel[$name] = $value;
@@ -53,6 +58,9 @@ class Tempelate{
         }
         $pos = strpos($block, " ");
         switch($pos !== false ? substr($block, 0, $pos) : ""){
+          case "trigger":
+            $buffer .= "<?php echo \$this->plugin->trigger('".trim(substr($block, $pos+1))."', []); ?>";
+          break;
           case "lang":
             $buffer .= "<?php echo \$this->getLang('".trim(substr($block, $pos+1))."'); ?>";
           break;
