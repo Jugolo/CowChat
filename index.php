@@ -70,7 +70,7 @@ class Server{
         Answer::outputAjax();
     }
 
-    private function rawJs(User $user) : string{
+    private function rawJs(User $user){
       $js = "var myNick = '".$user->nick()."';\r\n";
       $js .= "var updateFrame = ".(int)Config::get("updateFrame").";\r\n";
       $query = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_smylie`");
