@@ -19,7 +19,7 @@ class Tempelate{
       return false;
     }
     $i=0;
-    $source = file_get_contents($this->part.$file);
+    $source = file_get_contents($this->path.$file);
     $arg = $this->render($source, $i);
     //controle if got to the end and the render not return true. true is return when @-end-@
     if(strlen($source)-1 > $i || $arg["type"] === "block"){
@@ -70,7 +70,7 @@ class Tempelate{
           if(!$s || $s["type"] != "code"){
             return false;
           }
-          $buffer .= $s["source"]
+          $buffer .= $s["source"];
           break;
         }
       }else{
