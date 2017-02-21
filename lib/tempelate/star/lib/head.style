@@ -20,7 +20,7 @@
    }
    @-trigger client.javascript.end-@
   </script>
-  <link rel="alternate" type="text/css" href="@-echo __DIR__-@/style.css">
+  <link rel="alternate" type="text/css" href="@-echo __DIR__-@css/style.css">
   @-if exist error-@
   <script>
    alert("Error: @-error-@");
