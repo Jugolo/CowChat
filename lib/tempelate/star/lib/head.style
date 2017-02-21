@@ -2,7 +2,7 @@
 <html>
  <head>
   @-if title-@
-    <title>@-echo title-@<title>
+    <title>@-echo title-@</title>
   @-end-@
   <script>
    const onload = [];
