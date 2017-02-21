@@ -45,12 +45,7 @@ class Tempelate{
         $pos = strpos($block, " ");
         switch($pos !== false ? substr($block, 0, $pos) : ""){
           case "lang":
-            $code = trim(substr($block, $pos+1));
-            $lang = "";
-            if(!empty($this->lang[$code])){
-              $lang = $this->lang[$code];
-            }
-            $buffer .= $this->lang[$code];
+            $buffer .= "<?php echo \$this->getLang('".trim(substr($block, $pos+1))."'); ?>";
           break;
           case "include":
           $item = explode(".", substr($block, $pos+1));
@@ -86,19 +81,11 @@ class Tempelate{
             }
             
             $arg = $this->expresion($scope, $b);
-            if(!$arg || !is_array($arg)){
+            if(!$arg){
               return false;
             }
             
-            $scopeBlock = $this->getBlock($source, $i);
-            foreach($arg as $value){
-              $this->variabel[$identify] = $value;
-              $n = 0;
-              $b = $this->render($scopeBlock, $b);
-              if(!$b || $b["type"] != "code"){
-                
-              }
-            }
+            $buffer .= "<?php foreach(".$arg." as \$value){ \$this->variabel['".$identify."']=\$value; ?>";
           break;
         }
       }else{
@@ -158,5 +145,11 @@ class Tempelate{
       $buffer .= $str[$i];
     }
     return false;
+  }
+  
+  private function removeJunk($str, &$i){
+    while($str[$i] == " " || $str[$i] == "\r" || $str[$i] == "\n"){
+      $i++;
+    }
   }
 }
