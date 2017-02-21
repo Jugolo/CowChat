@@ -175,7 +175,7 @@ class Tempelate{
         case "not":
           return "!".$this->primary($str, $i);
         case "exist":
-          return "(!empty(".$this->primary($str, $i).")";
+          return "(!empty(".$this->primary($str, $i)."))";
       }
       return "\$this->variabel['".$e."']";
     }
