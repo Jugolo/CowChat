@@ -22,7 +22,7 @@ class Tempelate{
     $source = file_get_contents($this->part.$file);
     $arg = $this->render($source, $i);
     //controle if got to the end and the render not return true. true is return when @-end-@
-    if(strlen($source)-1 > $i || $arg !== true){
+    if(strlen($source)-1 > $i || $arg === true){
       return false;
     }
     echo $arg;
@@ -34,7 +34,7 @@ class Tempelate{
     for(;$i<strlen($source);$i++){
       if($source[$i] == "@" && $source[$i+1] == "-"){
         //wee has a block start here! 
-        $i++;
+        $i+=2;
         $block = $this->renderBlock($source, $i);
         if(!$block){
           return false;
@@ -106,7 +106,7 @@ class Tempelate{
         $i++;
         return $buffer;
       }
-      $buffer = $str[$i];
+      $buffer .= $str[$i];
     }
     return false;
   }
