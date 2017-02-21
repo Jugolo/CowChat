@@ -1,7 +1,12 @@
 <?php
 class Tempelate{
   private $path;
+  private $variabel = [];
   private $lang = [];
+  
+  public function putVariabel(string $name, $value){
+    $this->variabel[$name] = $value;
+  }
   
   public function setLang(array $lang){
     $this->lang = $lang;
@@ -115,6 +120,10 @@ class Tempelate{
       }
     }
     return $buffer;
+  }
+  
+  public function getLang(string $name){
+    return empty($this->lang[$name]) ? "" : $this->lang[$name];
   }
   
   private function isIdentify($str){
