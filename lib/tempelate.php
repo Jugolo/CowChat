@@ -94,9 +94,11 @@ class Tempelate{
             $buffer .= "<?php foreach(".$arg." as \$value){ \$this->variabel['".$identify."']=\$value; ?>";
           break;
           case "if":
-            return "<?php if(".$this->getExpresion(substr($block, $pos+1))."){ ?>";
+            $b = 0;
+            $buffer .= "<?php if(".$this->getExpresion(substr($block, $pos+1), $b)."){ ?>";
           case "elseif":
-            return "<?php }elseif(".$this->getExpresion(substr($block, $pos+1))."){ ?>";
+            $b = 0;
+            $buffer .= "<?php }elseif(".$this->getExpresion(substr($block, $pos+1), $b)."){ ?>";
         }
       }else{
         $buffer .= $source[$i];
