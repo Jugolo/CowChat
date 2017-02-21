@@ -22,7 +22,7 @@
    </tr>
    <tr>
     <td colspan='2'>
-     <input type='submit' name='login' value='@-echo login_now-@'>
+     <input type='submit' name='login' value='@-lang login_now-@'>
     </td>
    </tr>
   </table>
