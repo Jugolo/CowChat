@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head>
-  @-if title-@
+  @-if exist title-@
     <title>@-echo title-@</title>
   @-end-@
   <script>
@@ -21,17 +21,17 @@
    @-trigger client.javascript.end-@
   </script>
   <link rel="alternate" type="text/css" href="@-echo __DIR__-@/style.css">
-  @-if error-@
+  @-if exist error-@
   <script>
    alert("Error: @-error-@");
   </script>
   @-end-@
-  @-if js-@
+  @-if exist js-@
   @-foreach dir : js-@
   <script src='@-echo dir-@'></script>
   @-end-@
   @-end-@
-  @-if raw_js-@
+  @-if exist raw_js-@
   <script>
     @-echo raw_js-@
   </script>
