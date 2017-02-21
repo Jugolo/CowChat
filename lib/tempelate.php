@@ -96,9 +96,11 @@ class Tempelate{
           case "if":
             $b = 0;
             $buffer .= "<?php if(".$this->getExpresion(substr($block, $pos+1), $b)."){ ?>";
+          break;
           case "elseif":
             $b = 0;
             $buffer .= "<?php }elseif(".$this->getExpresion(substr($block, $pos+1), $b)."){ ?>";
+          break;
         }
       }else{
         $buffer .= $source[$i];
