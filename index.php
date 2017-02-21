@@ -923,13 +923,7 @@ class Server{
       if(!file_exists("./lib/config.php")){
 	      $this->missing_config();
       }
-      $data = Config::init();    
-	    
-      if(!$this->ajax){
-	      include "lib/tempelate.php";//new in V1.3
-	      $this->tempelate = new Tempelate();//new in V1.3
-	      $this->tempelate->setLang($this->init_lang());
-      }
+      $data = Config::init();
 
       $this->init_db(
          $data["host"],
@@ -940,6 +934,12 @@ class Server{
       
       define("DB_PREFIX", $data["prefix"]);
       $this->plugin = new Plugin($this->database);
+      
+      if(!$this->ajax){
+	  include "lib/tempelate.php";//new in V1.3
+	  $this->tempelate = new Tempelate($this->plugin);//new in V1.3
+	  $this->tempelate->setLang($this->init_lang());
+      }
     }
 
     private function missing_config(){
