@@ -18,15 +18,45 @@ class Tempelate{
     if(!file_exists($this->path.$file)){
       return false;
     }
-    $arg = $this->render(file_get_contents($this->path.$file));
-    if(!$arg){
+    $i=0;
+    $source = file_get_contents($this->part.$file);
+    $arg = $this->render($source, $i);
+    //controle if got to the end and the render not return true. true is return when @-end-@
+    if(strlen($source)-1 > $i || $arg !== true){
       return false;
     }
     echo $arg;
     return true;
   }
     
-  private function render(string $source){
+  private function render(string $source, &$i){
+    $buffer = [];
+    for(;$i<strlen($source);$i++){
+      if($source[$i] == "@" && $source[$i+1] == "-"){
+        //wee has a block start here! 
+        $i++;
+        $block = $this->renderBlock($source, $i);
+        if(!$block){
+          return false;
+        }
+        if($block == "end"){
+          return true;
+        }
+        $pos = strpos($block, " ");
+        switch($pos !== false ? substr($block, 0, $pos) : ""){
+          case "lang":
+            $code = trim(substr($block, $pos+1));
+            $lang = "";
+            if(!empty($this->lang[$code])){
+              $lang = $this->lang[$code];
+            }
+            $buffer .= $this->lang[$code];
+        }
+      }else{
+        $buffer .= $source[$i];
+      }
+    }
+    return $buffer;
     $preg = preg_match_all("/@-(@?[a-z]*) (.*?[^-@])-@/", $source, $reg);
     for($i=0;$i<$preg;$i++){
       switch($reg[1][$i]){
@@ -69,6 +99,15 @@ class Tempelate{
     return $source;
   }
   
-  private function getExpresion($str, &$expresion){
+  private function renderBlock($str, &$i){
+    $buffer = "";
+    for(;$i<strlen($str);$i++){
+      if($str[$i] == "-" && $str[$i+1] == "@"){
+        $i++;
+        return $buffer;
+      }
+      $buffer = $str[$i];
+    }
+    return false;
   }
 }
