@@ -171,7 +171,7 @@ class Tempelate{
         return $e." && ".$b;
       case "||":
         $i += 2;
-        $this->removeJunk($str, $i):
+        $this->removeJunk($str, $i);
         $b = $this->primary($str, $i);
         if(!$b){
           return $e." || ".$b;
