@@ -289,8 +289,10 @@ class Tempelate{
       if(strpos(fread($fopen, $size), $dateString) === false){
         fwrite($fopen, "\r\n".$dateString);
       }
+    }else{
+      fwrite($fopen, $dateString);
     }
-    fwrite($fopen, ($size == 0 ? "" : "\r\n")."[".date("s:i:H")."]".$str);
+    fwrite($fopen, "\r\n[".date("s:i:H")."]".$str);
     fclose($fopen);
   }
   
