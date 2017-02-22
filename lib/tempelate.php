@@ -174,8 +174,9 @@ class Tempelate{
         $this->removeJunk($str, $i);
         $b = $this->primary($str, $i);
         if(!$b){
-          return $e." || ".$b;
+          return false;
         }
+        return $e." || ".$b;
     }
     return $e;
   }
