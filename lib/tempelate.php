@@ -67,7 +67,7 @@ class Tempelate{
         return false;
       }
     }
-    $cache = $this->path.substr($name, 0, strrpos($name, ".")).".cache";
+    $cache = file_get_contents($this->path."cache/".substr($name, 0, strrpos($name, ".")).".cache");
     return true;
   }
     
