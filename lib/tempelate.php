@@ -26,6 +26,7 @@ class Tempelate{
   }
   
   public function parse($file) : bool{
+    $cache = "";
     if(file_exists($this->path."cache/".$file) && $this->controleCache($file, $cache)){
        eval("?> {$cache} <?php");
       return true;
