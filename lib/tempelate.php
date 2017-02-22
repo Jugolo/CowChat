@@ -40,7 +40,7 @@ class Tempelate{
     if(strlen($source)-1 > $i || !$arg){
       return false;
     }
-    if(file_exists($this->path."cache/")){
+    if(!file_exists($this->path."cache/")){
       if(!@mkdir($this->path."cache/")){
         $this->error("Failed to create cache dir");
       }
