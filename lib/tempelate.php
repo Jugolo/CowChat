@@ -46,11 +46,11 @@ class Tempelate{
       }
     }
     //make info file
-    $fopen = fopen($this->path."cache/".$name, "w+");
+    $fopen = fopen($this->path."cache/".$file, "w+");
     fwrite($fopen, json_encode($this->cache));
     fclose($fopen);
     //make cache file
-    $fopen = fopen($this->path."cache/".substr($name, 0, strrpos($name, ".")).".cache", "w+");
+    $fopen = fopen($this->path."cache/".substr($file, 0, strrpos($file, ".")).".cache", "w+");
     fwrite($fopen, $arg);
     fclose($fopen);
     $this->addCache($file);
