@@ -34,6 +34,8 @@ const language = {
     "unknownModePrefix"  : "Unknown prefix on mode",
     "nickShort"          : "Nick length is to short",
     "nickLong"           : "Nick length is to long",
+    "nickEquel"          : "The nick is allready yours",
+    "nickTaken"          : "The nick is takeb",
     "invaldNick"         : "Nick is invalid",
     "unkownCommand"      : "Unkown command",
     "flood"              : "You has typed message to fast. Please wait",
