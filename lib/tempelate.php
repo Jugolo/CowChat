@@ -59,7 +59,7 @@ class Tempelate{
     return true;
   }
   
-  private function controleCache(string $name, $cache) : bool{
+  private function controleCache(string $name, &$cache) : bool{
     $data = json_decode(file_get_contents($this->path."cache/".$name),true);
     foreach($data as $file){
       $f = $this->path.$file["name"];
