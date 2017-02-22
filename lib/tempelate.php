@@ -28,7 +28,7 @@ class Tempelate{
   public function parse($file) : bool{
     $cache = "";
     if(file_exists($this->path."cache/".$file) && $this->controleCache($file, $cache)){
-       eval("?> {$cache} <?php");
+       eval("?> {$cache} <?php ");
       return true;
     }
     if(!file_exists($this->path.$file)){
@@ -41,6 +41,7 @@ class Tempelate{
     if(strlen($source)-1 > $i || !$arg){
       return false;
     }
+    $this->addCache($file);
     if(!file_exists($this->path."cache/")){
       if(!@mkdir($this->path."cache/")){
         $this->error("Failed to create cache dir");
@@ -54,7 +55,6 @@ class Tempelate{
     $fopen = fopen($this->path."cache/".substr($file, 0, strrpos($file, ".")).".cache", "w+");
     fwrite($fopen, $arg);
     fclose($fopen);
-    $this->addCache($file);
     eval("?> {$arg} <?php ");
     return true;
   }
