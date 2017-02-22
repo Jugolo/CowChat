@@ -23,7 +23,7 @@
   <link rel="stylesheet" type="text/css" href="@-echo __DIR__-@css/style.css">
   @-if exist error-@
   <script>
-   alert("Error: @-error-@");
+   alert("Error: @-echo error-@");
   </script>
   @-end-@
   @-if exist js-@
