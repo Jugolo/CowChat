@@ -1,6 +1,6 @@
 <?php
 class Tempelate{
-  private $path;
+  private $path = "";
   private $plugin;
   private $variabel = [];
   private $lang = [];
@@ -57,7 +57,7 @@ class Tempelate{
           continue;
         }
         $pos = strpos($block, " ");
-        switch($pos !== false ? substr($block, 0, $pos) : ""){
+        switch($c = ($pos !== false ? substr($block, 0, $pos) : "")){
           case "trigger":
             $buffer .= "<?php echo \$this->plugin->trigger('".trim(substr($block, $pos+1))."', []); ?>";
           break;
@@ -70,12 +70,14 @@ class Tempelate{
           $dir = $this->path;
           for($d=0;$d<count($item);$d++){
             if(trim($item[$d]) == "" || !file_exists($dir.$item[$d])){
+              $this->error("Missing dir '".trim($item[$d])."' in dir ".$dir);
               return false;
             }
             $dir .= $item[$d]."/";
           }
           
           if(!file_exists($dir.$f.".style")){
+            $this->error("Missing file: ".$dir.$f.".style");
             return false;
           }
           $b = 0;
@@ -90,10 +92,12 @@ class Tempelate{
             $b=0;
             $identify = $this->getIdentify(ltrim($scope), $b);
             if(!$identify){
+              $this->error("First token in foreach must be a identify");
               return false;
             }
             $this->removeJunk($scope, $b);
             if($scope[$b] != ":"){
+              $this->error("Missing token : in foreach");
               return false;
             }
             
@@ -122,6 +126,9 @@ class Tempelate{
             $b=0;
             $buffer .= "<?php echo ".$this->getExpresion(substr($block, $pos), $b)."; ?>";
           break;
+          default:
+            $this->error("Unknown command: ".$c);
+            return false;
         }
       }else{
         $buffer .= $source[$i];
@@ -131,7 +138,11 @@ class Tempelate{
   }
   
   public function getLang(string $name){
-    return empty($this->lang[$name]) ? "" : $this->lang[$name];
+    if(empty($this->lang[$name])){
+      $this->error("Unknown language identify: ".$name);
+      return "";
+    }
+    return $this->lang[$name];
   }
   
   private function isIdentify($str){
@@ -158,7 +169,7 @@ class Tempelate{
   private function expresion($str, &$i){
     $e = $this->primary($str, $i);
     if(!$e){
-      return false;
+      return false;//no need to handle error message here. primary method handle it.
     }
     switch(substr($str, $i, 2)){
       case "&&":
@@ -166,7 +177,7 @@ class Tempelate{
         $this->removeJunk($str, $i);
         $b = $this->primary($str, $i);
         if(!$b){
-          return false;
+          return false;//no need to error message here primery method handle it
         }
         return $e." && ".$b;
       case "||":
@@ -174,7 +185,7 @@ class Tempelate{
         $this->removeJunk($str, $i);
         $b = $this->primary($str, $i);
         if(!$b){
-          return false;
+          return false;//no error messafe is need here, Primery handle this
         }
         return $e." || ".$b;
     }
@@ -201,6 +212,7 @@ class Tempelate{
       $i+=2;
       $identify = $this->getIdentify($str, $i);
       if(!$identify || $str[$i] != "_" || $str[$i+1] != "_"){
+        $this->error("Missing end tokens of global identify");
         return false;
       }
       $i += 2;
@@ -209,10 +221,11 @@ class Tempelate{
         case "DIR":
           return "'".$this->path."'";
         default:
+          $this->error("Unknown globel identify: ".$identify);
           return false;
       }
     }
-    
+    $this->error("Unknown primary expresion first token: ".$str[$i]);
     return false;
   }
   
@@ -225,6 +238,7 @@ class Tempelate{
       }
       $buffer .= $str[$i];
     }
+    $this->error("Missing end block(-@) got end of file");
     return false;
   }
   
@@ -232,5 +246,18 @@ class Tempelate{
     while($i<strlen($str) && ($str[$i] == " " || $str[$i] == "\r" || $str[$i] == "\n")){
       $i++;
     }
+  }
+  
+  private function error(string $str){
+    $fopen = fopen($this->path."error.log", "a+");
+    $size = fstat($fopen)["size"];
+    $dateString = "-----[".date("d/m-Y")."]-----";
+    if($size != 0){
+      if(strpos(fread($fopen, $size), $dateString) === false){
+        fwrite($fopen, "\r\n".$dateString);
+      }
+    }
+    fwrite($fopen, ($size == 0 ? "" : "\r\n")."[".date("s:i:H")."]".$str);
+    fclose($fopen);
   }
 }
