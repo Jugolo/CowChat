@@ -4,6 +4,7 @@ class Tempelate{
   private $plugin;
   private $variabel = [];
   private $lang = [];
+  private $cache = [];
   
   public function __construct(Plugin $plugin){
     $this->plugin = $plugin;
@@ -25,6 +26,10 @@ class Tempelate{
   }
   
   public function parse($file) : bool{
+    if(file_exists($this->path."cache/".$file) && $this->controleCache($file, $cache)){
+       eval("?> {$cache} <?php");
+      return true;
+    }
     if(!file_exists($this->path.$file)){
       return false;
     }
@@ -36,6 +41,18 @@ class Tempelate{
       return false;
     }
     eval("?> {$arg} <?php ");
+    return true;
+  }
+  
+  private function controleCache(string $name, $cache) : bool{
+    $data = json_decode(file_get_contents($this->path."cache/".$name),true);
+    foreach($data as $file){
+      $f = $this->path.$file["name"];
+      if(!file_exists($f) || filemtime($f) > $file["time"]){
+        return false;
+      }
+    }
+    $cache = $this->path.substr($name, 0, strrpos($name, "."))."cache";
     return true;
   }
     
