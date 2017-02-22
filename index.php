@@ -699,19 +699,21 @@ class Server{
         $nick = substr($post->getMessage(), 6);
         $length = strlen($nick);
         if($length < Config::get("minNickLength")){
-          $this->error($post, "nickShort");
+          error($post, "nickShort");
         }elseif($length > Config::get("maxNickLength")){
-          $this->error($post, "nickLong");
+          error($post, "nickLong");
         }elseif($nick == $user->nick()){
-          $this->error($post, "nickEquel");
-        }else{
+          error($post, "nickEquel");
+        }elseif(disabledNick($nick)){
+          error($post, "nickTaken");
+	}else{
           $nickClean = $this->database->clean($nick);
           $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_user` WHERE (`nick`='".$nickClean."' OR `username`='".$nickClean."') AND `id`<>'".$user->id()."'");
           if($this->database->isError){
             exit($this->database->getError());
           }
           if($query->get()){
-            $this->error($post, "nickTaken");
+            error($post, "nickTaken");
           }else{
             $old = $user->nick();
             $user->nick($nick);
@@ -984,7 +986,9 @@ class Server{
        if(Request::post("create")){
          if(!Request::post("username")){
            $error[] = $this->tempelate->getLang("missing_username");
-         }else{
+         }elseif(disabledNick(Request::post("username"))){
+           $error[] = $this->tempelate->getLang("username_taken"); 
+	 }else{
            $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_user` WHERE `username`='".$this->database->clean(Request::post("username"))."'");
            if($this->database->isError){
             exit($this->database->getError());

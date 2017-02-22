@@ -42,6 +42,12 @@ $conf["serverAdmin"] = [//the server admin. it is there id in the user table!!
   1
 ];
 
+$conf["disableNick"] = [//nick the system should desline to be use
+  "Bot",
+  "AjaxError",
+  "Ajax"
+];
+
 //new users avatar
 $conf["defaultAvatar"] = "";
 
