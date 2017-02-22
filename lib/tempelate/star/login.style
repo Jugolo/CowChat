@@ -3,7 +3,7 @@
  <div>
   <h3>@-lang online_user-@</h3>
   @-foreach nick : online-@
-  <div>@-nick-@</div>
+  <div>@-echo nick-@</div>
   @-end-@
  </div>
 </div>
