@@ -1,0 +1,251 @@
+html{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#left-container{
+  box-shadow: 10px 10px 38px 12px rgba(0,0,0,0.3);
+}
+
+#left-container div{
+ margin: 2px;
+ background-color:#296dff;
+}
+
+#left-container div h3, #login-left table caption, #login-right table caption{
+  margin:0px;
+  padding0px;
+  text-align: center;
+  font-style: oblique;
+  color: white;
+}
+
+#left-container div div{
+  text-align: center;
+  color: #53ff00;
+  font-weight: bold;
+}
+
+#main-container{
+  box-shadow: 10px 10px 38px 12px rgba(0,0,0,0.3);
+}
+
+#login-left table caption, #login-right table caption{
+ background-color:#296dff;
+}
+
+.unread{
+  color:red;
+}
+
+.inaktiv{
+ font-style: oblique;
+}
+
+.bot-nick{
+  color: yellow;
+}
+
+.line{
+  height:20px;
+  border-bottom:1px dotted grey;
+  background-color: #0080ff;
+}
+
+.line span{
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.line:nth-child(2n) {
+  background-color: #00bfff;
+}
+
+.user-item .nick{
+  text-align: center;
+}
+
+.op{
+  color: red;
+}
+
+.voice:not(.op){
+  color: blue;
+}
+
+.user-item{
+  border-bottom:1px dotted gray;
+  text-align:center;
+}
+
+.user-item span{
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.user-list-avatar{
+  height:20px;
+  width:20px;
+  background-size:100% 100%;
+}
+
+.menu div{
+  text-align: center;
+  background-color: #0080ff;
+  border-top:1px dotted grey;
+}
+
+.menu div:nth-child(2n) {
+  background-color: #00bfff;
+}
+
+.message-avatar{
+  height: 20px;
+  width: 20px;
+  background-size:100% 100%;
+}
+
+.smylie{
+  height: 20px;
+  width: 20px;
+}
+
+/*
+ Style the left box. Used in login
+*/
+
+input{
+  width:100%;
+  box-sizing : border-box;
+}
+
+#left-container{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  bottom: 10px;
+  width: 200px;
+}
+
+#main-container{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+}
+
+#main-container.login{
+  left: 220px;
+}
+
+#login-left{
+  position:absolute;
+  width:50%;
+  top:0px;
+  left:0px;
+  bottom:0px;
+  border-right:1px dotted grey;
+}
+
+#login-right{
+  position:absolute;
+  width:50%;
+  top:0px;
+  right:0px;
+  bottom:0px;
+}
+
+#login-left table, #login-right table{
+  width: 100%;
+}
+
+#login-left table td, #login-left table th, #login-right table td, #login-right table th{
+  width: 50%;
+}
+
+#chat-top{
+  position:absolute;
+  top:0px;
+  left:0px;
+  right:0px;
+  height:25px;
+  border-bottom: 1px dotted grey;
+}
+
+#chat-left{
+  position:absolute;
+  top: 25px;
+  left: 0px;
+  right: 250px;
+  bottom: 0px;
+  border-right:1px dotted grey;
+}
+
+#chat-right{
+  position: absolute;
+  top:25px;
+  width:250px;
+  right:0px;
+  bottom:0px;
+}
+
+.channel_buttom{
+  font-size:17px;
+  margin:3px;
+  display:inline-block;
+}
+
+#user-menu{
+  border-bottom:1px dotted grey;
+  height:150px;
+}
+
+#user-avatar{
+  width:50%;
+  height:150px;
+  border-right:1px dotted grey;
+  background-size: 100% 100%;
+  left:0px;
+}
+
+#user-info{
+  right:0px;
+}
+
+#user-avatar, #user-info{
+  position: absolute;
+  top:0px;
+  width:50%;
+  height:150px;
+}
+
+#user-info h3{
+  margin:0px;
+  text-align:center;
+}
+
+#inputContainer{
+  position:absolute;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  height:25px;
+  border-top:1px dotted grey;
+}
+
+#pageContainer{
+ position:absolute;
+ top:0px;
+ left:0px;
+ right:0px;
+ bottom:25px;
+}
+
+.context-container{
+  position:absolute;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  overflow: scroll;
+}

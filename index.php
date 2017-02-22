@@ -7,12 +7,11 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 class Server{
      private $variabel         = array();
-     private $lang             = array();
-     private $langCache        = array();
      private $ajax             = false;
      private $basepart         = null;
      private $database         = null;
      private $plugin           = null;//append in version 1.1
+     private $tempelate        = null;
      
     function __construct($websocket = false){
         $this->ajax = (!empty($_GET["_ajax"]));
@@ -33,7 +32,6 @@ class Server{
           if($this->ajax){
             exit("login");
           }
-          $this->init_lang();
           $this->doLogin();
           return;
         }
@@ -41,7 +39,6 @@ class Server{
         Answer::setUser($user);
 
         if(!$this->ajax){
-          $this->init_lang();
           $this->showChat($user);
           return;
         }
@@ -73,7 +70,7 @@ class Server{
         Answer::outputAjax();
     }
 
-    private function rawJs(User $user) : string{
+    private function rawJs(User $user){
       $js = "var myNick = '".$user->nick()."';\r\n";
       $js .= "var updateFrame = ".(int)Config::get("updateFrame").";\r\n";
       $query = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_smylie`");
@@ -100,7 +97,7 @@ class Server{
         $js .= "send('Bot', '/join ".Config::get("startChannel")."');";
       }
       $js .= "});";
-      return $js;
+      $this->tempelate->putVariabel("rawjs", $js);
     }
 
     private function showChat(User $user){
@@ -110,76 +107,33 @@ class Server{
         header("location:#");
         exit;
       }
-      $this->htmlHead([
-        "title" => $this->lang["chat_index"],
-        "js" => [
-          "js/main.js",
-          "js/page.js",
-          "js/pages.js",
-          "js/userlist.js",
-          "js/user.js",
-          "js/command.js",
-          "js/bbcode.js",
-          "js/lang/".Config::get("locale").".js",
-        ],
-        "raw_js" => $this->rawJs($user)
+      $this->tempelate->putVariabel("title", $this->tempelate->getLang("title"));
+      $this->tempelate->putVariabel("avatar", $user->avatar());
+      $this->tempelate->putVariabel("username", $user->username());
+      $this->tempelate->putVariabel("js", [
+	      "js/main.js",
+	      "js/page.js",
+	      "js/pages.js",
+	      "js/userlist.js",
+	      "js/user.js",
+	      "js/command.js",
+	      "js/bbcode.js",
+	      "js/lang/".Config::get("locale").".js",
       ]);
+      $this->rawJs($user);
       $this->plugin->trigger("client.loaded", []);
-      ?>
-<div id='chat-top'>
-
-</div>
-<div id='chat-left'>
- <div id='pageContainer'>
- </div>
- <div id='inputContainer'>
-  <input id='txt'>
- </div>
-</div>
-<div id='chat-right'>
- <div id='user-menu'>
-   <div id='user-avatar' style='background-image:url("<?php echo $user->avatar();?>");'>
-   </div>
-   <div id='user-info'>
-     <h3><?php echo $user->username();?></h3>
-     <ul>
-       <li><a href='#' onclick='send("Bot", "/exit");'><?php echo $this->lang["logout"];?></a></li>
-     </ul>
-   </div>
- </div>
- <div id='ulist-container'>
-
- </div>
-</div>
-      <?php
-
-      $this->htmlBottom();
+      $this->showTempelate("main");
     }
 	 
      private function init_lang(){
-         $this->setLang(Config::get("locale"));
+         return $this->setLang(Config::get("locale"));
      }
 
      function setLang($name){
-         if(!empty($this->langCache[$name]) && is_array($this->langCache[$name])){
-             $this->lang = $this->langCache[$name];
-             return;//super :)
-         }
          $locale = array();
-
-         $langUse = "./locale/".$name."/server.php";
-
-         if(file_exists($langUse)){
-	   include $langUse;
-	   $this->lang = $this->langCache[$name] = $locale;
-	 }else{
-           if(!empty($this->langCache['English']) && is_array($this->langCache['English'])){
-              $this->lang = $this->langCache['English'];
-              return;
-           }
-           include "./locale/English/server.php";
-           $this->lang = $this->langCache['English'] = $locale;
-         }
+	 $langUse = "./locale/".$name."/server.php";
+	 include file_exists($langUse) ? $langUse : "./locale/English/server.php";
+	 return $locale;
      }
 
 
@@ -965,12 +919,12 @@ class Server{
       include 'lib/plugin.php';//new in V1.1
       include 'lib/admin.php';//new in V1.1
       include 'lib/command.php';//new in V1.1
-
+	    
       if(!file_exists("./lib/config.php")){
-          $this->missing_config();
+	      $this->missing_config();
       }
-
       $data = Config::init();
+
       $this->init_db(
          $data["host"],
          $data["user"],
@@ -980,6 +934,12 @@ class Server{
       
       define("DB_PREFIX", $data["prefix"]);
       $this->plugin = new Plugin($this->database);
+      
+      if(!$this->ajax){
+	  include "lib/tempelate.php";//new in V1.3
+	  $this->tempelate = new Tempelate($this->plugin);//new in V1.3
+	  $this->tempelate->setLang($this->init_lang());
+      }
     }
 
     private function missing_config(){
@@ -1006,10 +966,10 @@ class Server{
 
        if(Request::post("login")){
          if(!Request::post("username")){
-           $error[] = $this->lang["missing_username"];
+           $error[] = $this->tempelate->getLang("missing_username");
          }
          if(!Request::post("password")){
-           $error[] = $this->lang["missing_password"];
+           $error[] = $this->tempelate->getLang("missing_password");
          }
 
          if(count($error) == 0){
@@ -1017,30 +977,30 @@ class Server{
              header("location: #");
              exit;
            }
-           $error[] = $this->lang["wrong_login"];
+           $error[] = $this->tempelate->getLang("wrong_login");
          }
        }
 
        if(Request::post("create")){
          if(!Request::post("username")){
-           $error[] = $this->lang["missing_username"];
+           $error[] = $this->tempelate->getLang("missing_username");
          }else{
            $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_user` WHERE `username`='".$this->database->clean(Request::post("username"))."'");
            if($this->database->isError){
             exit($this->database->getError());
            }
            if($query->get()){
-             $error[] = $this->lang["username_taken"];
+             $error[] = $this->tempelate->getLang("username_taken");
            }
          }
          if(!Request::post("password")){
-           $error[] = $this->lang["missing_password"];
+           $error[] = $this->tempelate->getLang("missing_password");
          }
          if(!Request::post("re_password")){
-           $error[] = $this->lang["missing_re_password"];
+           $error[] = $this->tempelate->getLang("missing_re_password");
          }
          if(Request::post("password") && Request::post("re_password") && Request::post("password") != Request::post("re_password")){
-           $error[] = $this->lang["password_mismatch"];
+           $error[] = $this->tempelate->getLang("password_mismatch");
          }
      
          if(count($error) == 0){
@@ -1049,68 +1009,13 @@ class Server{
           exit;
          }
        }
-
-       $this->htmlHead([
-         "title" => $this->lang["login_title"],
-         "error" => $error
-       ]);
-?>
-<div id='left-container'>
- <div>
-  <h3><?php echo $this->lang["online_user"]; ?></h3>
-  <?php $this->onlineUsers(); ?>
- </div>
-</div>
-<div id='main-container' class='login'>
- <div id='login-left'>
- <form action='#' method='post'>
-  <table>
-   <caption><?php echo $this->lang["login"]; ?></caption>
-   <tr>
-    <th><?php echo $this->lang["username"]; ?></th>
-    <td><input type='text' name='username'></td>
-   </tr>
-   <tr>
-    <th><?php echo $this->lang["password"]; ?></th>
-    <td><input type='password' name='password'></td>
-   </tr>
-   <tr>
-    <td colspan='2'>
-     <input type='submit' name='login' value='<?php echo $this->lang["login_now"];?>'>
-    </td>
-   </tr>
-  </table>
- </form>
- </div>
- <div id='login-right'>
- <form action='#' method='post'>
-  <table>
-   <caption><?php echo $this->lang["create_account"];?></caption>
-   <tr>
-    <th><?php echo $this->lang["username"];?></th>
-    <td><input type='username' name='username'></td>
-   </tr>
-   <tr>
-    <th><?php echo $this->lang["password"];?></th>
-    <td><input type='password' name='password'></td>
-   </tr>
-   <tr>
-    <th><?php echo $this->lang["re_password"];?></th>
-    <td><input type='password' name='re_password'></td>
-   </tr>
-   <tr>
-    <td colspan='2'>
-     <input type='submit' name='create' value='<?php echo $this->lang["create_account"];?>'>
-    </td>
-   </tr>
-  </table>
- </form>
- </div>
-</div>
-<?php
-       $this->htmlBottom();
-
-       exit;
+       $this->tempelate->putVariabel("title", $this->tempelate->getLang("login_title"));
+       if(count($error) > 0){
+	     $this->tempelate->putVariabel("error", implode("\\r\\n", $error));
+       }
+       $this->onlineUsers();
+       $this->showTempelate("login");
+       return;
      }
 
      private function onlineUsers(){
@@ -1125,10 +1030,11 @@ class Server{
         if($this->database->isError){
           exit($this->database->getError());
         }
-
+        $buffer = [];
         while($row = $query->get()){
-          echo "<div>".$row["nick"]."</div>";
+          $buffer[] = $row["nick"];
         }
+	$this->tempelate->putVariabel("online", $buffer);
      }
     
     //session sektion
@@ -1241,72 +1147,21 @@ class Server{
 
         return new User($this->database, $row);
     }
-
-     private function htmlHead(array $config = []){
-       ?>
-<!DOCTYPE html>
-<html>
- <head>
-  <?php echo !empty($config["title"]) ? "<title>".$config["title"]."</title>" : "";?>
-  <script>
-   const onload = [];
-   function load(){
-     for(var i=0;i<onload.length;i++)
-      onload[i]();
-   }
-   window.onerror = function(msg, url, linenumber) {
-    if(typeof sys !== undefined){
-     sys.getPage("console").line("", "", "JavascriptError", "[color=red]"+msg+". On line "+linenumber+" In file "+url+"[/color]");
-      
-    }
-    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
-    return true;
-   }
-   <?php $this->plugin->trigger("client.javascript.end", []);?>
-  </script>
-  <?php
-    $this->getStyle();
-    if(!empty($config["error"])){
-      if(!is_array($config["error"]))
-       $config["error"] = [$config["error"]];
-      echo "<script>";
-       echo "alert('Error: ".implode(".'\r\n+ ' ", $config["error"])."');";
-      echo "</script>";
-    }
-    if(!empty($config["js"])){
-      if(!is_array($config["js"]))
-       $config["js"] = [$config["js"]];
-      foreach($config["js"] as $url){
-        echo "<script src='".$url."'></script>";
-      }
-    }
-    if(!empty($config["raw_js"])){
-      echo "<script>".$config["raw_js"]."</script>";
-    }
-  ?>
- </head>
- <body onload='load();'>
-<?php
-     }
-
-     private function htmlBottom(){
-       echo "</body></html>";
-     }
-
-     private function getStyle(){
-       $od = opendir("./style/");
-       $buffer = [];
-       while($dir = readdir($od)){
-         if($dir == "." || $dir == ".." || !is_dir("./style/".$dir))
-           continue;
-         $buffer[] = $dir;
-       }
-       closedir($od);
-       echo '<link rel="stylesheet" type="text/css" href="style/'.array_pop($buffer).'/style.css">';
-
-       for($i=0;$i<count($buffer);$i++)
-        echo '<link rel="alternate" type="text/css" href="style/'.$buffer[$i].'/style.css">';
-     }
+	
+	private function showTempelate(string $name){
+		if(Request::session("template")){
+			$this->tempelate->path("./lib/tempelate/".Request::session("tempelate"));
+			if($this->tempelate->parse($name.".style")){
+				return;
+			}
+		}
+		
+		//okay wee has no option wee take the default style
+		$this->tempelate->path("./lib/tempelate/".Config::get("defaultStyle"));
+		if(!$this->tempelate->parse($name.".style")){
+			exit("Failed to show the page");
+		}
+	}
 
      private function removeUserMember(int $cid, int $uid, int $members = -1){
         $this->database->query("DELETE FROM `".DB_PREFIX."chat_member`
@@ -1321,7 +1176,7 @@ class Server{
 		if($this->database->isError){
 			exit($this->database->getError());
 		}
-		if(($row = $data->get()){
+		if(($row = $data->get())){
 			$members = $row["id"];
 		}
 	}else{

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  @-if exist title-@
+    <title>@-echo title-@</title>
+  @-end-@
+  <script>
+   const onload = [];
+   function load(){
+     for(var i=0;i<onload.length;i++)
+      onload[i]();
+   }
+   window.onerror = function(msg, url, linenumber) {
+    if(typeof sys !== undefined){
+     sys.getPage("console").line("", "", "JavascriptError", "[color=red]"+msg+". On line "+linenumber+" In file "+url+"[/color]");
+      
+    }
+    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+    return true;
+   }
+   @-trigger client.javascript.end-@
+  </script>
+  <link rel="stylesheet" type="text/css" href="@-echo __DIR__-@css/style.css">
+  @-if exist error-@
+  <script>
+   alert("Error: @-error-@");
+  </script>
+  @-end-@
+  @-if exist js-@
+  @-foreach dir : js-@
+  <script src='@-echo dir-@'></script>
+  @-end-@
+  @-end-@
+  @-if exist rawjs-@
+  <script>
+    @-echo rawjs-@
+  </script>
+  @-end-@
+</head>
+<body onload='load();'>
