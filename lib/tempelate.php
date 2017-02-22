@@ -40,6 +40,20 @@ class Tempelate{
     if(strlen($source)-1 > $i || !$arg){
       return false;
     }
+    if(file_exists($this->path."cache/")){
+      if(!@mkdir($this->path."cache/")){
+        $this->error("Failed to create cache dir");
+      }
+    }
+    //make info file
+    $fopen = fopen($this->path."cache/".$name, "+w");
+    fwrite($fopen, json_encode($this->cache));
+    fclose($fopen);
+    //make cache file
+    $fopen = fopen($this->path."cache/".substr($name, 0, strrpos($name, ".")).".cache", "+w");
+    fwrite($fopen, $arg);
+    fclose($fopen);
+    $this->addCache($file);
     eval("?> {$arg} <?php ");
     return true;
   }
@@ -52,7 +66,7 @@ class Tempelate{
         return false;
       }
     }
-    $cache = $this->path.substr($name, 0, strrpos($name, "."))."cache";
+    $cache = $this->path.substr($name, 0, strrpos($name, ".")).".cache";
     return true;
   }
     
@@ -102,6 +116,7 @@ class Tempelate{
           if(!$s){
             return false;
           }
+            $this->addCache(substr($dir, strlen($this->path)).$f.".style");
           $buffer .= $s;
           break;
           case "foreach":
@@ -276,5 +291,12 @@ class Tempelate{
     }
     fwrite($fopen, ($size == 0 ? "" : "\r\n")."[".date("s:i:H")."]".$str);
     fclose($fopen);
+  }
+  
+  private function addCache(string $name){
+    $this->cache[] = [
+        "name" => $name,
+        "time" => filemtime($this->path.$name)
+      ];
   }
 }
