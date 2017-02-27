@@ -5,7 +5,7 @@ const System = (function(){
     this.pages       = {};
     this.input       = input;
     this.gui         = gui;
-    this.currentPage = null;
+    this.current = null;
 
     this.validCommand = [
        "join"
@@ -42,8 +42,8 @@ const System = (function(){
   };
 
   System.prototype.currentPage = function(){
-    if(typeof this.pages[this.currentPage] !== "undefined"){
-      return this.pages[this.currentPage];
+    if(typeof this.pages[this.current] !== "undefined"){
+      return this.pages[this.current];
     }
     return null;
   };
@@ -76,8 +76,8 @@ const System = (function(){
       return false;
     }
     
-    if(typeof this.pages[this.currentPage] !== "undefined"){
-      this.pages[this.pages].hide();
+    if(typeof this.pages[this.current] !== "undefined"){
+      this.pages[this.current].hide();
     }
     
     this.pages[name].show();
@@ -85,7 +85,7 @@ const System = (function(){
   };
   
   System.prototype.isFocus = function(name){
-    return this.currentPage == name;
+    return this.current == name;
   };
 
   return System;
