@@ -5,6 +5,7 @@ class Tempelate{
   private $variabel = [];
   private $lang = [];
   private $cache = [];
+  private $file = "";
   
   public function __construct(Plugin $plugin){
     $this->plugin = $plugin;
@@ -35,6 +36,7 @@ class Tempelate{
       return false;
     }
     $i=0;
+    $this->file = $file;
     $source = file_get_contents($this->path.$file);
     $arg = $this->render($source, $i);
     //controle if got to the end and the render not return true. true is return when @-end-@
@@ -261,6 +263,8 @@ class Tempelate{
       switch($identify){
         case "DIR":
           return "'".$this->path."'";
+        case "FILE":
+          return "'".$this->file."'";
         default:
           $this->error("Unknown globel identify: ".$identify);
           return false;
