@@ -18,15 +18,6 @@ function createButtom(name, onClose){
   return container;
 }
 
-function createUserList(event){
-  var element = document.createElement("div");
-  element.className = "user-list";
-
-  document.getElementById("ulist-container").appendChild(element);
-
-  return new UserList(element, event);
-}
-
 function isFocus(name){
   const buttom = document.getElementsByClassName("channel_buttom");
   for(var i=0;i<buttom.length;i++){
