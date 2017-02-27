@@ -92,6 +92,10 @@ class Tempelate{
         }
         $pos = strpos($block, " ");
         switch($c = ($pos !== false ? substr($block, 0, $pos) : "")){
+          case "config":
+            $key = trim(substr($block, $pos+1));
+            $buffer .= "<?php echo Config::exist('".$key."') ? Config::get('".$key."') : ""; ?>";
+            break;
           case "trigger":
             $buffer .= "<?php echo \$this->plugin->trigger('".trim(substr($block, $pos+1))."', []); ?>";
           break;
