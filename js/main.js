@@ -60,15 +60,11 @@ const System = (function(){
   System.prototype.createPage = function(name){
     //first push channel bottom to the top menu
     const buttom = createButtom(name, this);
-    const context = document.createElement("div");
-    context.className = "context-container";
-    document.getElementById("pageContainer").appendChild(context);
-
     var page = new Page(
       name,
       buttom,
       new UserList(this),
-      context
+      this.gui.initContextContainer()
     );
     this.pages[name] = page;
 
