@@ -67,7 +67,7 @@ const System = (function(){
     this.pages[name] = page;
 
     document.getElementById("chat-top").appendChild(buttom);
-    this.page.selectPage(name);
+    this.selectPage(name);
     return page;
   };
   
