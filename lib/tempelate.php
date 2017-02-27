@@ -221,6 +221,14 @@ class Tempelate{
           return false;//no error messafe is need here, Primery handle this
         }
         return $e." || ".$b;
+      case "==":
+        $i += 2;
+        $this->removeJunk($str, $i);
+        $b = $this->primary($str, $i);
+        if(!$b){
+          return false;
+        }
+        return $e." || ".$b;
     }
     return $e;
   }
