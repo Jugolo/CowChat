@@ -80,7 +80,7 @@ class Server{
   url : '".$row["url"]."'
 });";
       }
-      $js .= "onload.push(function(){";
+      
       $this->garbageMember();
       $query = $this->database->query("SELECT cn.name
                                        FROM `".DB_PREFIX."chat_name` AS cn
@@ -94,14 +94,10 @@ class Server{
 	$buffer[] = $row["name"];
       }
 	    
-      if(count($buffer) == 0){
-	   $this->te
-           $js .= "send('Bot', '/join ".Config::get("startChannel")."');"
-      }else{
+      if(count($buffer) !== 0){
 	   $this->tempelate->putVariabel("channels", $buffer);
       }
 	    
-      $js .= "});";
       $this->tempelate->putVariabel("rawjs", $js);
     }
 
