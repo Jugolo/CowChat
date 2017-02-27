@@ -40,7 +40,7 @@ class Tempelate{
     $source = file_get_contents($this->path.$file);
     $arg = $this->render($source, $i);
     //controle if got to the end and the render not return true. true is return when @-end-@
-    if(strlen($source)-1 > $i || !$arg){
+    if(strlen($source)-1 > $i || !is_string($arg)){
       return false;
     }
     $this->addCache($file);
