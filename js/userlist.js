@@ -6,11 +6,11 @@ const UserList = (function(){
   }
 
   UserList.prototype.show = function(){
-    this.dom.style.display = "block";
+    this.sys.gui.showUserContainer(this);
   };
 
   UserList.prototype.hide = function(){
-    this.dom.style.display = "none";
+    this.sys.gui.hideUserContainer(this);
   };
 
   UserList.prototype.remove = function(nick){
