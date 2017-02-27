@@ -1,10 +1,11 @@
 var sys, timeout = null;
 const System = (function(){
   function System(input, gui){
-    this.callback = {};
-    this.pages    = {};
-    this.input    = input;
-    this.gui      = gui;
+    this.callback    = {};
+    this.pages       = {};
+    this.input       = input;
+    this.gui         = gui;
+    this.currentPage = null;
 
     this.validCommand = [
        "join"
@@ -41,14 +42,10 @@ const System = (function(){
   };
 
   System.prototype.currentPage = function(){
-     const buttom = document.getElementsByClassName("channel_buttom");
-     for(var i=0;i<buttom.length;i++){
-       const c = buttom[i].className.split(" ");
-       if(c.indexOf("focus") !== -1){
-         return this.pages[buttom[i].getElementsByClassName("name")[0].innerHTML];
-       }
-     }alert("failed to find channel");
-     return null;
+    if(typeof this.pages[this.currentPage] !== "undefined"){
+      return this.pages[this.currentPage];
+    }
+    return null;
   };
 
   System.prototype.appendPage = function(name){
@@ -64,13 +61,27 @@ const System = (function(){
       name,
       buttom,
       new UserList(this),
-      this.gui.initContextContainer()
+      this.gui.initContextContainer(),
+      this
     );
     this.pages[name] = page;
 
     document.getElementById("chat-top").appendChild(buttom);
-    selectPage(name);
+    this.page.selectPage(name);
     return page;
+  };
+  
+  System.prototype.selectPage = function(name){
+    if(typeof this.pages[name] === "undefined"){
+      return false;
+    }
+    
+    if(typeof this.pages[this.currentPage] !== "undefined"){
+      this.pages[this.pages].hide();
+    }
+    
+    this.pages[name].show();
+    return true;
   };
 
   return System;
