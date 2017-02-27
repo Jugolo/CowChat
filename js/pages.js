@@ -1,7 +1,4 @@
 var commands = {};
-function removeNode(node){
-  node.parentElement.removeChild(node);
-}
 
 const Page = (function(){
   function Page(name, buttom, user, context, system){
