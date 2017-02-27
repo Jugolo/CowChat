@@ -21,12 +21,12 @@ const Page = (function(){
 
   Page.prototype.show = function(){
      this.user.show();
-     this.system.gui.showContextContainer(this.context);
+     this.system.gui.showContextContainer(this);
   };
 
   Page.prototype.hide = function(){
      this.user.hide();
-     this.system.gui.hideContextContainer(this.context);
+     this.system.gui.hideContextContainer(this);
   }
 
   Page.prototype.onRespons = function(data){
