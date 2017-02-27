@@ -286,6 +286,7 @@ class Tempelate{
       $this->error("Missing end char in string (".$end.")");
       return false;
     }
+    $i++;
     return $end.$buffer.$end;
   }
   
