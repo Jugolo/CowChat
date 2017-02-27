@@ -48,6 +48,13 @@ const Page = (function(){
   }
 
   Page.prototype.line = function(time, avatar, nick, message){
+    this.system.gui.appendMessage(
+      this.context,
+      time,
+      avatar,
+      nick,
+      message
+      );
     if(!isFocus(this.name)){
       markUnread(this.name);
     }
