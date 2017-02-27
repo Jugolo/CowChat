@@ -83,6 +83,10 @@ const System = (function(){
     this.pages[name].show();
     return true;
   };
+  
+  System.prototype.isFocus = function(name){
+    return this.currentPage == name;
+  };
 
   return System;
 })();
