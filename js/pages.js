@@ -4,11 +4,12 @@ function removeNode(node){
 }
 
 const Page = (function(){
-  function Page(name, buttom, user, context){
+  function Page(name, buttom, user, context, system){
     this.buttom = buttom;
     this.user = user;
     this.name = name;
     this.context = context;
+    this.system = system;
   }
 
   Page.prototype.remove = function(){
