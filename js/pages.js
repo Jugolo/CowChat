@@ -53,62 +53,8 @@ const Page = (function(){
       time,
       avatar,
       nick,
-      message
+      bbcode(message)
       );
-    if(!isFocus(this.name)){
-      markUnread(this.name);
-    }
-
-    const container = document.createElement("div");
-    container.className = "line";
-    
-    if(time){
-      const t = document.createElement("span");
-      t.className = "time";
-      t.innerHTML = "["+time+"]";
-      container.appendChild(t);
-    }
-
-    if(avatar){
-      const img = document.createElement("span");
-      img.className = "message-avatar";
-      img.style.backgroundImage = "url('"+avatar+"')";
-      //added in version 1.1. If there is a error to load the image hide this image
-      img.onerror = function(){
-        removeNode(img);
-      };
-      container.appendChild(img);
-    }
-
-    if(nick){
-     const n = document.createElement("span");
-     n.className = "nick";
-     n.innerHTML = nick+":&nbsp;";
-     if(nick == "Bot"){
-       n.className += " bot-nick";
-     }else if(this.name != "console"){
-       const u = this.user.get(nick);
-       if(u === null){
-         sys.getPage("console").line(time, "", "Bot", "Unknown user: "+nick);
-       }else{
-         if(u.isOp){
-           n.className += " op";
-           n.innerHTML = "@"+n.innerHTML;
-         }else if(u.isVoice){
-           n.className += " voice";
-           n.innerHTML = "+"+n.innerHTML;
-         }
-       }
-     }
-     container.appendChild(n);
-    }
-
-    const m = document.createElement("span");
-    m.className = "message";
-    m.innerHTML = bbcode(message);
-    container.appendChild(m);
-
-    this.context.appendChild(container);
   };
 
   return Page;
