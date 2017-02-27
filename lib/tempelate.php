@@ -228,7 +228,7 @@ class Tempelate{
         if(!$b){
           return false;
         }
-        return $e." || ".$b;
+        return $e." == ".$b;
     }
     return $e;
   }
