@@ -26,7 +26,7 @@ const Page = (function(){
 
   Page.prototype.hide = function(){
      this.user.hide();
-     this.context.style.display = "none";
+     this.system.gui.hideContextContainer(this.context);
   }
 
   Page.prototype.onRespons = function(data){
