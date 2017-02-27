@@ -269,9 +269,24 @@ class Tempelate{
           $this->error("Unknown globel identify: ".$identify);
           return false;
       }
+    }elseif($str[$i] == "'" || $str[$i] == '"'){
+      return $this->getString($str, $i);
     }
     $this->error("Unknown primary expresion first token: ".$str[$i]);
     return false;
+  }
+  
+  private function getString($str, &$i){
+    $end = $str[$i];
+    $buffer = "";
+    for($i++;$i<strlen($str) && $str[$i] != $end; $i++){
+      $buffer .= $str[$i];
+    }
+    if($str[$i] != $end){
+      $this->error("Missing end char in string (".$end.")");
+      return false;
+    }
+    return $end.$buffer.$end;
   }
   
   private function renderBlock($str, &$i){
