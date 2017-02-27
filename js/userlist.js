@@ -89,7 +89,7 @@ const UserList = (function(){
     this.dom.appendChild(container);
     this.users[nick] = new User(
       this.sys,
-      this.sys.appendUser(this.dom, avatar, nick),
+      this.sys.gui.appendUser(this.dom, avatar, nick),
       nick
     );
   };
