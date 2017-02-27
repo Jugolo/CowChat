@@ -49,7 +49,7 @@ const Page = (function(){
 
   Page.prototype.line = function(time, avatar, nick, message){
     this.system.gui.appendMessage(
-      this.context,
+      this,
       time,
       avatar,
       nick,
