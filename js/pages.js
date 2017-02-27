@@ -16,7 +16,8 @@ const Page = (function(){
     if(isFocus(this.name)){
       this.system.selectPage("console");
     }
-    removeNode(this.context);
+    
+    this.system.gui.removeContextContainer(this.context);
     this.system.gui.removeUserlist(this.user.dom);
     removeNode(this.buttom);
   };
