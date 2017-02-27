@@ -1,9 +1,10 @@
 const User = (function(){
-  function User(container, nick){
+  function User(system, container, nick){
     this.container = container;
     this.isOp = false;
     this.isVoice = false;
     this.nick = nick;
+    this.system = system;
   }
 
   User.prototype.remove = function(){
