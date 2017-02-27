@@ -88,14 +88,19 @@ class Server{
                                        WHERE cm.uid='".$user->id()."'
                                        AND cn.id<>1
                                        AND LOCATE('b', cm.mode) = 0");
-      $count = 0;
+      
+      $buffer = [];
       while($row = $query->get()){
-        $js .= "sys.appendPage('".$row["name"]."');";
-        $count++;
+	$buffer[] = $row["name"];
       }
-      if($count == 0){
-        $js .= "send('Bot', '/join ".Config::get("startChannel")."');";
+	    
+      if(count($buffer) == 0){
+	   $this->te
+           $js .= "send('Bot', '/join ".Config::get("startChannel")."');"
+      }else{
+	   $this->tempelate->putVariabel("channels", $buffer);
       }
+	    
       $js .= "});";
       $this->tempelate->putVariabel("rawjs", $js);
     }
