@@ -16,7 +16,7 @@
      sys.appendPage('@-@echo channel-@');
      @-end-@
      @-else-@
-     send('Bot', '@-config startChannel-@');
+     send('Bot', '/join @-config startChannel-@');
      @-end-@
      @-end-@
    }
