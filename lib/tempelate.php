@@ -120,7 +120,7 @@ class Tempelate{
           }
           $b = 0;
           $s = $this->render(file_get_contents($dir.$f.".style"), $b);
-          if(!$s){
+          if(!is_string($s)){
             return false;
           }
             $this->addCache(substr($dir, strlen($this->path)).$f.".style");
