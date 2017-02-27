@@ -14,10 +14,10 @@ const Page = (function(){
 
   Page.prototype.remove = function(){
     if(isFocus(this.name)){
-      selectPage("console");
+      this.system.selectPage("console");
     }
     removeNode(this.context);
-    removeNode(this.user.dom);
+    this.system.gui.removeUserlist(this.user.dom);
     removeNode(this.buttom);
   };
 
