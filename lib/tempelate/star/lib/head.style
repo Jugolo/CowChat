@@ -11,6 +11,11 @@
        document.getElementById("txt"),
        StarGui
      );
+     @-if exist channels-@
+     @-foreach channel : channels-@
+     sys.appendPage('@-@echo channel-@');
+     @-end-@
+     @-end-@
      @-end-@
    }
    window.onerror = function(msg, url, linenumber) {
