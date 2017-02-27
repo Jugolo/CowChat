@@ -21,7 +21,7 @@ const Page = (function(){
 
   Page.prototype.show = function(){
      this.user.show();
-     this.context.style.display = "block";
+     this.system.gui.showContextContainer(this.context);
   };
 
   Page.prototype.hide = function(){
