@@ -87,7 +87,11 @@ const UserList = (function(){
     container.appendChild(menu);
 
     this.dom.appendChild(container);
-    this.users[nick] = new User(container, nick);
+    this.users[nick] = new User(
+      this.sys,
+      this.sys.appendUser(this.dom, avatar, nick),
+      nick
+    );
   };
 
   UserList.prototype.updateNick = function(old, news){
