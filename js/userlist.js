@@ -1,6 +1,7 @@
 const UserList = (function(){
-  function UserList(dom, event){
-    this.dom = dom;
+  function UserList(sys){
+    this.sys = sys;
+    this.dom = sys.gui.initUserList();
     this.users = {};
   }
 
