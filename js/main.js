@@ -81,6 +81,7 @@ const System = (function(){
     }
     
     this.pages[name].show();
+    this.current = name;
     return true;
   };
   
