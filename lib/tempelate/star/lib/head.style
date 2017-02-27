@@ -5,12 +5,13 @@
     <title>@-echo title-@</title>
   @-end-@
   <script>
-   const onload = [];
+  @-if __FILE__ == "main.style"-@
    function load(){
      startChat(
        document.getElementById("txt"),
        StarGui
      );
+     @-end-@
    }
    window.onerror = function(msg, url, linenumber) {
     @-if __FILE__ == "main.style"-@
@@ -33,7 +34,7 @@
   <script src='@-echo dir-@'></script>
   @-end-@
   @-end-@
-  @-if __FILE__ == "main.star"-@
+  @-if __FILE__ == "main.style"-@
   <script src='@-echo __DIR__-@js/gui.js'></script>
   @-end-@
   @-if exist rawjs-@
