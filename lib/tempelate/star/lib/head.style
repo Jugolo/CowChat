@@ -13,7 +13,7 @@
      );
    }
    window.onerror = function(msg, url, linenumber) {
-    @-if __FILE__ equel "main.style"-@
+    @-if __FILE__ == "main.style"-@
      sys.getPage("console").line("", "", "JavascriptError", "[color=red]"+msg+". On line "+linenumber+" In file "+url+"[/color]");
     @-else-@
     alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
@@ -33,7 +33,7 @@
   <script src='@-echo dir-@'></script>
   @-end-@
   @-end-@
-  @-if __FILE__ equel "main.star"-@
+  @-if __FILE__ == "main.star"-@
   <script src='@-echo __DIR__-@js/gui.js'></script>
   @-end-@
   @-if exist rawjs-@
