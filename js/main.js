@@ -56,7 +56,7 @@ const System = (function(){
 
   System.prototype.createPage = function(name){
     //first push channel bottom to the top menu
-    const buttom = createButtom(name, this);
+    const buttom = this.gui.createButtom(name, this);
     var page = new Page(
       name,
       buttom,
