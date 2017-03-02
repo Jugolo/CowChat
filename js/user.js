@@ -13,13 +13,11 @@ const User = (function(){
 
   User.prototype.op = function(){
     this.system.gui.opUser(this.container);
-    const nick = this.container.getElementsByClassName("nick")[0];
-    nick.innerHTML = "@"+this.nick;
-    nick.className += " op";
     this.isOp = true;
   };
 
   User.prototype.deop = function(){
+    this.system.gui.deopUser(this.container, this.isVoice);
     const nick = this.container.getElementsByClassName("nick")[0];
     if(this.isVoice){
       nick.innerHTML = "+"+this.nick;
