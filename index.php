@@ -113,7 +113,6 @@ class Server{
       $this->tempelate->putVariabel("username", $user->username());
       $this->tempelate->putVariabel("js", [
 	      "js/main.js",
-	      "js/page.js",
 	      "js/pages.js",
 	      "js/userlist.js",
 	      "js/user.js",
