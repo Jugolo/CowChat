@@ -12,25 +12,17 @@ const User = (function(){
   };
 
   User.prototype.op = function(){
-    this.system.gui.opUser(this.container);
+    this.system.gui.opUser(this.container, this.nick);
     this.isOp = true;
   };
 
   User.prototype.deop = function(){
-    this.system.gui.deopUser(this.container, this.isVoice);
-    const nick = this.container.getElementsByClassName("nick")[0];
-    if(this.isVoice){
-      nick.innerHTML = "+"+this.nick;
-    }else{
-      nick.innerHTML = this.nick;
-    }
-    var split = nick.className.split(" ");
-    split.splice(split.indexOf("op"), 1);
-    nick.className = split.join(" ");
+    this.system.gui.deopUser(this.container, this.nick, this.isVoice);
     this.isOp = false;
   };
 
   User.prototype.voice = function(){
+    this.system.gui.voiceUser(this.container, this.nick);
     var nick = this.container.getElementsByClassName("nick")[0];
     nick.className += " voice";
     if(!this.isOp){
