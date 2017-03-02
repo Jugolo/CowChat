@@ -28,17 +28,11 @@ const User = (function(){
 
   User.prototype.devoice = function(){
     this.system.gui.devoiceUser(this.container, this.nick, this.isOp);
-    const nick = this.container.getElementsByClassName("nick")[0];
-    if(!this.isOp){
-      nick.innerHTML = this.nick;
-    }
-    var split = nick.className.split(" ");
-    split.splice(split.indexOf("voice"), 1);
-    nick.className = split.join(" ");
     this.isVoice = false;
   };
 
   User.prototype.inaktiv = function(){
+    this.system.gui.inaktiv(this.container);
     this.container.getElementsByClassName("nick")[0].className += " inaktiv";
   };
 
