@@ -37,16 +37,10 @@ const User = (function(){
 
   User.prototype.uninaktiv = function(){
     this.system.gui.uninaktiv(this.conatiner);
-    const dom = this.container.getElementsByClassName("nick")[0];
-    var className = dom.className.split(" ");
-    var pos;
-    if((pos = className.indexOf("inaktiv")) !== -1){
-      className.splice(pos, 1);
-    }
-    dom.className = className.join(" ");
   };
 
   User.prototype.updateNick = function(nick){
+    this.system.gui.updateNick(this.container, this.nick, this.isVoice, this.isOp);
      const dom = this.container.getElementsByClassName("nick")[0];
      if(this.isOp){
        dom.innerHTML = "@"+nick;
