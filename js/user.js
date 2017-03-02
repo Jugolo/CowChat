@@ -22,16 +22,12 @@ const User = (function(){
   };
 
   User.prototype.voice = function(){
-    this.system.gui.voiceUser(this.container, this.nick);
-    var nick = this.container.getElementsByClassName("nick")[0];
-    nick.className += " voice";
-    if(!this.isOp){
-      nick.innerHTML = "+"+this.nick;
-    }
+    this.system.gui.voiceUser(this.container, this.nick, this.isOp);
     this.isVoice = true;
   };
 
   User.prototype.devoice = function(){
+    this.system.gui.devoiceUser(this.container, this.nick, this.isOp);
     const nick = this.container.getElementsByClassName("nick")[0];
     if(!this.isOp){
       nick.innerHTML = this.nick;
