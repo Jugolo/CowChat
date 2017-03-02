@@ -40,7 +40,7 @@ const User = (function(){
   };
 
   User.prototype.updateNick = function(nick){
-    this.system.gui.updateNick(this.container, this.nick, this.isVoice, this.isOp);
+    this.system.gui.updateNick(this.container, nick, this.isVoice, this.isOp);
     this.nick = nick;
   };
 
