@@ -33,10 +33,10 @@ const User = (function(){
 
   User.prototype.inaktiv = function(){
     this.system.gui.inaktiv(this.container);
-    this.container.getElementsByClassName("nick")[0].className += " inaktiv";
   };
 
   User.prototype.uninaktiv = function(){
+    this.system.gui.uninaktiv(this.conatiner);
     const dom = this.container.getElementsByClassName("nick")[0];
     var className = dom.className.split(" ");
     var pos;
