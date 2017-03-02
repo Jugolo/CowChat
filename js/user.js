@@ -41,15 +41,7 @@ const User = (function(){
 
   User.prototype.updateNick = function(nick){
     this.system.gui.updateNick(this.container, this.nick, this.isVoice, this.isOp);
-     const dom = this.container.getElementsByClassName("nick")[0];
-     if(this.isOp){
-       dom.innerHTML = "@"+nick;
-     }else if(this.isVoice){
-       dom.innerHTML = "+"+nick;
-     }else{
-       dom.innerHTML = nick;
-     }
-     this.nick = nick;
+    this.nick = nick;
   };
 
   return User;
