@@ -8,6 +8,7 @@ const User = (function(){
   }
 
   User.prototype.remove = function(){
+    this.system.gui.removeUser(this.container);
      removeNode(this.container);
   };
 
