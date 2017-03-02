@@ -9,10 +9,10 @@ const User = (function(){
 
   User.prototype.remove = function(){
     this.system.gui.removeUser(this.container);
-     removeNode(this.container);
   };
 
   User.prototype.op = function(){
+    this.system.gui.opUser(this.container);
     const nick = this.container.getElementsByClassName("nick")[0];
     nick.innerHTML = "@"+this.nick;
     nick.className += " op";
