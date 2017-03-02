@@ -25,7 +25,7 @@ const UserList = (function(){
   UserList.prototype.append = function(nick, avatar){
     this.users[nick] = new User(
       this.sys,
-      this.sys.gui.appendUser(this, this.dom, avatar, nick),
+      this.sys.gui.appendUser(this.dom, avatar, nick),
       nick
     );
   };
