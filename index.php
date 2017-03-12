@@ -108,18 +108,21 @@ class Server{
         header("location:#");
         exit;
       }
-      $this->tempelate->putVariabel("title", $this->tempelate->getLang("title"));
-      $this->tempelate->putVariabel("avatar", $user->avatar());
-      $this->tempelate->putVariabel("username", $user->username());
-      $this->tempelate->putVariabel("js", [
-	      "js/main.js",
-	      "js/pages.js",
-	      "js/userlist.js",
-	      "js/user.js",
-	      "js/command.js",
-	      "js/bbcode.js",
-	      "js/lang/".Config::get("locale").".js",
-      ]);
+      $this->tempelate->putBlock([
+	      "title"    => $this->tempelate->getLang("title"),
+	      "avatar"   => $user->avatar(),
+	      "username" => $user->username(),
+	      "js"       => [
+		      "js/main.js",
+		      "js/pages.js",
+		      "js/userlist.js",
+		      "js/user.js",
+		      "js/command.js",
+		      "js/bbcode.js",
+		      "js/lang/".Config::get("locale").".js"
+		      ]
+	      ]);
+      
       $this->rawJs($user);
       $this->plugin->trigger("client.loaded", []);
       $this->showTempelate("main");
