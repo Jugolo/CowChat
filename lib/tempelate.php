@@ -11,6 +11,14 @@ class Tempelate{
     $this->plugin = $plugin;
   }
   
+  public function putBlock(array $arg){
+    foreach($arg as $key => $value){
+      if(is_string($key)){
+        $this->putVariabel($key, $value);
+      }
+    }
+  }
+  
   public function putVariabel(string $name, $value){
     $this->variabel[$name] = $value;
   }
