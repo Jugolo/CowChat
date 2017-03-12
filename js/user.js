@@ -1,79 +1,47 @@
 const User = (function(){
-  function User(container, nick){
+  function User(system, container, nick){
     this.container = container;
     this.isOp = false;
     this.isVoice = false;
     this.nick = nick;
+    this.system = system;
   }
 
   User.prototype.remove = function(){
-     removeNode(this.container);
+    this.system.gui.removeUser(this.container);
   };
 
   User.prototype.op = function(){
-    const nick = this.container.getElementsByClassName("nick")[0];
-    nick.innerHTML = "@"+this.nick;
-    nick.className += " op";
+    this.system.gui.opUser(this.container, this.nick);
     this.isOp = true;
   };
 
   User.prototype.deop = function(){
-    const nick = this.container.getElementsByClassName("nick")[0];
-    if(this.isVoice){
-      nick.innerHTML = "+"+this.nick;
-    }else{
-      nick.innerHTML = this.nick;
-    }
-    var split = nick.className.split(" ");
-    split.splice(split.indexOf("op"), 1);
-    nick.className = split.join(" ");
+    this.system.gui.deopUser(this.container, this.nick, this.isVoice);
     this.isOp = false;
   };
 
   User.prototype.voice = function(){
-    var nick = this.container.getElementsByClassName("nick")[0];
-    nick.className += " voice";
-    if(!this.isOp){
-      nick.innerHTML = "+"+this.nick;
-    }
+    this.system.gui.voiceUser(this.container, this.nick, this.isOp);
     this.isVoice = true;
   };
 
   User.prototype.devoice = function(){
-    const nick = this.container.getElementsByClassName("nick")[0];
-    if(!this.isOp){
-      nick.innerHTML = this.nick;
-    }
-    var split = nick.className.split(" ");
-    split.splice(split.indexOf("voice"), 1);
-    nick.className = split.join(" ");
+    this.system.gui.devoiceUser(this.container, this.nick, this.isOp);
     this.isVoice = false;
   };
 
   User.prototype.inaktiv = function(){
-    this.container.getElementsByClassName("nick")[0].className += " inaktiv";
+    this.system.gui.inaktiv(this.container);
   };
 
   User.prototype.uninaktiv = function(){
-    const dom = this.container.getElementsByClassName("nick")[0];
-    var className = dom.className.split(" ");
-    var pos;
-    if((pos = className.indexOf("inaktiv")) !== -1){
-      className.splice(pos, 1);
-    }
-    dom.className = className.join(" ");
+    this.system.gui.uninaktiv(this.conatiner);
   };
 
   User.prototype.updateNick = function(nick){
-     const dom = this.container.getElementsByClassName("nick")[0];
-     if(this.isOp){
-       dom.innerHTML = "@"+nick;
-     }else if(this.isVoice){
-       dom.innerHTML = "+"+nick;
-     }else{
-       dom.innerHTML = nick;
-     }
-     this.nick = nick;
+    this.system.gui.updateNick(this.container, nick, this.isVoice, this.isOp);
+    this.nick = nick;
   };
 
   return User;

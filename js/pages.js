@@ -1,33 +1,32 @@
 var commands = {};
-function removeNode(node){
-  node.parentElement.removeChild(node);
-}
 
 const Page = (function(){
-  function Page(name, buttom, user, context){
+  function Page(name, buttom, user, context, system){
     this.buttom = buttom;
     this.user = user;
     this.name = name;
     this.context = context;
+    this.system = system;
   }
 
   Page.prototype.remove = function(){
     if(isFocus(this.name)){
-      selectPage("console");
+      this.system.selectPage("console");
     }
-    removeNode(this.context);
-    removeNode(this.user.dom);
+    
+    this.system.gui.removeContextContainer(this.context);
+    this.system.gui.removeUserlist(this.user.dom);
     removeNode(this.buttom);
   };
 
   Page.prototype.show = function(){
      this.user.show();
-     this.context.style.display = "block";
+     this.system.gui.showContextContainer(this);
   };
 
   Page.prototype.hide = function(){
      this.user.hide();
-     this.context.style.display = "none";
+     this.system.gui.hideContextContainer(this);
   }
 
   Page.prototype.onRespons = function(data){
@@ -49,60 +48,13 @@ const Page = (function(){
   }
 
   Page.prototype.line = function(time, avatar, nick, message){
-    if(!isFocus(this.name)){
-      markUnread(this.name);
-    }
-
-    const container = document.createElement("div");
-    container.className = "line";
-    
-    if(time){
-      const t = document.createElement("span");
-      t.className = "time";
-      t.innerHTML = "["+time+"]";
-      container.appendChild(t);
-    }
-
-    if(avatar){
-      const img = document.createElement("span");
-      img.className = "message-avatar";
-      img.style.backgroundImage = "url('"+avatar+"')";
-      //added in version 1.1. If there is a error to load the image hide this image
-      img.onerror = function(){
-        removeNode(img);
-      };
-      container.appendChild(img);
-    }
-
-    if(nick){
-     const n = document.createElement("span");
-     n.className = "nick";
-     n.innerHTML = nick+":&nbsp;";
-     if(nick == "Bot"){
-       n.className += " bot-nick";
-     }else if(this.name != "console"){
-       const u = this.user.get(nick);
-       if(u === null){
-         sys.getPage("console").line(time, "", "Bot", "Unknown user: "+nick);
-       }else{
-         if(u.isOp){
-           n.className += " op";
-           n.innerHTML = "@"+n.innerHTML;
-         }else if(u.isVoice){
-           n.className += " voice";
-           n.innerHTML = "+"+n.innerHTML;
-         }
-       }
-     }
-     container.appendChild(n);
-    }
-
-    const m = document.createElement("span");
-    m.className = "message";
-    m.innerHTML = bbcode(message);
-    container.appendChild(m);
-
-    this.context.appendChild(container);
+    this.system.gui.appendMessage(
+      this,
+      time,
+      avatar,
+      nick,
+      bbcode(message)
+      );
   };
 
   return Page;

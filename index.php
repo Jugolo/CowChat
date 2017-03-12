@@ -80,7 +80,7 @@ class Server{
   url : '".$row["url"]."'
 });";
       }
-      $js .= "onload.push(function(){";
+      
       $this->garbageMember();
       $query = $this->database->query("SELECT cn.name
                                        FROM `".DB_PREFIX."chat_name` AS cn
@@ -88,15 +88,16 @@ class Server{
                                        WHERE cm.uid='".$user->id()."'
                                        AND cn.id<>1
                                        AND LOCATE('b', cm.mode) = 0");
-      $count = 0;
+      
+      $buffer = [];
       while($row = $query->get()){
-        $js .= "sys.appendPage('".$row["name"]."');";
-        $count++;
+	$buffer[] = $row["name"];
       }
-      if($count == 0){
-        $js .= "send('Bot', '/join ".Config::get("startChannel")."');";
+	    
+      if(count($buffer) !== 0){
+	   $this->tempelate->putVariabel("channels", $buffer);
       }
-      $js .= "});";
+	    
       $this->tempelate->putVariabel("rawjs", $js);
     }
 
@@ -112,7 +113,6 @@ class Server{
       $this->tempelate->putVariabel("username", $user->username());
       $this->tempelate->putVariabel("js", [
 	      "js/main.js",
-	      "js/page.js",
 	      "js/pages.js",
 	      "js/userlist.js",
 	      "js/user.js",
@@ -1015,7 +1015,7 @@ class Server{
        }
        $this->tempelate->putVariabel("title", $this->tempelate->getLang("login_title"));
        if(count($error) > 0){
-	     $this->tempelate->putVariabel("error", implode("\\r\\n", $error));
+	     $this->tempelate->putVariabel("error", $error);
        }
        $this->onlineUsers();
        $this->showTempelate("login");

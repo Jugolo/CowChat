@@ -5,6 +5,7 @@ class Tempelate{
   private $variabel = [];
   private $lang = [];
   private $cache = [];
+  private $file = "";
   
   public function __construct(Plugin $plugin){
     $this->plugin = $plugin;
@@ -35,10 +36,11 @@ class Tempelate{
       return false;
     }
     $i=0;
+    $this->file = $file;
     $source = file_get_contents($this->path.$file);
     $arg = $this->render($source, $i);
     //controle if got to the end and the render not return true. true is return when @-end-@
-    if(strlen($source)-1 > $i || !$arg){
+    if(strlen($source)-1 > $i || !is_string($arg)){
       return false;
     }
     $this->addCache($file);
@@ -90,6 +92,10 @@ class Tempelate{
         }
         $pos = strpos($block, " ");
         switch($c = ($pos !== false ? substr($block, 0, $pos) : "")){
+          case "config":
+            $key = trim(substr($block, $pos+1));
+            $buffer .= "<?php echo Config::exist('".$key."') ? Config::get('".$key."') : ''; ?>";
+            break;
           case "trigger":
             $buffer .= "<?php echo \$this->plugin->trigger('".trim(substr($block, $pos+1))."', []); ?>";
           break;
@@ -114,7 +120,7 @@ class Tempelate{
           }
           $b = 0;
           $s = $this->render(file_get_contents($dir.$f.".style"), $b);
-          if(!$s){
+          if(!is_string($s)){
             return false;
           }
             $this->addCache(substr($dir, strlen($this->path)).$f.".style");
@@ -221,6 +227,14 @@ class Tempelate{
           return false;//no error messafe is need here, Primery handle this
         }
         return $e." || ".$b;
+      case "==":
+        $i += 2;
+        $this->removeJunk($str, $i);
+        $b = $this->primary($str, $i);
+        if(!$b){
+          return false;
+        }
+        return $e." == ".$b;
     }
     return $e;
   }
@@ -253,13 +267,31 @@ class Tempelate{
       switch($identify){
         case "DIR":
           return "'".$this->path."'";
+        case "FILE":
+          return "'".$this->file."'";
         default:
           $this->error("Unknown globel identify: ".$identify);
           return false;
       }
+    }elseif($str[$i] == "'" || $str[$i] == '"'){
+      return $this->getString($str, $i);
     }
     $this->error("Unknown primary expresion first token: ".$str[$i]);
     return false;
+  }
+  
+  private function getString($str, &$i){
+    $end = $str[$i];
+    $buffer = "";
+    for($i++;$i<strlen($str) && $str[$i] != $end; $i++){
+      $buffer .= $str[$i];
+    }
+    if($str[$i] != $end){
+      $this->error("Missing end char in string (".$end.")");
+      return false;
+    }
+    $i++;
+    return $end.$buffer.$end;
   }
   
   private function renderBlock($str, &$i){

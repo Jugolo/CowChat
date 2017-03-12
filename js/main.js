@@ -1,8 +1,11 @@
 var sys, timeout = null;
 const System = (function(){
-  function System(){
-    this.callback = {};
-    this.pages    = {};
+  function System(input, gui){
+    this.callback    = {};
+    this.pages       = {};
+    this.input       = input;
+    this.gui         = gui;
+    this.current = null;
 
     this.validCommand = [
        "join"
@@ -25,11 +28,11 @@ const System = (function(){
   };
 
   System.prototype.inputText = function(){
-     return document.getElementById("txt").value;
+     return this.input.value;
   };
 
   System.prototype.setInputText = function(text){
-     document.getElementById("txt").value = text;
+     this.input.value = text;
   };
 
   System.prototype.getPage = function(name){
@@ -39,14 +42,10 @@ const System = (function(){
   };
 
   System.prototype.currentPage = function(){
-     const buttom = document.getElementsByClassName("channel_buttom");
-     for(var i=0;i<buttom.length;i++){
-       const c = buttom[i].className.split(" ");
-       if(c.indexOf("focus") !== -1){
-         return this.pages[buttom[i].getElementsByClassName("name")[0].innerHTML];
-       }
-     }alert("failed to find channel");
-     return null;
+    if(typeof this.pages[this.current] !== "undefined"){
+      return this.pages[this.current];
+    }
+    return null;
   };
 
   System.prototype.appendPage = function(name){
@@ -56,39 +55,48 @@ const System = (function(){
   };
 
   System.prototype.createPage = function(name){
-    //first push channel bottom to the top menu
-    const buttom = createButtom(name, function(){
-      send(name, "/leave");
-    });
-
-    const user = createUserList(function(nick, key){
-     
-    });
-
-    const context = document.createElement("div");
-    context.className = "context-container";
-    document.getElementById("pageContainer").appendChild(context);
-
-    var page = new Page(name, buttom, user, context);
+    var page = new Page(
+      name,
+      this.gui.createButtom(name, this),
+      new UserList(this),
+      this.gui.initContextContainer(),
+      this
+    );
     this.pages[name] = page;
-
-    document.getElementById("chat-top").appendChild(buttom);
-    selectPage(name);
+    this.selectPage(name);
     return page;
+  };
+  
+  System.prototype.selectPage = function(name){
+    if(typeof this.pages[name] === "undefined"){
+      return false;
+    }
+    
+    if(typeof this.pages[this.current] !== "undefined"){
+      this.pages[this.current].hide();
+    }
+    
+    this.pages[name].show();
+    this.current = name;
+    return true;
+  };
+  
+  System.prototype.isFocus = function(name){
+    return this.current == name;
   };
 
   return System;
 })();
 
-onload.push(function(){
-  sys = new System();
-  document.getElementById("txt").onkeyup = function(e){
+function startChat(input, gui){
+  sys = new System(input, gui);
+  input.onkeyup = function(e){
     sys.trigger("input.keyup", [e]);
   };
   sys.event("input.keyup", handleInput);
   var page = sys.createPage("console");
   connect();
-});
+}
 
 function connect(){
     stopUpdate();

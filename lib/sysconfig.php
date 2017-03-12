@@ -21,4 +21,8 @@ class Config{
     }
     return self::$config[$key];
   }
+  
+  public static function exist(string $key) : bool{
+    return !empty(self::$config[$key]);
+  }
 }
