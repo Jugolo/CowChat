@@ -8,7 +8,7 @@ class Language{
     }elseif($name = self::detectLanguage()){
       self::$langCode = $name;
     }elseif(self::exists(Config::get("locale"))){
-      self;;$langCode = Config::get("locale");
+      self::$langCode = Config::get("locale");
     }else{
       exit("Could not find a language too you");
     }
