@@ -2,6 +2,22 @@
 class Language{
   private static $langCode;
   
+  public static function init(){
+    if(($cookie = Request::cookie("language")) && self::exists($cookie)){
+      self::$langCode = $cookie;
+    }elseif($name = self::detectLanguage()){
+      self::$langCode = $name;
+    }elseif(self::exists(Config::get("locale"))){
+      self;;$langCode = Config::get("locale");
+    }else{
+      exit("Could not find a language too you");
+    }
+  }
+  
+  private static function exists(string $name){
+    return is_dir("./locale/".$name);
+  }
+  
   private static function detectLanguage(){
     $available_languages = array_flip($this->getLanguageList());
 
