@@ -33,7 +33,11 @@
   <link rel="stylesheet" type="text/css" href="@-echo __DIR__-@css/style.css">
   @-if exist error-@
   <script>
-   alert("Error: @-echo error-@");
+   var errorMsg = [];
+   @-foreach e : error-@
+   errorMsg.push("@-echo e-@");
+   @-end-@
+   alert("Error: "+errorMsg.join(" "));
   </script>
   @-end-@
   @-if exist js-@
