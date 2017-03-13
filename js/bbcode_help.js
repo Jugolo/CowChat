@@ -9,5 +9,6 @@ function bbcode(str){
       str = str.replace(smylie[i].tag, "<img src='"+smylie[i].url+"' class='smylie'>");
     }
   }
-  return Bbcode.render(str);
+  
+  return (new Bbcode()).render(str);
 }
