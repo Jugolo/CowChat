@@ -43,7 +43,7 @@ class Language{
   private static function detectLanguage(){
     $available_languages = array_flip(self::getLanguageList());
 
-    $langs;
+    $langs = [];
     preg_match_all('~([\w-]+)(?:[^,\d]+([\d.]+))?~', strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"]), $matches, PREG_SET_ORDER);
     foreach($matches as $match) {
 
