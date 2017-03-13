@@ -21,7 +21,7 @@ $conf["cookie_prefix"] = "chat_";
 $conf["inaktiv"] = "5";//how long time in minutes should ther go befor user is marked inaktiv
 $conf["leave"] = "10";//how long time in minutes should there go before user is leave from channel
 
-$conf["locale"] = "English";//default language
+$conf["locale"] = "en";//default language
 
 $conf["bad_words_enabled"] = "1";//should system controle badword?
 $conf["bad_words"] = [
