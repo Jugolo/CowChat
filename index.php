@@ -919,7 +919,6 @@ class Server{
 	  include "lib/tempelate.php";//new in V1.3
 	  $this->tempelate = new Tempelate($this->plugin);//new in V1.3
 	  Language::init();
-	  $this->tempelate->setLang();
       }
     }
 
