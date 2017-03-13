@@ -30,6 +30,7 @@ class Language{
   public static function load(string $file) : bool{
     $path = "./locale/".self::$langCode."/".$file.".php";
     if(file_exists($path)){
+      include $path;
       self::$lang = array_merge(self::$lang, $locale);
       return true;
     }
