@@ -94,6 +94,8 @@ function controleUpdater(string $dir){
   while($name = readdir($ress)){
     if($name == "update.json"){
       handleUpdateFile($dir);
+    }elseif($name != "." && $name != ".." && is_dir($dir.$name)){
+      controleUpdater($dir.$name."/");
     }
   }
 }
