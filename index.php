@@ -102,6 +102,7 @@ class Server{
     }
 
     private function showChat(User $user){
+      Language::load("main");
       Request::unsetSession("li");
       if(Request::get("logout") && Request::get("sess_id") == session_id()){
 	Request::unsetSession("uid");
@@ -942,6 +943,7 @@ class Server{
     }
 
      private function doLogin(){
+	Language::load("login");
        $error = [];
 
        if(Request::post("login")){
@@ -1131,7 +1133,6 @@ class Server{
     }
 	
 	private function showTempelate(string $name){
-		Language::load($name);
 		if(Request::session("template")){
 			$this->tempelate->path("./lib/tempelate/".Request::session("tempelate"));
 			if($this->tempelate->parse($name.".style")){
