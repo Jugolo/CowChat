@@ -1,6 +1,7 @@
 <?php
 class Language{
   private static $langCode;
+  private static $lang = [];
   
   public static function init(){
     if(($cookie = Request::cookie("language")) && self::exists($cookie)){
@@ -12,6 +13,15 @@ class Language{
     }else{
       exit("Could not find a language too you");
     }
+  }
+  
+  public static function load(string $file) : bool{
+    $path = "./locale/".self::$langCode."/".$file.".php";
+    if(file_exists($path)){
+      self::$lang = array_merge(self::$lang, $locale);
+      return true;
+    }
+    return false;
   }
   
   private static function exists(string $name){
