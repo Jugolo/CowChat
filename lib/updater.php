@@ -3,29 +3,33 @@ class Updater{
   public static function controle(DatabaseHandler $db){
     $query = $database->query("SELECT * FROM `".DB_PREFIX."chat_updater` WHERE `last_check`<'".time()."'");
     while($row = $query->get()){
-      if(self::needUpdate($row)){
-        
+      if(($data = self::needUpdate($row))[0]){
+        self::doUpdate($db, $data[1], $row);
       }
     }
+  }
+  
+  private static function doUpdate(DatabaseHandler $db, string $zip, array $data){
+    
   }
   
   private static function needUpdate(array $data) : bool{
     $current = self::getCurrentVersion($data);
     if(!$current){
-      return false;
+      return [false];
     }
-    return version_compare($data["version"], $current, '<');
+    return [version_compare($data["version"], $current[0], '<'), $current[1]];
   }
   
   private static function getCurrentVersion($data){
     $data = self::request("https://api.github.com/repos/".$data["owner"]."/".$data["repo"]."/tags");
     if(!$data){
-      return $data["version"];
+      return null;
     }
     $n = "V0.0";
-    foreach($data as $item){
-      if(version_compare($n, $item["name"], '<')){
-        $n = $item["name"];
+    foreach(json_decode($data, true) as $item){
+      if(version_compare($n[0], $item["name"], '<')){
+        $n = [$item["name"], $item["zipball_url"]];
       }
     }
     
@@ -40,6 +44,6 @@ class Updater{
     if(!$source){
       return null;
     }
-    return json_decode($source, true);
+    return $source;
   }
 }
