@@ -41,7 +41,7 @@ class Language{
   }
   
   private static function detectLanguage(){
-    $available_languages = array_flip($this->getLanguageList());
+    $available_languages = array_flip(self::getLanguageList());
 
     $langs;
     preg_match_all('~([\w-]+)(?:[^,\d]+([\d.]+))?~', strtolower($_SERVER["HTTP_ACCEPT_LANGUAGE"]), $matches, PREG_SET_ORDER);
@@ -70,7 +70,7 @@ class Language{
     return $langs[0];
   }
   
-  private function getLanguageList() : array{
+  private static function getLanguageList() : array{
     $ress = opendir("./locale");
     $buffer = [];
     while($name = readdir($ress)){
