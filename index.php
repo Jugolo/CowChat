@@ -127,31 +127,6 @@ class Server{
       $this->plugin->trigger("client.loaded", []);
       $this->showTempelate("main");
     }
-	 
-     private function init_lang(){
-         return $this->setLang(Config::get("locale"));
-     }
-
-     function setLang($name){
-         $locale = array();
-	 $langUse = "./locale/".$name."/server.php";
-	 include file_exists($langUse) ? $langUse : "./locale/English/server.php";
-	 return $locale;
-     }
-
-
-     private function getLangList(){
-         $return = array();
-         $dir = "locale/";
-         $dirObj = opendir($dir);
-         while($file = readdir($dirObj)){
-             if($file != "." && $file != ".." && is_dir($dir.$file)){
-                 $return[] = $file;
-             }
-         }
-
-         return $return;
-     }
     
     //inaktiv sektion
     private function garbageMember(){
@@ -924,6 +899,7 @@ class Server{
       include 'lib/plugin.php';//new in V1.1
       include 'lib/admin.php';//new in V1.1
       include 'lib/command.php';//new in V1.1
+      include 'lib/language.php';
 	    
       if(!file_exists("./lib/config.php")){
 	      $this->missing_config();
@@ -943,7 +919,8 @@ class Server{
       if(!$this->ajax){
 	  include "lib/tempelate.php";//new in V1.3
 	  $this->tempelate = new Tempelate($this->plugin);//new in V1.3
-	  $this->tempelate->setLang($this->init_lang());
+	  Language::init();
+	  $this->tempelate->setLang();
       }
     }
 
