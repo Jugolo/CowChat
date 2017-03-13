@@ -20,7 +20,7 @@ class Language{
   }
   
   public static function get(string $key) : string{
-    if(!empty(self::$lang[$key])){
+    if(empty(self::$lang[$key])){
       return "";
     }
     
