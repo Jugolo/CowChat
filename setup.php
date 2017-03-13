@@ -49,10 +49,24 @@ if(!@mkdir("./lib/log/")){
   okay("Created './lib/log/'");
 }
 
-if(!@mkdir("./lib/temp")){
-  error("Failed to create dir './lib/temp/'");
-}else{
-  okay("Create './lib/temp'");
+$query = $mysql->query("SELECT * FROM `".$data["db"]["prefix"]."chat_updater`");
+$buffer = [];
+while($row=$query->fetch_assoc()){
+  $buffer[] = $row;
 }
+define("UPDATER_BUFFER", $buffer);
+
+
+
+function controleUpdater(string $dir){
+  $ress = opendir($dir);
+  while($name = readdir($ress)){
+    if($name == "update.json"){
+      
+    }
+  }
+}
+
+controleUpdater("./");
 
 okay("Chat installed. Please remove ./setup.php and ./lib/config-test.txt");
