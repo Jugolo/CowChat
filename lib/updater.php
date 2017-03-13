@@ -14,6 +14,19 @@ class Updater{
     if(!$zipContext){
       return;
     }
+    
+    $name = tempnam(sys_get_temp_dir(), "cowchat_updater");
+    $file = fopen($name, "w+");
+    fwrite($file, $zipContext);
+    fclose($file);
+    
+    $z = new ZipArchive();
+    if(!$z->open($name)){
+      return;
+    }
+    
+    $z->extractTo($data["dir"]);
+    $z->close();
   }
   
   private static function needUpdate(array $data) : bool{
