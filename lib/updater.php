@@ -9,6 +9,19 @@ class Updater{
     }
   }
   
+  public static function lookUp(DatabaseHandler $db, string $dir){
+    $ress = opendir($dir);
+    while($item = readdir($ress)){
+      if($item != "." && $item != ".."){
+        if($item == "update.json"){
+          self::init($db, $dir);
+        }elseif(is_dir($dir.$item)){
+          self::lookUp($db, $dir.$item."/");
+        }
+      }
+    }
+  }
+  
   private static function doUpdate(DatabaseHandler $db, string $zip, array $data, string $nversion){
     $zipContext = self::request($zip);
     if(!$zipContext){
