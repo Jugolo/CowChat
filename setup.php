@@ -56,13 +56,15 @@ while($row=$query->fetch_assoc()){
 }
 define("UPDATER_BUFFER", $buffer);
 
-
+function handleUpdateFile(string $name){
+  
+}
 
 function controleUpdater(string $dir){
   $ress = opendir($dir);
   while($name = readdir($ress)){
     if($name == "update.json"){
-      
+      handleUpdateFile($dir.$name);
     }
   }
 }
