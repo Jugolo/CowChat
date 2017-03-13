@@ -102,6 +102,10 @@ class Server{
     }
 
     private function showChat(User $user){
+      if(is_admin($user->id()){
+	      include "./lib/updater.php";
+	      Updater::controle($this->database);
+      }
       Language::load("main");
       Request::unsetSession("li");
       if(Request::get("logout") && Request::get("sess_id") == session_id()){
