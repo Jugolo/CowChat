@@ -118,7 +118,7 @@ class Server{
 		      "js/user.js",
 		      "js/command.js",
 		      "js/bbcode.js",
-		      "js/lang/".Config::get("locale").".js"
+		      "js/lang/".Language::getCode().".js"
 		      ]
 	      ]);
       
