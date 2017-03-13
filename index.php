@@ -123,6 +123,7 @@ class Server{
 		      "js/user.js",
 		      "js/command.js",
 		      "js/bbcode.js",
+		      "js/bbcode_help.js",
 		      "js/lang/".Language::getCode().".js"
 		      ]
 	      ]);
