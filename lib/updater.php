@@ -4,12 +4,13 @@ class Updater{
     $query = $database->query("SELECT * FROM `".DB_PREFIX."chat_updater` WHERE `last_check`<'".time()."'");
     while($row = $query->get()){
       if(($data = self::needUpdate($row))[0]){
-        self::doUpdate($db, $data[1], $row);
+        self::doUpdate($data[1], $row);
       }
     }
+    $db->query("UPDATE `".DB_PREFIX."chat_updater` SET `last_check`='".strtotime("+1 day")."' WHERE `last_check`<'".time()."'");
   }
   
-  private static function doUpdate(DatabaseHandler $db, string $zip, array $data){
+  private static function doUpdate(string $zip, array $data){
     $zipContext = self::request($zip);
     if(!$zipContext){
       return;
