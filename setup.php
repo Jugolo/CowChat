@@ -56,6 +56,15 @@ while($row=$query->fetch_assoc()){
 }
 define("UPDATER_BUFFER", $buffer);
 
+function isUpdateInsralled(array $data){
+  foreach(UPDATE_BUFFER as $buffer){
+    if($data["dir"] == $buffer["dir"] && $data["owner"] == $buffer["owner"] && $data["repo"] == $buffer["repo"]){
+      return true;
+    }
+  }
+  return false;
+}
+
 function handleUpdateFile(string $dir){
   global $mysql, $data;
   foreach(json_decode(file_get_contents($dir."update.json"), true) as $d){
@@ -73,6 +82,9 @@ function handleUpdateFile(string $dir){
           '".$mysql->escape_string($d["owner"])."',
           '".$mysql->escape_string($d["repo"])."'
         )");
+      if(!$result){
+        error("Failed to install update item in ".$dir);
+      }
     }
   }
 }
