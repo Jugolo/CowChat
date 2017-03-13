@@ -30,7 +30,7 @@ class Updater{
     $z->close();
   }
   
-  private static function needUpdate(array $data) : bool{
+  private static function needUpdate(array $data) : array{
     $current = self::getCurrentVersion($data);
     if(!$current){
       return [false];
