@@ -18,6 +18,6 @@ function system_log($message){
   }else{
     fwrite($fopen, $dateString);
   }
-  fwrite($fopen, ($size == 0 ? "" : "\r\n")."[".date("s:i:H")."]".$message);
+  fwrite($fopen, "[".date("s:i:H")."]".$message);
   fclose($fopen);
 }
