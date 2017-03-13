@@ -10,7 +10,10 @@ class Updater{
   }
   
   private static function doUpdate(DatabaseHandler $db, string $zip, array $data){
-    
+    $zipContext = self::request($zip);
+    if(!$zipContext){
+      return;
+    }
   }
   
   private static function needUpdate(array $data) : bool{
