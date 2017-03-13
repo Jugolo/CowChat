@@ -22,6 +22,24 @@ class Updater{
     }
   }
   
+  private static function init(DatabaseHandler $db, string $dir){
+    foreach(json_decode(file_get_contents($dir."update.json"), true) as $nodes){
+      $db->query("INSERT INTO `".DB_PREFIX."chat_updater` (
+        `dir`,
+        `version`,
+        `last_check`,
+        `owner`,
+        `repo`
+      ) VALUES (
+        '".$db->clean($dir)."',
+        'V0.0',
+        '0',
+        '".$db->clean($nodes["owner"])."',
+        '".$db->clean($nodes["repo"])."'
+      )");
+    }
+  }
+  
   private static function doUpdate(DatabaseHandler $db, string $zip, array $data, string $nversion){
     $zipContext = self::request($zip);
     if(!$zipContext){
