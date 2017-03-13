@@ -4,13 +4,12 @@ class Updater{
     $query = $db->query("SELECT * FROM `".DB_PREFIX."chat_updater` WHERE `last_check`<'".time()."'");
     while($row = $query->get()){
       if(($data = self::needUpdate($row))[0]){
-        self::doUpdate($data[1], $row);
+        self::doUpdate($db, $data[1], $row, $data[2]);
       }
     }
-    $db->query("UPDATE `".DB_PREFIX."chat_updater` SET `last_check`='".strtotime("+1 day")."' WHERE `last_check`<'".time()."'");
   }
   
-  private static function doUpdate(string $zip, array $data){
+  private static function doUpdate(DatabaseHandler $db, string $zip, array $data, string $nversion){
     $zipContext = self::request($zip);
     if(!$zipContext){
       return;
@@ -37,6 +36,12 @@ class Updater{
       }
     }
     $z->close();
+    $db->query("UPDATE `".DB_PREFIX."chat_updater` 
+                SET 
+                  `last_check`='".strtotime("+1 day")."',
+                  `version`='".$db->clean($nversion)."'
+                WHERE 
+                  `id`='".(int)$data["id"]."'");
   }
   
   private static function needUpdate(array $data) : array{
@@ -44,7 +49,7 @@ class Updater{
     if(!$current){
       return [false];
     }
-    return [version_compare($data["version"], $current[0], '<'), $current[1]];
+    return [version_compare($data["version"], $current[0], '<'), $current[1], $current[0]];
   }
   
   private static function getCurrentVersion($data){
