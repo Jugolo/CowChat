@@ -102,7 +102,7 @@ class Server{
     }
 
     private function showChat(User $user){
-      if(is_admin($user->id()){
+      if(is_admin($user->id())){
 	      include "./lib/updater.php";
 	      Updater::controle($this->database);
       }
