@@ -15,6 +15,14 @@ class Language{
     }
   }
   
+  public static function get(string $key) : string{
+    if(!empty(self::$lang[$key])){
+      return "";
+    }
+    
+    return self::$lang[$key];
+  }
+  
   public static function load(string $file) : bool{
     $path = "./locale/".self::$langCode."/".$file.".php";
     if(file_exists($path)){
