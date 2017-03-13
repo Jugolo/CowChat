@@ -608,7 +608,7 @@ class Server{
           1,
           "/kick ".$user->nick()." ".$post->getChannel()." ".$message
         );
-
+        system_log($user->nick()."(".$user->id().") kicked ".$u."(".$uid.") out from the channel: ".$post->getChannel());
         $this->removeUserMember($post->id(), $uid);
 
         bot($post->id(), "/kick ".$user->nick()." ".$u." ".$message);
