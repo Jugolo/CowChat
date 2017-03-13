@@ -1,6 +1,7 @@
 [
   {
-  "owner" : "Jugolo",
-  "repo"  : "bbparser"
+  "owner"   : "Jugolo",
+  "repo"    : "bbparser",
+  "version" : "V1.0"
   }
 ]
