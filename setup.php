@@ -57,7 +57,7 @@ while($row=$query->fetch_assoc()){
 define("UPDATER_BUFFER", $buffer);
 
 function isUpdateInsralled(array $data){
-  foreach(UPDATE_BUFFER as $buffer){
+  foreach(UPDATER_BUFFER as $buffer){
     if($data["dir"] == $buffer["dir"] && $data["owner"] == $buffer["owner"] && $data["repo"] == $buffer["repo"]){
       return true;
     }
