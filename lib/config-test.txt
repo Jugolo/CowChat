@@ -42,10 +42,13 @@ $conf["serverAdmin"] = [//the server admin. it is there id in the user table!!
   1
 ];
 
+$conf["enable_systemlog"] = true;//enable system log
+
 $conf["disableNick"] = [//nick the system should desline to be use
   "Bot",
   "AjaxError",
-  "Ajax"
+  "Ajax",
+  "console",
 ];
 
 //new users avatar
