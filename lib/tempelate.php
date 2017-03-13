@@ -3,7 +3,6 @@ class Tempelate{
   private $path = "";
   private $plugin;
   private $variabel = [];
-  private $lang = [];
   private $cache = [];
   private $file = "";
   
@@ -21,10 +20,6 @@ class Tempelate{
   
   public function putVariabel(string $name, $value){
     $this->variabel[$name] = $value;
-  }
-  
-  public function setLang(array $lang){
-    $this->lang = $lang;
   }
   
   public function path(string $dir){
@@ -108,7 +103,7 @@ class Tempelate{
             $buffer .= "<?php echo \$this->plugin->trigger('".trim(substr($block, $pos+1))."', []); ?>";
           break;
           case "lang":
-            $buffer .= "<?php echo \$this->getLang('".trim(substr($block, $pos+1))."'); ?>";
+            $buffer .= "<?php echo Language::get('".trim(substr($block, $pos+1))."'); ?>";
           break;
           case "include":
           $item = explode(".", substr($block, $pos+1));
@@ -182,14 +177,6 @@ class Tempelate{
       }
     }
     return $buffer;
-  }
-  
-  public function getLang(string $name){
-    if(empty($this->lang[$name])){
-      $this->error("Unknown language identify: ".$name);
-      return "";
-    }
-    return $this->lang[$name];
   }
   
   private function isIdentify($str){

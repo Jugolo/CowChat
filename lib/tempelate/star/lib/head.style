@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
  <head>
-  @-if exist title-@
-    <title>@-echo title-@</title>
-  @-end-@
+  <title>@-lang title-@</title>
   <script>
   @-if __FILE__ == "main.style"-@
    function load(){
