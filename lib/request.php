@@ -13,6 +13,14 @@ class Request{
     return $_POST[$key];
   }
   
+  public static function cookie(string $key){
+    if(empty($_COOKIE[Config::get("cookie_prefix").$key]) || !trim($_COOKIE[Config::get("cookie_prefix").$key])){
+      return null;
+    }
+    
+    return $_COOKIE[Config::get("cookie_prefix").$key];
+  }
+  
   public static function session(string $key){
     if(empty($_SESSION[Config::get("cookie_prefix").$key])){
       return null;
