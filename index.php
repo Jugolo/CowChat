@@ -109,7 +109,6 @@ class Server{
         exit;
       }
       $this->tempelate->putBlock([
-	      "title"    => $this->tempelate->getLang("title"),
 	      "avatar"   => $user->avatar(),
 	      "username" => $user->username(),
 	      "js"       => [
@@ -948,10 +947,10 @@ class Server{
 
        if(Request::post("login")){
          if(!Request::post("username")){
-           $error[] = $this->tempelate->getLang("missing_username");
+           $error[] = Language::get("missing_username");
          }
          if(!Request::post("password")){
-           $error[] = $this->tempelate->getLang("missing_password");
+           $error[] = Language::get("missing_password");
          }
 
          if(count($error) == 0){
@@ -959,32 +958,32 @@ class Server{
              header("location: #");
              exit;
            }
-           $error[] = $this->tempelate->getLang("wrong_login");
+           $error[] = Language::get("wrong_login");
          }
        }
 
        if(Request::post("create")){
          if(!Request::post("username")){
-           $error[] = $this->tempelate->getLang("missing_username");
+           $error[] = Language::get("missing_username");
          }elseif(disabledNick(Request::post("username"))){
-           $error[] = $this->tempelate->getLang("username_taken"); 
+           $error[] = Language::get("username_taken"); 
 	 }else{
            $query = $this->database->query("SELECT `id` FROM `".DB_PREFIX."chat_user` WHERE `username`='".$this->database->clean(Request::post("username"))."'");
            if($this->database->isError){
             exit($this->database->getError());
            }
            if($query->get()){
-             $error[] = $this->tempelate->getLang("username_taken");
+             $error[] = Language::get("username_taken");
            }
          }
          if(!Request::post("password")){
-           $error[] = $this->tempelate->getLang("missing_password");
+           $error[] = Language::get("missing_password");
          }
          if(!Request::post("re_password")){
-           $error[] = $this->tempelate->getLang("missing_re_password");
+           $error[] = Langauge::get("missing_re_password");
          }
          if(Request::post("password") && Request::post("re_password") && Request::post("password") != Request::post("re_password")){
-           $error[] = $this->tempelate->getLang("password_mismatch");
+           $error[] = Language::get("password_mismatch");
          }
      
          if(count($error) == 0){
@@ -993,7 +992,7 @@ class Server{
           exit;
          }
        }
-       $this->tempelate->putVariabel("title", $this->tempelate->getLang("login_title"));
+       
        if(count($error) > 0){
 	     $this->tempelate->putVariabel("error", $error);
        }
