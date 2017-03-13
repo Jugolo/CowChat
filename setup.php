@@ -69,7 +69,7 @@ function handleUpdateFile(string $dir){
   global $mysql, $data;
   foreach(json_decode(file_get_contents($dir."update.json"), true) as $d){
     if(!isUpdateInsralled($d)){
-      $result = @$mysql->query("INSERT INTO `".$data["db"]["prefix"]."chat_updater` INSERT (
+      $result = @$mysql->query("INSERT INTO `".$data["db"]["prefix"]."chat_updater`(
           `dir`,
           `version`,
           `last_check`,
