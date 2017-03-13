@@ -56,15 +56,32 @@ while($row=$query->fetch_assoc()){
 }
 define("UPDATER_BUFFER", $buffer);
 
-function handleUpdateFile(string $name){
-  
+function handleUpdateFile(string $dir){
+  global $mysql, $data;
+  foreach(json_decode(file_get_contents($dir."update.json"), true) as $d){
+    if(!isUpdateInstalled($d)){
+      $result = @$mysql->query("INSERT INTO `".$data["db"]["prefix"]."chat_updater` INSERT (
+          `dir`,
+          `version`,
+          `last_check`,
+          `owner`,
+          `repo`
+        ) VALUES (
+          '".$mysql->escape_string($dir)."',
+          'V0.0',
+          '0',
+          '".$mysql->escape_string($d["owner"])."',
+          '".$mysql->escape_string($d["repo"])."'
+        )");
+    }
+  }
 }
 
 function controleUpdater(string $dir){
   $ress = opendir($dir);
   while($name = readdir($ress)){
     if($name == "update.json"){
-      handleUpdateFile($dir.$name);
+      handleUpdateFile($dir);
     }
   }
 }
