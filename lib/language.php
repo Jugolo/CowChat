@@ -3,6 +3,10 @@ class Language{
   private static $langCode;
   private static $lang = [];
   
+  public static function getCode(){
+    return self::$langCode;
+  }
+  
   public static function init(){
     if(($cookie = Request::cookie("language")) && self::exists($cookie)){
       self::$langCode = $cookie;
