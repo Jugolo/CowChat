@@ -62,5 +62,11 @@ CREATE TABLE IF NOT EXISTS `%prefix%chat_plugin` (
   PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
 
+CREATE TABLE IF NOT EXISTS `%prefix%chat_updater` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dir` varchar(255) NOT NULL,
+  `last_check` int(11) NOT NULL,
+  PRIMARY KEY(`id`)
+  ) ENGINE=MyISAM;
 
 INSERT INTO `%prefix%chat_name` (`id`,`name`,`isPriv`,`title`) VALUES('1','Bot','".No."','Channel to connect system and user togeter');
