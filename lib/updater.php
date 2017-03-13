@@ -1,7 +1,7 @@
 <?php
 class Updater{
   public static function controle(DatabaseHandler $db){
-    $query = $database->query("SELECT * FROM `".DB_PREFIX."chat_updater` WHERE `last_check`<'".time()."'");
+    $query = $db->query("SELECT * FROM `".DB_PREFIX."chat_updater` WHERE `last_check`<'".time()."'");
     while($row = $query->get()){
       if(($data = self::needUpdate($row))[0]){
         self::doUpdate($data[1], $row);
