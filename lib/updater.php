@@ -26,7 +26,7 @@ class Updater{
       return;
     }
     
-    $mdir = strlen($z->getNameIndex(0))+1;
+    $mdir = strlen($z->getNameIndex(0));
     for($i=0;$i<$z->numFiles;$i++){
       if(preg_match("/\/$/", $z->getNameIndex($i))){
         @mkdir($data["dir"].substr($z->getNameIndex($i), $mdir));
