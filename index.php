@@ -65,6 +65,13 @@ class Server{
 
         Answer::outputAjax();
     }
+	
+    public function getTempelate() : Tempelate{
+	if(Request::getView() == Request::VIEW_HTML){
+		return $this->tempelate;
+	}
+	throw new Exception("Tempelate object is only avariabel in html view");
+    }
 
     private function rawJs(User $user){
       $js = "var myNick = '".$user->nick()."';\r\n";
