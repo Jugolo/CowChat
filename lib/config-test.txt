@@ -49,6 +49,7 @@ $conf["disableNick"] = [//nick the system should desline to be use
   "AjaxError",
   "Ajax",
   "console",
+  "Admin",//please do not remove this, admin controle pane is called admin
 ];
 
 //new users avatar
