@@ -161,6 +161,10 @@ class Plugin{
     if(method_exists($obj, "doInstall")){
       $obj->doInstall();
     }
+    if(!class_exists("Updater")){
+      include "./lib/updater.php";
+    }
+    Updater::lookUp($this->db, "./lib/plugin/".$name."/");
     bot_self($post->id(), "/plugininstalled");
   }
   

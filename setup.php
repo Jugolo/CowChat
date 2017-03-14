@@ -49,10 +49,57 @@ if(!@mkdir("./lib/log/")){
   okay("Created './lib/log/'");
 }
 
-if(!@mkdir("./lib/temp")){
-  error("Failed to create dir './lib/temp/'");
-}else{
-  okay("Create './lib/temp'");
+$query = $mysql->query("SELECT * FROM `".$data["db"]["prefix"]."chat_updater`");
+$buffer = [];
+while($row=$query->fetch_assoc()){
+  $buffer[] = $row;
 }
+define("UPDATER_BUFFER", $buffer);
+
+function isUpdateInsralled(array $data){
+  foreach(UPDATER_BUFFER as $buffer){
+    if($data["dir"] == $buffer["dir"] && $data["owner"] == $buffer["owner"] && $data["repo"] == $buffer["repo"]){
+      return true;
+    }
+  }
+  return false;
+}
+
+function handleUpdateFile(string $dir){
+  global $mysql, $data;
+  foreach(json_decode(file_get_contents($dir."update.json"), true) as $d){
+    if(!isUpdateInsralled($d)){
+      $result = @$mysql->query("INSERT INTO `".$data["db"]["prefix"]."chat_updater`(
+          `dir`,
+          `version`,
+          `last_check`,
+          `owner`,
+          `repo`
+        ) VALUES (
+          '".$mysql->escape_string($dir)."',
+          'V0.0',
+          '0',
+          '".$mysql->escape_string($d["owner"])."',
+          '".$mysql->escape_string($d["repo"])."'
+        )");
+      if(!$result){
+        error("Failed to install update item in ".$dir);
+      }
+    }
+  }
+}
+
+function controleUpdater(string $dir){
+  $ress = opendir($dir);
+  while($name = readdir($ress)){
+    if($name == "update.json"){
+      handleUpdateFile($dir);
+    }elseif($name != "." && $name != ".." && is_dir($dir.$name)){
+      controleUpdater($dir.$name."/");
+    }
+  }
+}
+
+controleUpdater("./");
 
 okay("Chat installed. Please remove ./setup.php and ./lib/config-test.txt");
