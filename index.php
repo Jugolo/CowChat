@@ -944,6 +944,8 @@ class Server{
          $data["pass"],
          $data["table"]
       );
+	    
+     $this->catchError();
       
       define("DB_PREFIX", $data["prefix"]);
       $this->plugin = new Plugin($this->database);
