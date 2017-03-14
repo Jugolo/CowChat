@@ -11,6 +11,7 @@ class Server{
      private $plugin           = null;//append in version 1.1
      private $tempelate        = null;
      private $postdata         = null;
+     private $user             = null;
      
     function __construct($websocket = false){
         header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
@@ -23,7 +24,7 @@ class Server{
         
         $this->sessionInit();
 	$this->plugin->trigger("server.start", [time()]);//added in version 1.1
-        $user = $this->login();
+        $user = $this->user = $this->login();
 
         if($user == null){
           if(Request::getView() == Request::VIEW_AJAX){
@@ -86,6 +87,13 @@ class Server{
 		   return $this->database; 
 	    }
 	    throw new Exception("Database is not set yet");
+    }
+	
+    public function getCurrentUser() : User{
+	    if($this->user){
+		    return $this->user;
+	    }
+	    throw new Exception("No user is login");
     }
 
     private function rawJs(User $user){
