@@ -10,6 +10,8 @@ class Server{
      private $database         = null;
      private $plugin           = null;//append in version 1.1
      private $tempelate        = null;
+     private $postdata         = null;
+     private $user             = null;
      
     function __construct($websocket = false){
         header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
@@ -22,7 +24,7 @@ class Server{
         
         $this->sessionInit();
 	$this->plugin->trigger("server.start", [time()]);//added in version 1.1
-        $user = $this->login();
+        $user = $this->user = $this->login();
 
         if($user == null){
           if(Request::getView() == Request::VIEW_AJAX){
@@ -64,6 +66,34 @@ class Server{
         }
 
         Answer::outputAjax();
+    }
+	
+    public function getTempelate() : Tempelate{
+	if(Request::getView() == Request::VIEW_HTML){
+		return $this->tempelate;
+	}
+	throw new Exception("Tempelate object is only avariabel in html view");
+    }
+	
+    public function postData() : PostData{
+	    if($this->postdata){
+		    return $this->postdata;
+	    }
+	    throw new Exception("PostData is not avariabel");
+    }
+	
+    public function getDatabase() : DatabaseHandler{
+	    if($this->database){
+		   return $this->database; 
+	    }
+	    throw new Exception("Database is not set yet");
+    }
+	
+    public function getCurrentUser() : User{
+	    if($this->user){
+		    return $this->user;
+	    }
+	    throw new Exception("No user is login");
     }
 
     private function rawJs(User $user){
@@ -112,6 +142,7 @@ class Server{
       $this->tempelate->putBlock([
 	      "avatar"   => $user->avatar(),
 	      "username" => $user->username(),
+	      "isadmin"  => is_admin($user->id()),
 	      "js"       => [
 		      "js/main.js",
 		      "js/pages.js",
@@ -308,7 +339,7 @@ class Server{
     }
 	 
     private function handlePost(User $user, string $message, string $channel){
-        $post = new PostData(
+        $this->postdata = $post = new PostData(
            $message,
            $channel,
            $this->getCidFromChannel($user, $channel)
@@ -1130,8 +1161,9 @@ class Server{
             return null;
         }
 
-        $user = new User($this->database, $row);
+        $user = $this->user = new User($this->database, $row);
 	$this->plugin->trigger("system.user.autologin", [$user]);//added in version 1.1
+	return $user;
     }
 	
 	private function showTempelate(string $name){
@@ -1177,6 +1209,45 @@ class Server{
 		$this->database->query("UPDATE `".DB_PREFIX."chat_name` SET `members`=members-1 WHERE `id`='".$cid."'");
 	}
      }
+	
+	private function catchError(){
+		$self = $this;
+		set_error_handler(function($errno, $errstr, $errfile, $errline) use($self){
+			if($errno == E_USER_ERROR){
+				//this is used for user error!
+				if(Request::getView() == Request::VIEW_HTML){
+					$error = [];
+					if($self->getTempelate()->hasVariabel("error")){
+						$error = $self->getTempelate()->getVariabel("error");
+					}
+					$error[] = $errstr;
+					$self->getTempelate()->putVariabel("error", $error);
+				}elseif(Request::getView() == Request::VIEW_AJAX){
+					error($self->postData(), $errstr);
+				}
+			}else{
+				$db = $self->getDatabase();
+				$db->query("INSERT INTO `".DB_PREFIX."chat_error`(
+				  `errno`,
+				  `errstr`,
+				  `errfile`,
+				  `errline`,
+				  `seen`,
+				  `time`
+				) VALUES (
+				  '".$db->clean($errno)."',
+				  '".$db->clean($errstr)."',
+				  '".$db->clean($errfile)."',
+				  '".$db->clean($errline)."',
+				  '".No."',
+				  NOW()
+				);");
+				if(is_admin($self->getCurrentUser()->id())){
+					error($self->postData(), "systemerror");
+				}
+			}
+		});
+	}
  }
  
 new Server();

@@ -18,6 +18,17 @@ class Tempelate{
     }
   }
   
+  public function hasVariabel(string $name) : bool{
+    return array_key_exists($name, $this->variabel);
+  }
+  
+  public function getVariabel(string $name){
+    if($this->hasVariabel($name)){
+      return $this->variabel[$name];
+    }
+    throw new Exception("Unknown variabel: ".$name);
+  }
+  
   public function putVariabel(string $name, $value){
     $this->variabel[$name] = $value;
   }

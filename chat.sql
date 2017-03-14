@@ -72,4 +72,15 @@ CREATE TABLE IF NOT EXISTS `%prefix%chat_updater` (
   PRIMARY KEY(`id`)
   ) ENGINE=MyISAM;
 
+CREATE TABLE IF NOT EXISTS `%prefix%chat_error` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `errno` int(11) NOT NULL,
+  `errstr` varchar(255) NOT NULL,
+  `errfile` varchar(255) NOT NULL,
+  `errline` int(11) NOT NULL,
+  `seen` int(1) NOT NULL,
+  `time` datetime NOT NULL,
+  PRIMARY KEY(`id`)
+) ENGINE=MyISAM;
+
 INSERT INTO `%prefix%chat_name` (`id`,`name`,`isPriv`,`title`) VALUES('1','Bot','".No."','Channel to connect system and user togeter');
