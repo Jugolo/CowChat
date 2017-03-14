@@ -5,6 +5,8 @@ define("CHAT_VERSION", "V1.4");
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+define("Yes",1);
+define("No",2);
 class Server{
      private $variabel         = array();
      private $database         = null;
@@ -937,7 +939,6 @@ class Server{
      }
     
     private function loadPages(){
-      include 'lib/define.php';
       include 'lib/db/mysqli.php';
       include 'lib/parser.php';
       include 'lib/request.php';
