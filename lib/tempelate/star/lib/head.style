@@ -45,6 +45,9 @@
   @-end-@
   @-if __FILE__ == "main.style"-@
   <script src='@-echo __DIR__-@js/gui.js'></script>
+  @-if isadmin-@
+  <script src='@-echo __DIR__-@js/admin.js'></script>
+  @-end-@
   @-end-@
   @-if exist rawjs-@
   <script>
