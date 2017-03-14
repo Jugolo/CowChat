@@ -10,6 +10,7 @@ class Server{
      private $database         = null;
      private $plugin           = null;//append in version 1.1
      private $tempelate        = null;
+     private $postdata         = null;
      
     function __construct($websocket = false){
         header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
@@ -71,6 +72,13 @@ class Server{
 		return $this->tempelate;
 	}
 	throw new Exception("Tempelate object is only avariabel in html view");
+    }
+	
+    public function postData() : PostData{
+	    if($this->postdata){
+		    return $this->postdata;
+	    }
+	    throw new Exception("PostData is not avariabel");
     }
 
     private function rawJs(User $user){
