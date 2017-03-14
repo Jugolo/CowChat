@@ -142,6 +142,7 @@ class Server{
       $this->tempelate->putBlock([
 	      "avatar"   => $user->avatar(),
 	      "username" => $user->username(),
+	      "isadmin"  => is_admin($user->id()),
 	      "js"       => [
 		      "js/main.js",
 		      "js/pages.js",
