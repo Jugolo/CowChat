@@ -10,7 +10,7 @@ const Page = (function(){
   }
 
   Page.prototype.remove = function(){
-    if(isFocus(this.name)){
+    if(sys.isFocus(this.name)){
       this.system.selectPage("console");
     }
     
