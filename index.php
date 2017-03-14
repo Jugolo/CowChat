@@ -1160,8 +1160,9 @@ class Server{
             return null;
         }
 
-        $user = new User($this->database, $row);
+        $user = $this->user = new User($this->database, $row);
 	$this->plugin->trigger("system.user.autologin", [$user]);//added in version 1.1
+	return $user;
     }
 	
 	private function showTempelate(string $name){
