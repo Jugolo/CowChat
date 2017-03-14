@@ -1177,6 +1177,45 @@ class Server{
 		$this->database->query("UPDATE `".DB_PREFIX."chat_name` SET `members`=members-1 WHERE `id`='".$cid."'");
 	}
      }
+	
+	private function catchError(){
+		$self = $this;
+		set_error_handler(function($errno, $errstr, $errfile, $errline) use($self){
+			if($errno == E_USER_ERROR){
+				//this is used for user error!
+				if(Request::getView() == Request::VIEW_HTML){
+					$error = [];
+					if($self->getTempelate()->hasVariabel("error")){
+						$error = $self->getTempelate()->getVariabel("error");
+					}
+					$error[] = $errstr;
+					$self->getTempelate()->putVariabel("error", $error);
+				}elseif(Request::getView() == Request::VIEW_AJAX){
+					error($self->postData(), $errstr);
+				}
+			}else{
+				$db = $self->getDatabase();
+				$db->query("INSERT INTO `".DB_PREFIX."chat_error`(
+				  `errno`,
+				  `errstr`,
+				  `errfile`,
+				  `errline`,
+				  `seen`,
+				  `time`
+				) VALUES (
+				  '".$db->clean($errno)."',
+				  '".$db->clean($errstr)."',
+				  '".$db->clean($errfile)."',
+				  '".$db->clean($errline)."',
+				  '".No."',
+				  NOW()
+				);");
+				if(is_admin($self->getCurrentUser()->id())){
+					error($self->postData(), "systemerror");
+				}
+			}
+		});
+	}
  }
  
 new Server();
