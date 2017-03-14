@@ -80,6 +80,13 @@ class Server{
 	    }
 	    throw new Exception("PostData is not avariabel");
     }
+	
+    public function getDatabase() : DatabaseHandler{
+	    if($this->database){
+		   return $this->database; 
+	    }
+	    throw new Exception("Database is not set yet");
+    }
 
     private function rawJs(User $user){
       $js = "var myNick = '".$user->nick()."';\r\n";
