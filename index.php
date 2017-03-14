@@ -506,6 +506,9 @@ class Server{
 	    case "userlist":
                 $this->answer_userlist($user, $data);
 	    break;
+	    case "errorlist":
+	        $this->answer_errorlist($user, $data);
+	    break;
             case "online":
                 if($data->id() == 1){
                   return;
@@ -518,6 +521,19 @@ class Server{
 		}
             break;
     	}
+    }
+	
+    private function answer_errorlist(User $user, PostData $post){
+	    if(!is_admin($user->id())){
+		    error($post, "accessDeniad");
+		    return;
+	    }
+	    
+	    $query = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_error`");
+	    $buffer = [];
+	    while($row = $query->get()){
+		    $buffer[] = 
+	    }
     }
 	
     private function answer_userlist(User $user, PostData $post){
