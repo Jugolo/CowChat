@@ -323,7 +323,7 @@ class Server{
     }
 	 
     private function handlePost(User $user, string $message, string $channel){
-        $post = new PostData(
+        $this->postdata = $post = new PostData(
            $message,
            $channel,
            $this->getCidFromChannel($user, $channel)
