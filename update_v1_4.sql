@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `%prefix%chat_error` (
   `errstr` varchar(255) NOT NULL,
   `errfile` varchar(255) NOT NULL,
   `errline` int(11) NOT NULL,
-  `seen`
+  `seen` int(1) NOT NULL,
+  `time` datetime NOT NULL,
   PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
