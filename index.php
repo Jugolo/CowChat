@@ -7,16 +7,12 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 class Server{
      private $variabel         = array();
-     private $ajax             = false;
-     private $basepart         = null;
      private $database         = null;
      private $plugin           = null;//append in version 1.1
      private $tempelate        = null;
      
     function __construct($websocket = false){
-        $this->ajax = (!empty($_GET["_ajax"]));
-    	
-    	header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
+        header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: no-store, no-cache, must-revalidate");
         header("Cache-Control: post-check=0, pre-check=0", false);
@@ -29,7 +25,7 @@ class Server{
         $user = $this->login();
 
         if($user == null){
-          if($this->ajax){
+          if(Request::getView() == Request::VIEW_AJAX){
             exit("login");
           }
           $this->doLogin();
@@ -38,7 +34,7 @@ class Server{
 
         Answer::setUser($user);
 
-        if(!$this->ajax){
+        if(Request::getView() == Request::VIEW_HTML){
           $this->showChat($user);
           return;
         }
@@ -921,7 +917,7 @@ class Server{
       define("DB_PREFIX", $data["prefix"]);
       $this->plugin = new Plugin($this->database);
       
-      if(!$this->ajax){
+      if(Request::getView() == Request::VIEW_HTML){
 	  include "lib/tempelate.php";//new in V1.3
 	  $this->tempelate = new Tempelate($this->plugin);//new in V1.3
 	  Language::init();
@@ -929,7 +925,7 @@ class Server{
     }
 
     private function missing_config(){
-        if(!$this->ajax){
+        if(Request::getView() == Request::VIEW_HTML){
           echo "<!DOCTYPE html>
  <html>
   <head>

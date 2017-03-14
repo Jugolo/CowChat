@@ -1,5 +1,16 @@
 <?php
 class Request{
+  const VIEW_HTML = 1;
+  const VIEW_AJAX = 2;
+  
+  public static function getView(){
+    if(self::get("_ajax")){
+      return self::VIEW_AJAX;
+    }
+    
+    return self::VIEW_HTML;
+  }
+  
   public static function get(string $key){
     if(empty($_GET[$key]) || !trim($_GET[$key]))
      return null;
