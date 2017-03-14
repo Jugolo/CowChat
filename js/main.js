@@ -271,3 +271,8 @@ function handleInput(e){
     this.setInputText("");
   }
 }
+
+function getCommand(data){
+  var pos;
+  return (pos = data.message.indexOf(" ")) != -1 ? data.message.substr(1, pos-1) : data.message.substr(1);
+}
