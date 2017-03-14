@@ -501,6 +501,9 @@ class Server{
             case "mode":
                 $this->onMode($user, $data);
             break;
+	    case "userlist":
+                $this->answer_userlist($user, $data);
+	    break;
             case "online":
                 if($data->id() == 1){
                   return;
@@ -513,6 +516,21 @@ class Server{
 		}
             break;
     	}
+    }
+	
+    private function answer_userlist(User $user, PostData $post){
+	    if(!is_admin($user->id())){
+		    error($post, "accessDenaid");
+		    return;
+	    }
+	    
+	    $query = $this->database->query("SELECT `id`, `username`, `nick` FROM `".DB_PREFIX."chat_user`");
+	    $buffer = [];
+	    while($row = $query->get()){
+		    $buffer[] = implode(",", array_values($row));
+	    }
+	    
+	    bot_self($post->getChannel(), "/userlist ".implode(" ", $buffer));
     }
 
      private function onMode(User $user, PostData $post){
