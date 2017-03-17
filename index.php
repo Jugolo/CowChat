@@ -97,6 +97,10 @@ class Server{
 	    }
 	    throw new Exception("No user is login");
     }
+	
+    private function isLogin() : bool{
+	    return $this->user !== null;
+    }
 
     private function rawJs(User $user){
       $js = "var myNick = '".$user->nick()."';\r\n";
@@ -1279,7 +1283,7 @@ class Server{
 				  '".No."',
 				  NOW()
 				);");
-				if(is_admin($self->getCurrentUser()->id())){
+				if($self->isLogin() && is_admin($self->getCurrentUser()->id())){
 					error($self->postData(), "systemerror");
 				}
 			}
