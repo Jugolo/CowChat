@@ -536,8 +536,11 @@ class Server{
 	    $query = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_error`");
 	    $buffer = [];
 	    while($row = $query->get()){
-		    $buffer[] = 
+		    $buffer[] = $row;
 	    }
+	    
+	    //this is the best way i has come on.....
+	    bot_self($post->getChannel(), "/errorlist ".base64_encode(json_encode($buffer)));
     }
 	
     private function answer_userlist(User $user, PostData $post){
