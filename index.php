@@ -975,6 +975,8 @@ class Server{
       include 'lib/command.php';//new in V1.1
       include 'lib/language.php';
 	    
+	    $this->setAutoloader();
+	    
       if(!file_exists("./lib/config.php")){
 	      $this->missing_config();
       }
@@ -1261,6 +1263,13 @@ class Server{
 		$this->database->query("UPDATE `".DB_PREFIX."chat_name` SET `members`=members-1 WHERE `id`='".$cid."'");
 	}
      }
+	private function setAutoloader(){
+		spl_autoload_register(function($class){
+			if(!class_exists($class)){
+				include str_replace("\\", "/", $class).".php";
+			}
+		});
+	}
 	
 	private function catchError(){
 		$self = $this;
