@@ -220,7 +220,7 @@ function stopUpdate(){
 }
 
 function onMyBan(data){
-  var channel = data.message.substr(5);
+  var channel = CowChatCommand.getContext(data);
   var page = sys.getPage(channel);
   if(!page){
     sys.getPage("console").line(
@@ -241,7 +241,7 @@ function onMyBan(data){
 }
 
 function onMyKick(data){
-  var message = data.message.substr(6);
+  var message = CowChatCommand.getContext(data);
   var pos = message.indexOf(" ");
   var nick = message.substr(0, pos);
   message = message.substr(pos+1);
@@ -310,9 +310,4 @@ function handleInput(e){
      send(this.currentPage().name, this.inputText());
     this.setInputText("");
   }
-}
-
-function getCommand(data){
-  var pos;
-  return (pos = data.message.indexOf(" ")) != -1 ? data.message.substr(1, pos-1) : data.message.substr(1);
 }
