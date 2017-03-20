@@ -1062,6 +1062,10 @@ class Server{
          if(Request::post("password") && Request::post("re_password") && Request::post("password") != Request::post("re_password")){
            $error[] = Language::get("password_mismatch");
          }
+	       
+	 if(!Request::post("email")){
+		$error[] = Language::get("missing_email"); 
+	 }
      
          if(count($error) == 0){
           $this->createAction(Request::post("username"), Request::post("password"));
@@ -1131,7 +1135,7 @@ class Server{
        return true;
     }
 
-    private function createAction(string $username, string $password){
+    private function createAction(string $username, string $password, string $email){
       $query = $this->database->query("SELECT `username`, `id` FROM `".DB_PREFIX."chat_user` WHERE `nick`='".$this->database->clean($username)."'");
       if($this->database->isError){
         exit($this->database->getError());
@@ -1152,12 +1156,16 @@ class Server{
         `username`,
         `nick`,
         `password`,
+	`email`,
+	`status`
         `avatar`,
 	`ip`
       ) VALUES (
         '".$this->database->clean($username)."',
         '".$this->database->clean($username)."',
         '".$this->database->clean(sha1($password))."',
+	'".$this->database->clean($email)."',
+	'N',
         '".$this->database->clean(Config::get("defaultAvatar"))."',
 	'".$this->database->clean(Request::ip())."'
       )");
@@ -1294,4 +1302,4 @@ class Server{
 	}
  }
  
-new Server();
+$server = new Server();
