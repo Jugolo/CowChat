@@ -11,7 +11,7 @@ table.userlist th{
   background-color: #00cc33;
 }
 
-table.userlist td{
+table.userlist tr{
   background-color: #d9d9d9;
 }
 
