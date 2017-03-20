@@ -1,4 +1,26 @@
 var sys, timeout = null;
+
+const CowChatCommand = {
+  isCommand : function(data){
+    return data.message.indexOf("/") === 0;
+  },
+  getCommand : function(data){
+    if(this.isCommand(data)){
+      return data.message.split(" ")[0].substr(1);
+    }
+    return null;
+  },
+  getContext : function(data){
+    if(this.isCommand(data)){
+      var start = this.getCommand(data).length+1;
+      if(data.message.indexOf(" ") != -1){
+        return data.message.substr(start+1);
+      }
+    }
+    return data.message;
+  }
+};
+
 const System = (function(){
   function System(input, gui){
     this.callback    = {};
@@ -133,6 +155,7 @@ function onAjaxRespons(){
       }
     }
     for(var i=0;i<j.message.length;i++){
+       handleResponsPart(j.message[i]);
        if(j.message[i].channel == "Bot"){
          if(j.message[i].message.indexOf("/ban") === 0){
            onMyBan(j.message[i]);
@@ -166,6 +189,30 @@ function onAjaxRespons(){
        }
     }
     setUpdate();
+  }
+}
+
+function handleResponsPart(data){
+  if(data.channel == "Bot"){
+    if(CowChatCommand.isCommand(data) && handleResponsPartBotCommand(data)){
+      return;
+    }
+  }
+}
+
+function handleResponsPartBotCommand(data){
+  switch(CowScriptCommand.getCommand(data)){
+    case "ban":
+      onMyBan(data);
+    break;
+    case "kick":
+      onMyKick(data);
+    break;
+    case "exit":
+      location.reload();
+    break;
+    case "join":
+      sys.
   }
 }
 
