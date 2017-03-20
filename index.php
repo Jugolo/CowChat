@@ -35,6 +35,11 @@ class Server{
           if(Request::getView() == Request::VIEW_AJAX){
             exit("login");
           }
+	  if(Request::get("view")){
+		  if(!$this->handleView()){
+		  }
+		  return;
+	  }
           $this->doLogin();
           return;
         }
@@ -101,8 +106,19 @@ class Server{
 	    throw new Exception("No user is login");
     }
 	
-    private function isLogin() : bool{
+    public function isLogin() : bool{
 	    return $this->user !== null;
+    }
+	
+    private function handleView() : bool{
+	    switch(Request::get("view")){
+		    case "password-request":
+			    $this->showTempelate("password_request");
+		    break;
+		    default:
+			    return false;
+	    }
+	    return true;
     }
 
     private function rawJs(User $user){
