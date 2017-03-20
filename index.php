@@ -32,6 +32,8 @@ class Server{
         $user = $this->user = $this->login();
 
         if($user == null){
+	  //in this area wee controle if the user has request a new password
+	  PasswordRecovery::controle();
           if(Request::getView() == Request::VIEW_AJAX){
             exit("login");
           }
