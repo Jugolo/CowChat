@@ -6,9 +6,7 @@ use Inc\Random;
 use Inc\Mailer;
 
 class PasswordRecovery{
-  const RECOVERY_GET = "npRequest";
-  
-  public static function isRecoveryRequest() : bool{
+  public static function controle() : bool{
     if(Request::post("email") && Request::get("recovery")){
       return self::handleRecovery();
     }
