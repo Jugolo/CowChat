@@ -25,6 +25,11 @@
      <input type='submit' name='login' value='@-lang login_now-@'>
     </td>
    </tr>
+   <tr>
+    <td>
+     <a href='?view=password_request'>@-lang forgot_password-@</a>
+    </td>
+   </tr>
   </table>
  </form>
  </div>
