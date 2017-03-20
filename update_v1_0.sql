@@ -32,3 +32,5 @@ CREATE TABLE IF NOT EXISTS `%prefix%chat_error` (
   `time` datetime NOT NULL,
   PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
+
+UPDATE `%prefix%chat_user` SET `status`='N';
