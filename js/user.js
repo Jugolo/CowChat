@@ -36,7 +36,7 @@ const User = (function(){
   };
 
   User.prototype.uninaktiv = function(){
-    this.system.gui.uninaktiv(this.conatiner);
+    this.system.gui.uninaktiv(this.container);
   };
 
   User.prototype.updateNick = function(nick){

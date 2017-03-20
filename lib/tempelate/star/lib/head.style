@@ -29,6 +29,9 @@
    @-trigger client.javascript.end-@
   </script>
   <link rel="stylesheet" type="text/css" href="@-echo __DIR__-@css/style.css">
+  @-if __FILE__ == "main.style" && isadmin-@
+  <link rel="stylesheet" type="text/css" href="@-echo __DIR__-@css/admin.css">
+  @-end-@
   @-if exist error-@
   <script>
    var errorMsg = [];
@@ -45,6 +48,9 @@
   @-end-@
   @-if __FILE__ == "main.style"-@
   <script src='@-echo __DIR__-@js/gui.js'></script>
+  @-if isadmin-@
+  <script src='@-echo __DIR__-@js/admin.js'></script>
+  @-end-@
   @-end-@
   @-if exist rawjs-@
   <script>

@@ -17,6 +17,11 @@
        <li>
          <a href='#' onclick='send("Bot", "/exit");'>@-lang logout-@</a>
        </li>
+       @-if isadmin-@
+       <li>
+         <a href='#' onclick='open_admin();'>@-lang admin-@</a>
+       </li>
+       @-end-@
      </ul>
    </div>
  </div>

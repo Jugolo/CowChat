@@ -5,6 +5,8 @@ define("CHAT_VERSION", "V1.4");
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+define("Yes",1);
+define("No",2);
 class Server{
      private $variabel         = array();
      private $database         = null;
@@ -94,6 +96,10 @@ class Server{
 		    return $this->user;
 	    }
 	    throw new Exception("No user is login");
+    }
+	
+    private function isLogin() : bool{
+	    return $this->user !== null;
     }
 
     private function rawJs(User $user){
@@ -501,6 +507,12 @@ class Server{
             case "mode":
                 $this->onMode($user, $data);
             break;
+	    case "userlist":
+                $this->answer_userlist($user, $data);
+	    break;
+	    case "errorlist":
+	        $this->answer_errorlist($user, $data);
+	    break;
             case "online":
                 if($data->id() == 1){
                   return;
@@ -513,6 +525,37 @@ class Server{
 		}
             break;
     	}
+    }
+	
+    private function answer_errorlist(User $user, PostData $post){
+	    if(!is_admin($user->id())){
+		    error($post, "accessDeniad");
+		    return;
+	    }
+	    
+	    $query = $this->database->query("SELECT * FROM `".DB_PREFIX."chat_error`");
+	    $buffer = [];
+	    while($row = $query->get()){
+		    $buffer[] = $row;
+	    }
+	    
+	    //this is the best way i has come on.....
+	    bot_self($post->getChannel(), "/errorlist ".base64_encode(json_encode($buffer)));
+    }
+	
+    private function answer_userlist(User $user, PostData $post){
+	    if(!is_admin($user->id())){
+		    error($post, "accessDenaid");
+		    return;
+	    }
+	    
+	    $query = $this->database->query("SELECT `id`, `username`, `nick` FROM `".DB_PREFIX."chat_user`");
+	    $buffer = [];
+	    while($row = $query->get()){
+		    $buffer[] = implode(",", array_values($row));
+	    }
+	    
+	    bot_self($post->getChannel(), "/userlist ".implode(" ", $buffer));
     }
 
      private function onMode(User $user, PostData $post){
@@ -919,7 +962,6 @@ class Server{
      }
     
     private function loadPages(){
-      include 'lib/define.php';
       include 'lib/db/mysqli.php';
       include 'lib/parser.php';
       include 'lib/request.php';
@@ -944,6 +986,8 @@ class Server{
          $data["pass"],
          $data["table"]
       );
+	    
+     $this->catchError();
       
       define("DB_PREFIX", $data["prefix"]);
       $this->plugin = new Plugin($this->database);
@@ -1242,7 +1286,7 @@ class Server{
 				  '".No."',
 				  NOW()
 				);");
-				if(is_admin($self->getCurrentUser()->id())){
+				if($self->isLogin() && is_admin($self->getCurrentUser()->id())){
 					error($self->postData(), "systemerror");
 				}
 			}
