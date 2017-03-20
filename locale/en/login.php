@@ -4,6 +4,7 @@ $locale["title"]                = "Welcommen to out chat - Login";
 $locale["login_title"]          = "Login";
 $locale["online_user"]          = "Online user";
 $locale["login"]                = "Login";
+$locale["forgot_password"]      = "Forgot you password?";
 $locale["username"]             = "Username";
 $locale["password"]             = "Password";
 $locale["re_password"]          = "Password again";
