@@ -7,6 +7,7 @@ $locale["login"]                = "Login";
 $locale["username"]             = "Username";
 $locale["password"]             = "Password";
 $locale["re_password"]          = "Password again";
+$locale["email"]                = "Email";
 $locale["login_now"]            = "Login now";
 $locale["create_account"]       = "Create account";
 $locale["missing_username"]     = "Missing username";
