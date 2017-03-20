@@ -1,4 +1,26 @@
 var sys, timeout = null;
+
+const CowChatCommand = {
+  isCommand : function(data){
+    return data.message.indexOf("/") === 0;
+  },
+  getCommand : function(data){
+    if(this.isCommand(data)){
+      return data.message.split(" ")[0].substr(1);
+    }
+    return null;
+  },
+  getContext : function(data){
+    if(this.isCommand(data)){
+      var start = this.getCommand(data).length+1;
+      if(data.message.indexOf(" ") != -1){
+        return data.message.substr(start+1);
+      }
+    }
+    return data.message;
+  }
+};
+
 const System = (function(){
   function System(input, gui){
     this.callback    = {};
@@ -133,40 +155,58 @@ function onAjaxRespons(){
       }
     }
     for(var i=0;i<j.message.length;i++){
-       if(j.message[i].channel == "Bot"){
-         if(j.message[i].message.indexOf("/ban") === 0){
-           onMyBan(j.message[i]);
-         }else if(j.message[i].message.indexOf("/kick") === 0){
-           onMyKick(j.message[i]);
-         }else if(j.message[i].message == "/exit"){
-           location.reload();
-         }else if(j.message[i].message.indexOf("/join") == 0){
-           sys.createPage(j.message[i].message.substr(6));
-         }else if(j.message[i].message.indexOf("/leave") == 0){
-           onLeave(j.message[i].time, j.message[i].message.substr(7));
-         }else if(j.message[i].message.indexOf("/avatar") == 0){
-           document.getElementById("user-avatar").style.backgroundImage = "url('"+j.message[i].message.substr(8)+"')";
-           sys.getPage("console").line(
+       handleResponsPart(j.message[i]);
+    }
+    setUpdate();
+  }
+}
+
+function handleResponsPart(data){
+  if(data.channel == "Bot"){
+    if(CowChatCommand.isCommand(data) && handleResponsPartBotCommand(data)){
+      return;
+    }
+  }
+  
+  const p = sys.getPage(data.channel == "Bot" ? "console" : data.channel);
+  if(!p){
+    sys.getPage("console").line("", "", "Bot", "[color=red]Unknown channel "+data.channel+"[/color]");
+    sys.getPage("console").line(data.time, "", data.nick, data.message);
+    return;
+  }
+  p.onRespons(data);
+}
+
+function handleResponsPartBotCommand(data){
+  switch(CowChatCommand.getCommand(data)){
+    case "ban":
+      onMyBan(data);
+    break;
+    case "kick":
+      onMyKick(data);
+    break;
+    case "exit":
+      location.reload();
+    break;
+    case "join":
+      sys.createPage(CowScriptCommand.getContext(data));
+    break;
+    case "leave":
+      onLeave(data);
+    break;
+    case "avatar":
+      document.getElementById("user-avatar").style.backgroundImage = "url('"+CowScriptCommand.getContext(data)+"')";
+      sys.getPage("console").line(
              j.message[i].time,
              "",
              "Bot",
              language["onAvatar"]
            );
-         }else{
-           sys.getPage("console").onRespons(j.message[i]);
-         }
-       }else{
-         const p = sys.getPage(j.message[i].channel);
-         if(p == null){
-           sys.getPage("console").line("", "", "Bot", "[color=red]Unknown channel "+j.message[i].channel+"[/color]");
-           sys.getPage("console").line(j.message[i].time, "", j.message[i].nick, j.message[i].message);
-           continue;
-         }
-         sys.getPage(j.message[i].channel).onRespons(j.message[i]);
-       }
-    }
-    setUpdate();
+    break;
+    default:
+      return false;
   }
+  return true;
 }
 
 function setUpdate(){
@@ -180,7 +220,7 @@ function stopUpdate(){
 }
 
 function onMyBan(data){
-  var channel = data.message.substr(5);
+  var channel = CowChatCommand.getContext(data);
   var page = sys.getPage(channel);
   if(!page){
     sys.getPage("console").line(
@@ -201,7 +241,7 @@ function onMyBan(data){
 }
 
 function onMyKick(data){
-  var message = data.message.substr(6);
+  var message = CowChatCommand.getContext(data);
   var pos = message.indexOf(" ");
   var nick = message.substr(0, pos);
   message = message.substr(pos+1);
@@ -270,9 +310,4 @@ function handleInput(e){
      send(this.currentPage().name, this.inputText());
     this.setInputText("");
   }
-}
-
-function getCommand(data){
-  var pos;
-  return (pos = data.message.indexOf(" ")) != -1 ? data.message.substr(1, pos-1) : data.message.substr(1);
 }
