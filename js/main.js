@@ -156,37 +156,6 @@ function onAjaxRespons(){
     }
     for(var i=0;i<j.message.length;i++){
        handleResponsPart(j.message[i]);
-       if(j.message[i].channel == "Bot"){
-         if(j.message[i].message.indexOf("/ban") === 0){
-           onMyBan(j.message[i]);
-         }else if(j.message[i].message.indexOf("/kick") === 0){
-           onMyKick(j.message[i]);
-         }else if(j.message[i].message == "/exit"){
-           location.reload();
-         }else if(j.message[i].message.indexOf("/join") == 0){
-           sys.createPage(j.message[i].message.substr(6));
-         }else if(j.message[i].message.indexOf("/leave") == 0){
-           onLeave(j.message[i].time, j.message[i].message.substr(7));
-         }else if(j.message[i].message.indexOf("/avatar") == 0){
-           document.getElementById("user-avatar").style.backgroundImage = "url('"+j.message[i].message.substr(8)+"')";
-           sys.getPage("console").line(
-             j.message[i].time,
-             "",
-             "Bot",
-             language["onAvatar"]
-           );
-         }else{
-           sys.getPage("console").onRespons(j.message[i]);
-         }
-       }else{
-         const p = sys.getPage(j.message[i].channel);
-         if(p == null){
-           sys.getPage("console").line("", "", "Bot", "[color=red]Unknown channel "+j.message[i].channel+"[/color]");
-           sys.getPage("console").line(j.message[i].time, "", j.message[i].nick, j.message[i].message);
-           continue;
-         }
-         sys.getPage(j.message[i].channel).onRespons(j.message[i]);
-       }
     }
     setUpdate();
   }
@@ -198,6 +167,14 @@ function handleResponsPart(data){
       return;
     }
   }
+  
+  const p = sys.getPage(data.channel == "Bot" ? "console" : data.message);
+  if(!p){
+    sys.getPage("console").line("", "", "Bot", "[color=red]Unknown channel "+j.message[i].channel+"[/color]");
+    sys.getPage("console").line(j.message[i].time, "", j.message[i].nick, j.message[i].message);
+    return;
+  }
+  p.onRespons(data);
 }
 
 function handleResponsPartBotCommand(data){
@@ -212,8 +189,24 @@ function handleResponsPartBotCommand(data){
       location.reload();
     break;
     case "join":
-      sys.
+      sys.createPage(CowScriptCommand.getContext(data));
+    break;
+    case "leave":
+      onLeave(data);
+    break;
+    case "avatar":
+      document.getElementById("user-avatar").style.backgroundImage = "url('"+CowScriptCommand.getContext(data)+"')";
+      sys.getPage("console").line(
+             j.message[i].time,
+             "",
+             "Bot",
+             language["onAvatar"]
+           );
+    break;
+    default:
+      return false;
   }
+  return true;
 }
 
 function setUpdate(){
