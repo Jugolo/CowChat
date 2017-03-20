@@ -11,6 +11,7 @@ $locale["login_now"]            = "Login now";
 $locale["create_account"]       = "Create account";
 $locale["missing_username"]     = "Missing username";
 $locale["missing_password"]     = "Missing password";
+$locale["missing_email"]        = "Missing email";
 $locale["wrong_login"]          = "Wrong username and/or password";
 $locale["missing_re_password"]  = "Missing repeat of password";
 $locale["password_mismatch"]    = "The two password are not equel";
