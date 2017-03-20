@@ -1,4 +1,7 @@
 <?php
+
+use Inc\User\PasswordRecovery;
+
 //this will debug sql. Please only use it when it not life
 //define("SQL_DEBUG", true);
 define("CHAT_VERSION", "V1.5");
