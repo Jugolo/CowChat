@@ -178,7 +178,7 @@ function handleResponsPart(data){
 }
 
 function handleResponsPartBotCommand(data){
-  switch(CowScriptCommand.getCommand(data)){
+  switch(CowChatCommand.getCommand(data)){
     case "ban":
       onMyBan(data);
     break;
