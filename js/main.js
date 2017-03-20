@@ -168,10 +168,10 @@ function handleResponsPart(data){
     }
   }
   
-  const p = sys.getPage(data.channel == "Bot" ? "console" : data.message);
+  const p = sys.getPage(data.channel == "Bot" ? "console" : data.channel);
   if(!p){
-    sys.getPage("console").line("", "", "Bot", "[color=red]Unknown channel "+j.message[i].channel+"[/color]");
-    sys.getPage("console").line(j.message[i].time, "", j.message[i].nick, j.message[i].message);
+    sys.getPage("console").line("", "", "Bot", "[color=red]Unknown channel "+data.channel+"[/color]");
+    sys.getPage("console").line(data.time, "", data.nick, data.message);
     return;
   }
   p.onRespons(data);
