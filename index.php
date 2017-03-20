@@ -1068,7 +1068,7 @@ class Server{
 	 }
      
          if(count($error) == 0){
-          $this->createAction(Request::post("username"), Request::post("password"));
+          $this->createAction(Request::post("username"), Request::post("password"), Request::post("email"));
           header("location: #");
           exit;
          }
