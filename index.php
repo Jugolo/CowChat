@@ -37,6 +37,8 @@ class Server{
           }
 	  if(Request::get("view")){
 		  if(!$this->handleView()){
+			  header("HTTP/1.0 404 Not Found");
+			  exit("Page not found");
 		  }
 		  return;
 	  }
