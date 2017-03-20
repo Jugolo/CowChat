@@ -45,6 +45,10 @@
     <td><input type='password' name='re_password'></td>
    </tr>
    <tr>
+    <th>@-lang email-@</th>
+    <td><input type='email' name='email'></td>
+   </tr>
+   <tr>
     <td colspan='2'>
      <input type='submit' name='create' value='@-lang create_account-@'>
     </td>
