@@ -31,4 +31,8 @@ class MailTempelate{
   public function subject() : string{
     return $this->subject;
   }
+  
+  public function message() : string{
+    return $this->message;
+  }
 }
