@@ -12,4 +12,8 @@ class Mailer{
     $this->tempelate = $tempelate;
     return true;
   }
+  
+  public function setArg(string $key, string $value){
+    $this->args[$key] = $value;
+  }
 }
