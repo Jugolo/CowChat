@@ -29,6 +29,7 @@ class PasswordRecovery{
     $mail->setArg("password", $data["password"]);
     $mail->send($data["email"]);
     
+    system_log("Handled a request to generate new password for: ".$data["username"]);
     $db->query("UPDATE `".DB_PREFIX."chat_user` SET `password`='".$db->clean(sha1($password))."' WHERE `id`='".$data["id"]."'");
     return true;
   }
