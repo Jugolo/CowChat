@@ -1,6 +1,8 @@
 <?php
 namespace Lib\Mail;
 
+use Language;
+
 class Mailer{
   private $args = [];
   private $tempelate;
@@ -24,6 +26,6 @@ class Mailer{
   }
   
   private function getTempelateDir(string $file) : string{
-    return "locale/".
+    return "locale/".Language::getCode()."/mail/".$file.".mail";
   }
 }
