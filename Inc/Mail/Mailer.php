@@ -2,10 +2,15 @@
 namespace Lib\Mail;
 
 use Language;
+use Config;
 
 class Mailer{
   private $args = [];
   private $tempelate;
+  
+  public function __construct(){
+    $this->setArg("mail", Config::get("supportmail"));
+  }
   
   public function selectTempelate(string $tempelate) : bool{
     $tempelate = $this->getTempelateDir($tempelate);
@@ -22,7 +27,12 @@ class Mailer{
   
   public function send(string $email){
     $parser = new MailTempelate($this->tempelate ? : "");
-    mail($email, $this->convertString($parser->subject()), $this->convertString($parser->message()), $parser->headers());
+    mail(
+      $email,
+      $this->convertString($parser->subject()),
+      $this->convertString($parser->message()),
+      $this->convertString($parser->headers())
+    );
   }
   
   private function getTempelateDir(string $file) : string{
