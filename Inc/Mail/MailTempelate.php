@@ -27,4 +27,8 @@ class MailTempelate{
     while($char = fread($fopen, 1))
       $this->message .= $char;
   }
+  
+  public function subject() : string{
+    return $this->subject;
+  }
 }
