@@ -181,7 +181,8 @@ class Server{
 		      "js/command.js",
 		      "js/bbcode.js",
 		      "js/bbcode_help.js",
-		      "js/lang/".Language::getCode().".js"
+		      "js/lang/".Language::getCode().".js",
+		      "https://raw.githubusercontent.com/less/less.js/v2.7.2/dist/less.min.js",
 		      ]
 	      ]);
       
