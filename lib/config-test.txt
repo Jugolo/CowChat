@@ -10,6 +10,9 @@ $conf["db"] = [
   "prefix" => "sdr_"
 ];
 
+//please change this. 
+$conf["supportmail"] = "support@mail.com";
+
 //start channel the user join if the user is not in a channel
 $conf["startChannel"] = "#start";
 //use this as default style
