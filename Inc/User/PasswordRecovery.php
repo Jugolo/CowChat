@@ -3,7 +3,7 @@ namespace Inc\User;
 
 use Request;
 use Inc\Random;
-use Inc\Mailer;
+use Inc\Mail\Mailer;
 
 class PasswordRecovery{
   public static function controle() : bool{
