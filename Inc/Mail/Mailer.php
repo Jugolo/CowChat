@@ -6,6 +6,7 @@ class Mailer{
   private $tempelate;
   
   public function selectTempelate(string $tempelate) : bool{
+    $tempelate = $this->getTempelateDir($tempelate);
     if(!file_exists($tempelate)){
       return false;
     }
@@ -20,5 +21,9 @@ class Mailer{
   public function send(string $email){
     $parser = new MailTempelate($this->tempelate ? : "");
     mail($email, $parser->subject(), $parser->message(), $parser->headers());
+  }
+  
+  private function getTempelateDir(string $file) : string{
+    return "locale/".
   }
 }
