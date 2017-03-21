@@ -117,6 +117,7 @@ class Server{
     private function handleView() : bool{
 	    switch(Request::get("view")){
 		    case "password-request":
+			    Language::load("password_request");
 			    $this->showTempelate("password_request");
 		    break;
 		    default:
