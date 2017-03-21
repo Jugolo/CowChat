@@ -22,10 +22,20 @@ class Mailer{
   
   public function send(string $email){
     $parser = new MailTempelate($this->tempelate ? : "");
-    mail($email, $parser->subject(), $parser->message(), $parser->headers());
+    mail($email, $this->convertString($parser->subject()), $this->convertString($parser->message()), $parser->headers());
   }
   
   private function getTempelateDir(string $file) : string{
     return "locale/".Language::getCode()."/mail/".$file.".mail";
+  }
+  
+  private function convertString(string $str) : string{
+    $args = $this->args;
+    $line = preg_replace_callback("/\[\[([a-zA-Z]\]\]/", function($all, $arg) use($args){
+      if(!empty($args[$arg])){
+        return $args[$arg];
+      }
+      return $all;
+    }, $line);
   }
 }
