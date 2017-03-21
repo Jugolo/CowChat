@@ -35,4 +35,12 @@ class MailTempelate{
   public function message() : string{
     return $this->message;
   }
+  
+  public function headers() : string{
+    $buffer = [];
+    foreach($this->header as $key => $value){
+      $buffer[] = $key.": ".$value;
+    }
+    return implode("\r\n", $buffer);
+  }
 }
