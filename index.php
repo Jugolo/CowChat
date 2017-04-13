@@ -17,6 +17,7 @@ class Server{
      private $tempelate        = null;
      private $postdata         = null;
      private $user             = null;
+	private $postdata;
      
     function __construct($websocket = false){
         header("Expires: Mon, 26 Jul 12012 05:00:00 GMT");
