@@ -1329,7 +1329,7 @@ class Server{
 				  '".No."',
 				  NOW()
 				);");
-				if($self->isLogin() && is_admin($self->getCurrentUser()->id())){
+				if($self->isLogin() && is_admin($self->getCurrentUser()->id()) && $this->postdata !== null){
 					error($self->postData(), "systemerror");
 				}
 			}
